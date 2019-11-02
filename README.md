@@ -1,2 +1,2 @@
 # back-end
-Repository for all back-end related code
+Repository for all back-end related projects
