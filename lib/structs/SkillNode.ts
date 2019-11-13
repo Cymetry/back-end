@@ -12,7 +12,9 @@ export class SkillNode {
 
     maxMistakes: number;
 
-    mistakes: number;
+    currentScore: number;
+
+    maxScore: number;
 
     next: Function;
 
@@ -22,7 +24,8 @@ export class SkillNode {
         this.isHere = false;
         this.dbRef = undefined;
         this.next = undefined;
-        this.mistakes = undefined;
+        this.currentScore = undefined;
+        this.maxScore = undefined;
     }
 
 }

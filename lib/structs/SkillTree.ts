@@ -6,5 +6,4 @@ export class SkillTree {
 
     head: SkillNode;
 
-    init: Function;
 }
