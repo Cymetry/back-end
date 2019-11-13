@@ -2,7 +2,7 @@ import {SkillNode} from "./SkillNode";
 
 export class SkillTree {
 
-    nodes: [SkillNode];
+    nodes: Array<SkillNode> = [];
 
     head: SkillNode;
 

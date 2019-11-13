@@ -6,7 +6,7 @@ export class SkillNode {
 
     isHere: boolean;
 
-    children: [Pair];
+    children: Array<Pair> = [];
 
     dbRef: string;
 
@@ -20,7 +20,6 @@ export class SkillNode {
         this.name = name;
         this.maxMistakes = maxMistakes;
         this.isHere = false;
-        this.children = undefined;
         this.dbRef = undefined;
         this.next = undefined;
         this.mistakes = undefined;
