@@ -1,6 +1,6 @@
 import {SkillNode} from "./SkillNode";
 
-class SkillTree {
+export class SkillTree {
 
     nodes: [SkillNode];
 
