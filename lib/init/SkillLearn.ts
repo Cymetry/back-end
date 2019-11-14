@@ -1,11 +1,9 @@
 import {SkillNode} from "../structs/SkillNode";
-import {SkillTree} from "../structs/SkillTree";
 import {Pair} from "../structs/Pair";
 
 export class SkillLearn {
 
-    getPythagorasInstance = (problemRef: string, videoRef: string): SkillTree => {
-        const tree = new SkillTree();
+    getPythagorasInstance = (problemRef: string, videoRef: string): Object => {
 
         //video node
         const video = new SkillNode('Video tutorial', null);
@@ -15,7 +13,7 @@ export class SkillLearn {
             return this.children.pop().node;
         }
 
-        video.next = videoNext().bind(video);
+        video.next = videoNext.bind(video);
 
         //skill complete
         const complete = new SkillNode('Skill complete', null);
@@ -36,15 +34,13 @@ export class SkillLearn {
                 return this.children.filter(elm => elm.id === 0);
         }
 
-        head.next = headNext().bind(head);
+        head.next = headNext.bind(head);
 
 
         video.children.push(new Pair(0, head));
 
-        tree.head = head;
-        tree.nodes.push(...[head, video, complete]);
 
-        return tree;
+        return {head: head, video: video, complete: complete};
     }
 }
 
