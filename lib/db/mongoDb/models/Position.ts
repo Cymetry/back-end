@@ -1,4 +1,4 @@
-import {Schema, Document} from "mongoose";
+import {Document, Schema} from "mongoose";
 import * as mongoose from "mongoose";
 
 export interface Position extends Document {
@@ -11,10 +11,9 @@ export interface Position extends Document {
 }
 
 const PositionSchema: Schema = new Schema({
-    procedureId: {type: String, required: true},
-    lastPosition: {type: String, required: true},
     currentScore: {type: Number, required: true},
-
+    lastPosition: {type: String, required: true},
+    procedureId: {type: String, required: true},
 });
 
-export default mongoose.model<Position>('Positions', PositionSchema);
+export default mongoose.model<Position>("Positions", PositionSchema);

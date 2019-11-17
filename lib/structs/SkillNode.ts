@@ -2,21 +2,21 @@ import {Pair} from "./Pair";
 
 export class SkillNode {
 
-    name: string;
+    public name: string;
 
-    isHere: boolean;
+    public isHere: boolean;
 
-    children: Array<Pair> = [];
+    public children: Pair[] = [];
 
-    dbRef: string;
+    public dbRef: string;
 
-    maxMistakes: number;
+    public maxMistakes: number;
 
-    currentScore: number;
+    public currentScore: number;
 
-    maxScore: number;
+    public maxScore: number;
 
-    next: Function;
+    public next: Function;
 
     constructor(name: string, maxMistakes: number) {
         this.name = name;

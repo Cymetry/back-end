@@ -1,12 +1,12 @@
-import {SkillNode} from "../structs/SkillNode";
 import {Pair} from "../structs/Pair";
+import {SkillNode} from "../structs/SkillNode";
 
 export class SkillLearn {
 
-    getPythagorasInstance = (problemRef: string, videoRef: string): Object => {
+    public getPythagorasInstance = (problemRef: string, videoRef: string): Object => {
 
-        //video node
-        const video = new SkillNode('Video tutorial', null);
+        // video node
+        const video = new SkillNode("Video tutorial", null);
         video.dbRef = videoRef;
 
         function videoNext() {
@@ -15,23 +15,24 @@ export class SkillLearn {
 
         video.next = videoNext.bind(video);
 
-        //skill complete
-        const complete = new SkillNode('Skill complete', null);
+        // skill complete
+        const complete = new SkillNode("Skill complete", null);
         complete.children = null;
         complete.next = null;
         complete.dbRef = null;
 
 
-        //start procedure node
-        const head = new SkillNode('Guided problem 3', 4);
+        // start procedure node
+        const head = new SkillNode("Guided problem 3", 4);
         head.children.push(new Pair(0, video));
         head.children.push(new Pair(1, complete));
 
         function headNext() {
-            if (this.mistakes && this.mistakes <= this.maxMistakes)
-                return this.children.filter(elm => elm.id === 1);
-            else
-                return this.children.filter(elm => elm.id === 0);
+            if (this.mistakes && this.mistakes <= this.maxMistakes) {
+                return this.children.filter((elm) => elm.id === 1);
+            } else {
+                return this.children.filter((elm) => elm.id === 0);
+            }
         }
 
         head.next = headNext.bind(head);
@@ -40,7 +41,7 @@ export class SkillLearn {
         video.children.push(new Pair(0, head));
 
 
-        return {head: head, video: video, complete: complete};
+        return {head, video, complete};
     }
 }
 

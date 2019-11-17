@@ -6,14 +6,14 @@ export class Topic extends Model<Topic> {
     @PrimaryKey
     @AutoIncrement
     @Column
-    id: number;
+    public id: number;
 
     @AllowNull(false)
     @Column
-    name: string;
+    public name: string;
 
     @CreatedAt
-    creationDate: Date;
+    public creationDate: Date;
 
 
 }

@@ -7,7 +7,7 @@ import {
     ForeignKey,
     Model,
     PrimaryKey,
-    Table
+    Table,
 } from "sequelize-typescript";
 import {Topic} from "./Topic";
 
@@ -18,22 +18,22 @@ export class Subtopic extends Model<Subtopic> {
     @PrimaryKey
     @AutoIncrement
     @Column
-    id: number;
+    public id: number;
 
     @AllowNull(false)
     @Column
-    name: string;
+    public name: string;
 
 
     @ForeignKey(() => Topic)
     @AllowNull(false)
     @Column
-    topicId: number;
+    public topicId: number;
 
     @BelongsTo(() => Topic)
-    topic: Topic;
+    public topic: Topic;
 
     @CreatedAt
-    creationDate: Date;
+    public creationDate: Date;
 
 }

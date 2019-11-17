@@ -1,7 +1,7 @@
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as errorhandler from 'strong-error-handler';
-import {procedures} from '../routes/procedure';
+import * as bodyParser from "body-parser";
+import * as express from "express";
+import * as errorhandler from "strong-error-handler";
+import {procedures} from "../routes/procedure";
 
 export const app = express();
 
@@ -9,7 +9,7 @@ export const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 
 // middleware for json body parsing
-app.use(bodyParser.json({limit: '5mb'}));
+app.use(bodyParser.json({limit: "5mb"}));
 
 // enable corse for all origins
 app.use((req, res, next) => {
@@ -21,9 +21,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/skillLearning', procedures);
+app.use("/skillLearning", procedures);
 
 app.use(errorhandler({
-    debug: process.env.ENV !== 'prod',
+    debug: process.env.ENV !== "prod",
     log: true,
 }));
