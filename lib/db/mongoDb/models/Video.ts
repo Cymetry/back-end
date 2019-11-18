@@ -6,7 +6,7 @@ export interface Video extends Document {
 }
 
 const VideoSchema: Schema = new Schema({
-    video: {type: String, required: true},
+    url: {type: String, required: true},
 });
 
 export default mongoose.model<Video>("Videos", VideoSchema);

@@ -1,6 +1,31 @@
 import position from "./models/Position";
+import problem from "./models/Problem";
+import process from "./models/Process";
+import video, {Video} from "./models/Video";
+
 
 export class DbHelpers {
+
+    public async createVideoRecord(url: string) {
+        return await video.create({
+            url,
+        });
+    }
+
+    public async createProblemRecord(content: string) {
+        return await problem.create({
+            content,
+        });
+    }
+
+    public async createProcess(problems: any[], videoURL: Video, skillRef: string) {
+        return await process.create({
+            created: new Date(),
+            problems,
+            skillRef,
+            video: videoURL,
+        });
+    }
 
 
     public async createPositionRecord(id: string, lastPosition: string, score: number) {

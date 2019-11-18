@@ -5,15 +5,41 @@ export const skillLearning = Router();
 
 import {DbHelpers} from "../lib/db/mongoDb/DbHelpers";
 
+const dbHelpers = new DbHelpers();
+
 
 skillLearning.post("/create", async (req, res, next) => {
+
+    const {problems, videoUrl, skillRef} = req.body;
+    const problemRecords = [];
+    try {
+        problems.forEach(async (problem) => problemRecords.push(await dbHelpers.createProblemRecord(problem.content)));
+        const videoRecord = await dbHelpers.createVideoRecord(videoUrl);
+        const processRecord = await dbHelpers.createProcess(problemRecords, videoRecord, skillRef);
+        if (processRecord) {
+            res.send({
+                response: JSON.stringify(processRecord),
+                statusCode: 200,
+            });
+        } else {
+            res.send({
+                message: JSON.stringify("something went wrong"),
+                statusCode: 200,
+            });
+        }
+    } catch (e) {
+        console.error(e);
+        res.send({
+            message: JSON.stringify(e),
+            statusCode: 500,
+        });
+    }
 
 
 });
 
 skillLearning.get("/start", async (req, res, next) => {
 
-    const dbHelpers = new DbHelpers();
     // init SkillLearning with 0 score
     await dbHelpers.createPositionRecord(req.query.procedureId, "head", 0);
 
