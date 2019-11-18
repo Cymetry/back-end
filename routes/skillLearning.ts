@@ -35,7 +35,6 @@ skillLearning.post("/create", async (req, res, next) => {
         });
     }
 
-
 });
 
 skillLearning.get("/start", async (req, res, next) => {
@@ -55,7 +54,7 @@ skillLearning.get("/start", async (req, res, next) => {
 
 
 skillLearning.post("/resume", async (req, res, next) => {
-
+    // todo
 
 });
 
