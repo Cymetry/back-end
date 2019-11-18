@@ -4,6 +4,7 @@
     "max-line-length": {
       "options": [120]
     },
+    "interface-name" : [false, "never"],
     "new-parens": true,
     "no-arg": true,
     "no-bitwise": true,

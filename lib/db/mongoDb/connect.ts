@@ -9,7 +9,7 @@ export default ({db}: TInput) => {
         mongoose
             .connect(
                 db,
-                { useNewUrlParser: true },
+                { useNewUrlParser: false },
             )
             .then(() => {
                 return console.info(`Successfully connected to ${db}`);

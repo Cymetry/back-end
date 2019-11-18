@@ -16,11 +16,11 @@ export class Skill extends Model<Skill> {
     @PrimaryKey
     @AutoIncrement
     @Column
-    public id: number;
+    public id!: number;
 
     @AllowNull(false)
     @Column
-    public name: string;
+    public name!: string;
 
     @ForeignKey(() => Subtopic)
     @AllowNull(false)
@@ -28,9 +28,9 @@ export class Skill extends Model<Skill> {
     public subtopicId!: number;
 
     @BelongsTo(() => Subtopic)
-    public subtopic: Subtopic;
+    public subtopic!: Subtopic;
 
     @CreatedAt
-    public creationDate: Date;
+    public creationDate!: Date;
 
 }

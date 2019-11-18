@@ -18,22 +18,22 @@ export class Subtopic extends Model<Subtopic> {
     @PrimaryKey
     @AutoIncrement
     @Column
-    public id: number;
+    public id!: number;
 
     @AllowNull(false)
     @Column
-    public name: string;
+    public name!: string;
 
 
     @ForeignKey(() => Topic)
     @AllowNull(false)
     @Column
-    public topicId: number;
+    public topicId!: number;
 
     @BelongsTo(() => Topic)
-    public topic: Topic;
+    public topic!: Topic;
 
     @CreatedAt
-    public creationDate: Date;
+    public creationDate!: Date;
 
 }

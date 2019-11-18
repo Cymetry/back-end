@@ -6,7 +6,7 @@ export class SkillLearn {
     public getPythagorasInstance = (problemRef: string, videoRef: string): Object => {
 
         // video node
-        const video = new SkillNode("Video tutorial", null);
+        const video = new SkillNode("Video tutorial");
         video.dbRef = videoRef;
 
         function videoNext() {
@@ -16,10 +16,10 @@ export class SkillLearn {
         video.next = videoNext.bind(video);
 
         // skill complete
-        const complete = new SkillNode("Skill complete", null);
-        complete.children = null;
-        complete.next = null;
-        complete.dbRef = null;
+        const complete = new SkillNode("Skill complete");
+        complete.children = [];
+        complete.next = Function;
+        complete.dbRef = "";
 
 
         // start procedure node

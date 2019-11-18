@@ -1,7 +1,7 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as errorhandler from "strong-error-handler";
-import {procedures} from "../routes/procedure";
+import {skillLearning} from "../routes/skillLearning";
 
 export const app = express();
 
@@ -21,7 +21,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/skillLearning", procedures);
+app.use("/skillLearning", skillLearning);
 
 app.use(errorhandler({
     debug: process.env.ENV !== "prod",
