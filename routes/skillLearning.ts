@@ -11,7 +11,7 @@ const dbHelpers = new DbHelpers();
 skillLearning.post("/create", async (req, res, next) => {
 
     const {problems, videoUrl, skillRef} = req.body;
-    const problemRecords = [];
+    const problemRecords: any[] = [];
     try {
         problems.forEach(async (problem) => problemRecords.push(await dbHelpers.createProblemRecord(problem.content)));
         const videoRecord = await dbHelpers.createVideoRecord(videoUrl);
@@ -39,14 +39,16 @@ skillLearning.post("/create", async (req, res, next) => {
 
 skillLearning.get("/start", async (req, res, next) => {
 
+    const skillId = req.query.skillId;
+
     // init SkillLearning with 0 score
-    await dbHelpers.createPositionRecord(req.query.procedureId, "head", 0);
+    await dbHelpers.createPositionRecord(skillId, "head", 0);
 
-    let process;
+    const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
 
-    if (req.query.skillId === "pyth2019") {
-        process = new SkillLearn().getPythagorasInstance("", "");
-    }
+    console.log(skillLearningRecord);
+
+    const process = new SkillLearn().getPythagorasInstance("", "");
 
 
     res.send({statusCode: 200, currentNode: process.head.name});

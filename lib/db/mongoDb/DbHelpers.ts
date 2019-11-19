@@ -27,13 +27,26 @@ export class DbHelpers {
         });
     }
 
-
     public async createPositionRecord(id: string, lastPosition: string, score: number) {
         return await position.create({
             currentScore: score,
             lastPosition,
             procedureId: id,
         });
+    }
+
+    public async getProcessRecordBySkillRef(skillRef: string) {
+        return await process.findOne({
+            skillRef,
+        });
+    }
+
+    public async getProblemById(id: string) {
+        return await problem.findById(id);
+    }
+
+    public async getVideoById(id: string) {
+        return await video.findById(id);
     }
 }
 
