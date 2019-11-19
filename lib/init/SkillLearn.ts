@@ -36,13 +36,14 @@ export class SkillLearn {
         }
 
         head.next = headNext.bind(head);
-
+        head.dbRef = problemRef;
 
         video.children.push(new Pair(0, head));
+        video.dbRef = videoRef;
 
 
         return {head, video, complete};
-    }
+    };
 }
 
 

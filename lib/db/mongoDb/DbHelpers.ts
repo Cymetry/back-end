@@ -31,7 +31,7 @@ export class DbHelpers {
         return await position.create({
             currentScore: score,
             lastPosition,
-            procedureId: id,
+            skillId: id,
         });
     }
 

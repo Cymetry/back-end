@@ -1,5 +1,7 @@
-import {Router} from "express";
 import {SkillLearn} from "../lib/init/SkillLearn";
+
+
+import {Router} from "express";
 
 export const skillLearning = Router();
 
@@ -13,7 +15,14 @@ skillLearning.post("/create", async (req, res, next) => {
     const {problems, videoUrl, skillRef} = req.body;
     const problemRecords: any[] = [];
     try {
-        problems.forEach(async (problem) => problemRecords.push(await dbHelpers.createProblemRecord(problem.content)));
+        problems.forEach(async (problem) => {
+            const ref = await dbHelpers.createProblemRecord(problem.content);
+            problemRecords.push(
+                {
+                    name: problem.name,
+                    problemRef: ref._id,
+                });
+        });
         const videoRecord = await dbHelpers.createVideoRecord(videoUrl);
         const processRecord = await dbHelpers.createProcess(problemRecords, videoRecord, skillRef);
         if (processRecord) {
@@ -41,17 +50,32 @@ skillLearning.get("/start", async (req, res, next) => {
 
     const skillId = req.query.skillId;
 
-    // init SkillLearning with 0 score
-    await dbHelpers.createPositionRecord(skillId, "head", 0);
+    try {
+        // init SkillLearning with 0 score
+        await dbHelpers.createPositionRecord(skillId, "head", 0);
 
-    const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
+        // retrieve record from db
+        const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
 
-    console.log(skillLearningRecord);
+        // sync with process wizard
+        if (skillLearningRecord) {
+            const process = new SkillLearn().getPythagorasInstance(
+                skillLearningRecord.problems.filter(
+                    (problem) => problem.name === "Guided problem 3")[0].problemRef,
+                skillLearningRecord.video.url,
+            );
 
-    const process = new SkillLearn().getPythagorasInstance("", "");
+            // retrieve current node's content
+            const problemRecord = await dbHelpers.getProblemById(process.head.dbRef);
 
-
-    res.send({statusCode: 200, currentNode: process.head.name});
+            res.send({statusCode: 200, currentType: process.head.name, content: problemRecord.content});
+        } else {
+            res.send({statusCode: 500, message: "Missing skill record on db"});
+        }
+    } catch (e) {
+        console.error(e);
+        res.send({statusCode: 500, message: JSON.stringify(e)});
+    }
 });
 
 
