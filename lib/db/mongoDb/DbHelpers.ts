@@ -6,9 +6,9 @@ import video, {Video} from "./models/Video";
 
 export class DbHelpers {
 
-    public async createVideoRecord(url: string) {
+    public async createVideoRecord(content: string) {
         return await video.create({
-            url,
+            content,
         });
     }
 

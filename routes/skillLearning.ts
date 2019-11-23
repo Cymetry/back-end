@@ -60,12 +60,12 @@ skillLearning.get("/start", async (req, res, next) => {
 
         // sync with process wizard
         if (skillLearningRecord) {
+            const videoUrl = await dbHelpers.getVideoById(skillLearningRecord.video.url);
             // needs to be redone for the whole tree
             const process = new SkillLearn().getPythagorasInstance(
                 skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 3")[0].problemRef,
-                skillLearningRecord.video.url,
-            );
+                videoUrl);
 
             // retrieve current node's content
             const problemRecord = await dbHelpers.getProblemById(process[0].dbRef);
@@ -138,14 +138,19 @@ skillLearning.get("/resume", async (req, res, next) => {
             const process = new SkillLearn().getPythagorasInstance(
                 skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 3")[0].problemRef,
-                skillLearningRecord.video.url,
+                skillLearningRecord.video,
             );
 
             process[currentPosition.lastPosition].currentScore = currentPosition.currentScore;
 
             let problemRecord;
             if (currentPosition.isFinished) {
-                problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].next().dbRef);
+                if (process[currentPosition.lastPosition].next().node.name !== "Video tutorial") {
+                    problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].next().dbRef);
+                } else {
+                    problemRecord = await dbHelpers.getVideoById(
+                        process[currentPosition.lastPosition].next().node.dbRef);
+                }
             } else {
                 problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].dbRef);
             }

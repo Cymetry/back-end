@@ -29,9 +29,9 @@ export class SkillLearn {
 
         function headNext() {
             if (this.mistakes && this.mistakes <= this.maxMistakes) {
-                return this.children.filter((elm) => elm.id === 2);
+                return this.children.filter((elm) => elm.id === 2)[0];
             } else {
-                return this.children.filter((elm) => elm.id === 1);
+                return this.children.filter((elm) => elm.id === 1)[0];
             }
         }
 
