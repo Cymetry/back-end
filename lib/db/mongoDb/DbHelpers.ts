@@ -27,13 +27,29 @@ export class DbHelpers {
         });
     }
 
-    public async createPositionRecord(id: string, lastPosition: string, score: number, userId: string) {
+    public async createPositionRecord(id: string,
+                                      lastPosition: number,
+                                      score: number,
+                                      userId: string,
+                                      isFinished: boolean) {
         return await position.create({
             currentScore: score,
+            isFinished,
             lastPosition,
             skillId: id,
             userId,
         });
+    }
+
+    public async getPositionRecord(userId: string, skillId: string) {
+        return await position.findOne({
+            skillId,
+            userId,
+        });
+    }
+
+    public async updatePositionRecord(userId: string, skillId: string, isFinished: boolean, score: number) {
+        return await position.update({userId, skillId}, {isFinished, score});
     }
 
     public async getProcessRecordBySkillRef(skillRef: string) {
