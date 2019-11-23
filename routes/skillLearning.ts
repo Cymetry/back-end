@@ -60,6 +60,7 @@ skillLearning.get("/start", async (req, res, next) => {
 
         // sync with process wizard
         if (skillLearningRecord) {
+            // needs to be redone for the whole tree
             const process = new SkillLearn().getPythagorasInstance(
                 skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 3")[0].problemRef,
@@ -68,8 +69,11 @@ skillLearning.get("/start", async (req, res, next) => {
 
             // retrieve current node's content
             const problemRecord = await dbHelpers.getProblemById(process[0].dbRef);
-
-            res.send({statusCode: 200, content: problemRecord.content});
+            if (problemRecord) {
+                res.send({statusCode: 200, content: problemRecord.content});
+            } else {
+                res.send({statusCode: 500, message: "No content found"});
+            }
         } else {
             res.send({statusCode: 500, message: "Missing skill record on db"});
         }
@@ -83,7 +87,7 @@ skillLearning.put("/saveProgress", async (req, res, next) => {
     const {skillId, userId, score} = req.body;
 
     try {
-        const updated = await dbHelpers.updatePositionRecord(userId, skillId, score);
+        const updated = await dbHelpers.updatePositionRecord(userId, skillId, true, score);
         res.send({statusCode: 200, record: JSON.stringify(updated)});
     } catch (e) {
         console.error(e);
@@ -130,20 +134,20 @@ skillLearning.get("/resume", async (req, res, next) => {
         // sync with process wizard
         if (skillLearningRecord) {
 
-            process[currentPosition.lastPosition].currentScore = currentPosition.currentScore;
-
+            // needs to be redone for the whole tree
             const process = new SkillLearn().getPythagorasInstance(
                 skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 3")[0].problemRef,
                 skillLearningRecord.video.url,
             );
 
+            process[currentPosition.lastPosition].currentScore = currentPosition.currentScore;
 
             let problemRecord;
             if (currentPosition.isFinished) {
-                problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].next);
+                problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].next().dbRef);
             } else {
-                problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition]);
+                problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].dbRef);
             }
 
 

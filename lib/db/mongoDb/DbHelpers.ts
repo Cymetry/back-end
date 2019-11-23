@@ -49,7 +49,7 @@ export class DbHelpers {
     }
 
     public async updatePositionRecord(userId: string, skillId: string, isFinished: boolean, score: number) {
-        return await position.update({userId, skillId}, {isFinished, score});
+        return await position.update({userId, skillId}, {isFinished, currentScore: score});
     }
 
     public async getProcessRecordBySkillRef(skillRef: string) {
