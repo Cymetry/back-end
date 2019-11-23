@@ -27,11 +27,12 @@ export class DbHelpers {
         });
     }
 
-    public async createPositionRecord(id: string, lastPosition: string, score: number) {
+    public async createPositionRecord(id: string, lastPosition: string, score: number, userId: string) {
         return await position.create({
             currentScore: score,
             lastPosition,
             skillId: id,
+            userId,
         });
     }
 

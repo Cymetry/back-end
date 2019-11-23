@@ -49,10 +49,11 @@ skillLearning.post("/create", async (req, res, next) => {
 skillLearning.get("/start", async (req, res, next) => {
 
     const skillId = req.query.skillId;
+    const userId = req.query.userId;
 
     try {
         // init SkillLearning with 0 score
-        await dbHelpers.createPositionRecord(skillId, "head", 0);
+        await dbHelpers.createPositionRecord(skillId, "head", 0, userId);
 
         // retrieve record from db
         const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
@@ -66,9 +67,9 @@ skillLearning.get("/start", async (req, res, next) => {
             );
 
             // retrieve current node's content
-            const problemRecord = await dbHelpers.getProblemById(process.head.dbRef);
+            const problemRecord = await dbHelpers.getProblemById(process[0].dbRef);
 
-            res.send({statusCode: 200, currentType: process.head.name, content: problemRecord.content});
+            res.send({statusCode: 200, currentNodeIndex: 0, content: problemRecord.content});
         } else {
             res.send({statusCode: 500, message: "Missing skill record on db"});
         }

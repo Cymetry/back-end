@@ -3,7 +3,7 @@ import {SkillNode} from "../structs/SkillNode";
 
 export class SkillLearn {
 
-    public getPythagorasInstance = (problemRef: string, videoRef: string): Object => {
+    public getPythagorasInstance = (problemRef: string, videoRef: string): [any] => {
 
         // video node
         const video = new SkillNode("Video tutorial");
@@ -24,8 +24,8 @@ export class SkillLearn {
 
         // start procedure node
         const head = new SkillNode("Guided problem 3", 4);
-        head.children.push(new Pair(0, video));
-        head.children.push(new Pair(1, complete));
+        head.children.push(new Pair(1, video));
+        head.children.push(new Pair(2, complete));
 
         function headNext() {
             if (this.mistakes && this.mistakes <= this.maxMistakes) {
@@ -41,9 +41,14 @@ export class SkillLearn {
         video.children.push(new Pair(0, head));
         video.dbRef = videoRef;
 
+        const tree: any[] = [];
+        tree[0] = head;
+        tree[1] = video;
+        tree[2] = complete;
 
-        return {head, video, complete};
-    };
+
+        return tree;
+    }
 }
 
 
