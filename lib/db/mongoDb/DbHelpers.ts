@@ -29,13 +29,13 @@ export class DbHelpers {
 
     public async createPositionRecord(id: string,
                                       lastPosition: number,
-                                      score: number,
+                                      mistakeCount: number,
                                       userId: string,
                                       isFinished: boolean) {
         return await position.create({
-            currentScore: score,
             isFinished,
             lastPosition,
+            mistakeCount,
             skillId: id,
             userId,
         });
@@ -48,8 +48,12 @@ export class DbHelpers {
         });
     }
 
-    public async updatePositionRecord(userId: string, skillId: string, isFinished: boolean, score: number) {
-        return await position.update({userId, skillId}, {isFinished, currentScore: score});
+    public async updatePositionRecord(userId: string, skillId: string, isFinished: boolean, mistakeCount: number) {
+        return await position.update({userId, skillId}, {isFinished, mistakeCount});
+    }
+
+    public async updatePositionRecordPosition(userId: string, skillId: string, lastPosition: number) {
+        return await position.update({userId, skillId}, {lastPosition, isFinished: false});
     }
 
     public async getProcessRecordBySkillRef(skillRef: string) {

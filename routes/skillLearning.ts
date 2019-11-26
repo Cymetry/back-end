@@ -84,10 +84,10 @@ skillLearning.get("/start", async (req, res, next) => {
 });
 
 skillLearning.put("/saveProgress", async (req, res, next) => {
-    const {skillId, userId, score} = req.body;
+    const {skillId, userId, mistakeCount} = req.body;
 
     try {
-        const updated = await dbHelpers.updatePositionRecord(userId, skillId, true, score);
+        const updated = await dbHelpers.updatePositionRecord(userId, skillId, true, mistakeCount);
         res.send({statusCode: 200, record: JSON.stringify(updated)});
     } catch (e) {
         console.error(e);
@@ -141,18 +141,31 @@ skillLearning.get("/resume", async (req, res, next) => {
                 skillLearningRecord.video,
             );
 
-            process[currentPosition.lastPosition].currentScore = currentPosition.currentScore;
+            process[currentPosition.lastPosition].mistakeCount = currentPosition.mistakeCount;
 
             let problemRecord;
             if (currentPosition.isFinished) {
                 if (process[currentPosition.lastPosition].next().node.name !== "Video tutorial") {
-                    problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].next().dbRef);
+                    problemRecord = await dbHelpers.getProblemById(
+                        process[currentPosition.lastPosition].next().node.dbRef);
                 } else {
                     problemRecord = await dbHelpers.getVideoById(
                         process[currentPosition.lastPosition].next().node.dbRef);
                 }
+
+                // update latest position
+                await dbHelpers.updatePositionRecordPosition(
+                    userId,
+                    skillId,
+                    process[currentPosition.lastPosition].next().id,
+                );
+
             } else {
-                problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].dbRef);
+                if (process[currentPosition.lastPosition].name !== "Video tutorial") {
+                    problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].dbRef);
+                } else {
+                    problemRecord = await dbHelpers.getVideoById(process[currentPosition.lastPosition].dbRef);
+                }
             }
 
 
