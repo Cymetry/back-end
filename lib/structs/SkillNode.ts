@@ -8,15 +8,21 @@ export class SkillNode {
 
     public dbRef: string;
 
+    public solutionRef: string;
+
+    public givenRef: string;
+
     public mistakeCount: number;
 
-    public next: Function;
+    public next: () => Pair;
 
     constructor(name: string) {
         this.name = name;
         this.dbRef = "";
         this.next = Function;
         this.mistakeCount = 0;
+        this.solutionRef = "";
+        this.givenRef = "";
     }
 
 }
