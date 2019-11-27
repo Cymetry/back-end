@@ -19,7 +19,7 @@ export class SkillNode {
     constructor(name: string) {
         this.name = name;
         this.dbRef = "";
-        this.next = Function;
+        this.next = () => new Pair(1, new SkillNode("empty"));
         this.mistakeCount = 0;
         this.solutionRef = "";
         this.givenRef = "";
