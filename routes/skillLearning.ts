@@ -60,19 +60,24 @@ skillLearning.get("/start", async (req, res, next) => {
 
         // sync with process wizard
         if (skillLearningRecord) {
-            const videoUrl = await dbHelpers.getVideoById(skillLearningRecord.video.url);
-            // needs to be redone for the whole tree
-            const process = new SkillLearn().getPythagorasInstance(
-                skillLearningRecord.problems.filter(
-                    (problem) => problem.name === "Guided problem 3")[0].problemRef,
-                videoUrl);
+            const videoUrl = await dbHelpers.getVideoById(skillLearningRecord.video.toString());
 
-            // retrieve current node's content
-            const problemRecord = await dbHelpers.getProblemById(process[0].dbRef);
-            if (problemRecord) {
-                res.send({statusCode: 200, content: problemRecord.content});
+            if (videoUrl) {
+                const gp3 = skillLearningRecord.problems.filter(
+                    (problem) => problem.name === "Guided problem 3")[0];
+                // needs to be redone for the whole tree
+                const process = new SkillLearn().getPythagorasInstance(gp3.problemRef, videoUrl);
+
+                // retrieve current node's content
+                const problemRecord = await dbHelpers.getProblemById(process[0].dbRef);
+
+                if (problemRecord) {
+                    res.send({statusCode: 200, content: problemRecord.content});
+                } else {
+                    res.send({statusCode: 500, message: "No content found"});
+                }
             } else {
-                res.send({statusCode: 500, message: "No content found"});
+                res.send({statusCode: 500, message: "Video is missing"});
             }
         } else {
             res.send({statusCode: 500, message: "Missing skill record on db"});
@@ -128,54 +133,64 @@ skillLearning.get("/resume", async (req, res, next) => {
         // get user's current position
         const currentPosition = await dbHelpers.getPositionRecord(userId, skillId);
 
-        // retrieve record from db
-        const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
+        if (currentPosition) {
 
-        // sync with process wizard
-        if (skillLearningRecord) {
+            // retrieve record from db
+            const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
 
-            // needs to be redone for the whole tree
-            const process = new SkillLearn().getPythagorasInstance(
-                skillLearningRecord.problems.filter(
-                    (problem) => problem.name === "Guided problem 3")[0].problemRef,
-                skillLearningRecord.video,
-            );
+            // sync with process wizard
+            if (skillLearningRecord) {
 
-            process[currentPosition.lastPosition].mistakeCount = currentPosition.mistakeCount;
-
-            let problemRecord;
-            if (currentPosition.isFinished) {
-                if (process[currentPosition.lastPosition].next().node.name !== "Video tutorial") {
-                    problemRecord = await dbHelpers.getProblemById(
-                        process[currentPosition.lastPosition].next().node.dbRef);
-                } else {
-                    problemRecord = await dbHelpers.getVideoById(
-                        process[currentPosition.lastPosition].next().node.dbRef);
-                }
-
-                // update latest position
-                await dbHelpers.updatePositionRecordPosition(
-                    userId,
-                    skillId,
-                    process[currentPosition.lastPosition].next().id,
+                const gp3 = skillLearningRecord.problems.filter(
+                    (problem) => problem.name === "Guided problem 3")[0];
+                // needs to be redone for the whole tree
+                const process = new SkillLearn().getPythagorasInstance(gp3.problemRef,
+                    skillLearningRecord.video,
                 );
 
-            } else {
-                if (process[currentPosition.lastPosition].name !== "Video tutorial") {
-                    problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].dbRef);
+                process[currentPosition.lastPosition].mistakeCount = currentPosition.mistakeCount;
+
+                let problemRecord;
+                if (currentPosition.isFinished &&
+                    process[currentPosition.lastPosition].next().node.name === "Skill complete") {
+                    res.send({statusCode: 200, message: "Skill Complete!"});
                 } else {
-                    problemRecord = await dbHelpers.getVideoById(process[currentPosition.lastPosition].dbRef);
+                    if (currentPosition.isFinished) {
+                        if (process[currentPosition.lastPosition].next().node.name !== "Video tutorial") {
+                            problemRecord = await dbHelpers.getProblemById(
+                                process[currentPosition.lastPosition].next().node.dbRef);
+                        } else {
+                            problemRecord = await dbHelpers.getVideoById(
+                                process[currentPosition.lastPosition].next().node.dbRef);
+                        }
+
+                        // update latest position
+                        await dbHelpers.updatePositionRecordPosition(
+                            userId,
+                            skillId,
+                            process[currentPosition.lastPosition].next().id,
+                        );
+
+                    } else {
+                        if (process[currentPosition.lastPosition].name !== "Video tutorial") {
+                            problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].dbRef);
+                        } else {
+                            problemRecord = await dbHelpers.getVideoById(process[currentPosition.lastPosition].dbRef);
+                        }
+                    }
+
+
+                    if (problemRecord) {
+                        res.send({statusCode: 200, content: problemRecord.content});
+                    } else {
+                        res.send({statusCode: 500, message: "Missing skill record on db"});
+                    }
                 }
+
+
             }
-
-
-            if (problemRecord) {
-                res.send({statusCode: 200, content: problemRecord.content});
-            } else {
-                res.send({statusCode: 500, message: "Missing skill record on db"});
-            }
-
-
+        } else {
+            res.send({statusCode: 500, message: "Missing position record"});
         }
 
 

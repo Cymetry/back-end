@@ -1,13 +1,15 @@
+import {Problem} from "../db/mongoDb/models/Problem";
+import {Video} from "../db/mongoDb/models/Video";
 import {Pair} from "../structs/Pair";
 import {SkillNode} from "../structs/SkillNode";
 
 export class SkillLearn {
 
-    public getPythagorasInstance = (problemRef: string, videoRef: string): SkillNode[] => {
+    public getPythagorasInstance = (problemRef: Problem, videoRef: Video): SkillNode[] => {
 
         // video node
         const video = new SkillNode("Video tutorial");
-        video.dbRef = videoRef;
+        video.dbRef = videoRef.toString();
 
         function videoNext() {
             return this.children[0];
@@ -36,17 +38,36 @@ export class SkillLearn {
         }
 
         head.next = headNext.bind(head);
-        head.dbRef = problemRef;
+        head.dbRef = problemRef.toString();
 
-        video.children.push(new Pair(0, head));
+
+        const tail = new SkillNode("Guided problem 3 Reentered");
+        tail.dbRef = problemRef.toString();
+        tail.children.push(new Pair(0, head));
+        tail.children.push(new Pair(2, complete));
+
+        function tailNext() {
+            if (this.mistakeCount && this.mistakeCount <= 4) {
+                return this.children.filter((elm) => elm.id === 2)[0];
+            } else {
+                return this.children.filter((elm) => elm.id === 0)[0];
+            }
+        }
+
+        tail.next = tailNext.bind(tail);
+
+        video.children.push(new Pair(3, tail));
+
+
         const tree: SkillNode[] = [];
         tree[0] = head;
         tree[1] = video;
         tree[2] = complete;
+        tree[3] = tail;
 
 
         return tree;
-    };
+    }
 }
 
 
