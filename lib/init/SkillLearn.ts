@@ -41,7 +41,7 @@ export class SkillLearn {
         head.dbRef = problemRef.toString();
 
 
-        const tail = new SkillNode("Guided problem 3 Reentered");
+        const tail = new SkillNode("reentered");
         tail.dbRef = problemRef.toString();
         tail.children.push(new Pair(0, head));
         tail.children.push(new Pair(2, complete));

@@ -134,7 +134,6 @@ skillLearning.get("/resume", async (req, res, next) => {
         const currentPosition = await dbHelpers.getPositionRecord(userId, skillId);
 
         if (currentPosition) {
-
             // retrieve record from db
             const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
 
@@ -148,11 +147,21 @@ skillLearning.get("/resume", async (req, res, next) => {
                     skillLearningRecord.video,
                 );
 
+                if (process[currentPosition.lastPosition].name === "Skill complete") {
+                    res.send({statusCode: 200, message: "Skill has been completed"});
+                    return;
+                }
+
                 process[currentPosition.lastPosition].mistakeCount = currentPosition.mistakeCount;
 
                 let problemRecord;
                 if (currentPosition.isFinished &&
                     process[currentPosition.lastPosition].next().node.name === "Skill complete") {
+                    await dbHelpers.updatePositionRecordPosition(
+                        userId,
+                        skillId,
+                        process[currentPosition.lastPosition].next().id,
+                    );
                     res.send({statusCode: 200, message: "Skill Complete!"});
                 } else {
                     if (currentPosition.isFinished) {
@@ -181,7 +190,15 @@ skillLearning.get("/resume", async (req, res, next) => {
 
 
                     if (problemRecord) {
-                        res.send({statusCode: 200, content: problemRecord.content});
+                        if (process[currentPosition.lastPosition].name === "reentered"
+                            && process[currentPosition.lastPosition].next().node.name === "Guided problem 3"
+                            && currentPosition.isFinished
+                        ) {
+                            res.send({statusCode: 200, content: problemRecord.content, reentered: true});
+                        } else {
+                            res.send({statusCode: 200, content: problemRecord.content});
+                        }
+
                     } else {
                         res.send({statusCode: 500, message: "Missing skill record on db"});
                     }
