@@ -9,6 +9,18 @@ export class SkillLearn {
 
     public graph: SkillNode[] = [];
 
+    public init = (problemRef1: Problem,
+                   problemRef2: Problem,
+                   problemRef3: Problem,
+                   videoRef: Video) => {
+
+        const source = new SkillNode("Guided Problem 2");
+        this.graph[this.globalIndex++] = source;
+        source.dbRef = problemRef2.toString();
+
+        this.bindGrothendieck(problemRef1, problemRef2, problemRef3, videoRef, source);
+    }
+
     public bindGrothendieck = (
         problemRef1: Problem,
         problemRef2: Problem,
