@@ -20,11 +20,29 @@ export class SkillLearn {
         this.bindPoincare(problemRef3, videoRef, source);
         this.bindPythagoras(problemRef3, videoRef, source);
 
+        // video node
+        const video = new SkillNode("Video tutorial");
+        this.graph[this.globalIndex++] = video;
+        video.dbRef = videoRef.toString();
+
+        // guided problem 1
+        const problem1 = new SkillNode("Guided problem 1");
+        this.graph[this.globalIndex++] = problem1;
+        problem1.dbRef = problemRef1.toString();
+
+
+        const complete = new SkillNode("Skill complete");
+        this.graph[this.globalIndex++] = complete;
+        complete.dbRef = "";
+        complete.children = [];
+        complete.next = () => new Pair(1, new SkillNode("empty"));
+
+
         // todo implement next method for source node
         // todo create the rest of the node for the procedure
 
 
-    }
+    };
 
     public bindKolmogorov = (problemRef: Problem, givenProblemRef: Problem, videoRef: Video, source: SkillNode) => {
         const head = new SkillNode("Guided problem 3");
@@ -72,7 +90,7 @@ export class SkillLearn {
         head.children.push(new Pair(2, complete));
         video.children.push(new Pair(3, tail));
         source.children.push(new Pair(111, head));
-    }
+    };
 
     public bindDirichlet = (problemRef: Problem, videoRef: Video, source: SkillNode, end: SkillNode) => {
 
@@ -101,7 +119,7 @@ export class SkillLearn {
 
         head.children.push(new Pair(1, problem));
         source.children.push(new Pair(111, head));
-    }
+    };
 
     public bindPoincare = (problemRef: Problem, videoRef: Video, source: SkillNode) => {
 
@@ -160,7 +178,7 @@ export class SkillLearn {
         source.children.push(new Pair(111, head));
 
 
-    }
+    };
 
     public bindPythagoras = (problemRef: Problem, videoRef: Video, source: SkillNode) => {
         // video node
@@ -218,7 +236,7 @@ export class SkillLearn {
 
         video.children.push(new Pair(3, tail));
         source.children.push(new Pair(222, head));
-    }
+    };
 
     public getPythagorasInstance = (problemRef: Problem, videoRef: Video): SkillNode[] => {
 
@@ -282,7 +300,7 @@ export class SkillLearn {
 
 
         return tree;
-    }
+    };
 }
 
 

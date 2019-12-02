@@ -12,9 +12,10 @@ export class DbHelpers {
         });
     }
 
-    public async createProblemRecord(content: string) {
+    public async createProblemRecord(question: string, steps: any[]) {
         return await problem.create({
-            content,
+            question,
+            steps,
         });
     }
 

@@ -15,14 +15,16 @@ skillLearning.post("/create", async (req, res, next) => {
     const {problems, videoUrl, skillRef} = req.body;
     const problemRecords: any[] = [];
     try {
-        problems.forEach(async (problem) => {
-            const ref = await dbHelpers.createProblemRecord(problem.content);
+
+        await problems.forEach(async (problem) => {
+            const ref = await dbHelpers.createProblemRecord(problem.question, problem.steps);
             problemRecords.push(
                 {
                     name: problem.name,
                     problemRef: ref._id,
                 });
         });
+
         const videoRecord = await dbHelpers.createVideoRecord(videoUrl);
         const processRecord = await dbHelpers.createProcess(problemRecords, videoRecord, skillRef);
         if (processRecord) {
@@ -72,7 +74,7 @@ skillLearning.get("/start", async (req, res, next) => {
                 const problemRecord = await dbHelpers.getProblemById(process[0].dbRef);
 
                 if (problemRecord) {
-                    res.send({statusCode: 200, content: problemRecord.content});
+                    res.send({statusCode: 200, content: problemRecord});
                 } else {
                     res.send({statusCode: 500, message: "No content found"});
                 }
@@ -194,9 +196,9 @@ skillLearning.get("/resume", async (req, res, next) => {
                             && process[currentPosition.lastPosition].next().node.name === "Guided problem 3"
                             && currentPosition.isFinished
                         ) {
-                            res.send({statusCode: 200, content: problemRecord.content, reentered: true});
+                            res.send({statusCode: 200, content: problemRecord, reentered: true});
                         } else {
-                            res.send({statusCode: 200, content: problemRecord.content});
+                            res.send({statusCode: 200, content: problemRecord});
                         }
 
                     } else {
