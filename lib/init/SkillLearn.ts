@@ -34,15 +34,15 @@ export class SkillLearn {
 
         // video node
         const video = new SkillNode("Video tutorial");
-        this.graph[this.globalIndex++] = video;
         video.dbRef = videoRef.toString();
 
         // bind video node to the source
-        source.children.push(new Pair(222, video));
+        source.children.push(new Pair(222, this.globalIndex, video));
+        this.graph[this.globalIndex++] = video;
 
         // determine logic for source node child generation
         function sourceNext() {
-            if (this.mistakeCount && this.mistakeCount <= 1) {
+            if (this.mistakeCount <= 1) {
                 return this.children.filter((elm) => elm.id === 111)[0];
             } else {
                 return this.children.filter((elm) => elm.id === 222)[0];
@@ -54,11 +54,11 @@ export class SkillLearn {
 
         // guided problem 1
         const problem1 = new SkillNode("Guided problem 1");
-        this.graph[this.globalIndex++] = problem1;
         problem1.dbRef = problemRef1.toString();
 
         // bind video child
-        video.children.push(new Pair(0, problem1));
+        video.children.push(new Pair(0, this.globalIndex, problem1));
+        this.graph[this.globalIndex++] = problem1;
 
         // determine next node for video
         function videoNext() {
@@ -71,16 +71,17 @@ export class SkillLearn {
         this.bindPoincare(problemRef3, videoRef, problem1);
 
         const problem1Given2 = new SkillNode("Guided problem 1");
-        this.graph[this.globalIndex++] = problem1Given2;
         problem1Given2.dbRef = problemRef1.toString();
         problem1Given2.givenRef = problemRef2.toString();
 
         // add problem 1 given 2 to problem 1 children
-        problem1.children.push(new Pair(1, problem1Given2));
+        problem1.children.push(new Pair(1, this.globalIndex, problem1Given2));
+        this.graph[this.globalIndex++] = problem1Given2;
+
 
         // next node generation logic
         function problem1Next() {
-            if (this.mistakeCount && this.mistakeCount <= 1) {
+            if (this.mistakeCount <= 1) {
                 return this.children.filter((elm) => elm.id === 111)[0];
             } else {
                 return this.children.filter((elm) => elm.id === 1)[0];
@@ -108,7 +109,6 @@ export class SkillLearn {
 
     public bindKolmogorov = (problemRef: Problem, givenProblemRef: Problem, videoRef: Video, source: SkillNode) => {
         const head = new SkillNode("Guided problem 3");
-        this.graph[this.globalIndex++] = head;
         head.dbRef = problemRef.toString();
         head.givenRef = givenProblemRef.toString();
 
@@ -123,20 +123,24 @@ export class SkillLearn {
         head.next = headNext.bind(head);
 
         const video = new SkillNode("Video tutorial");
-        this.graph[this.globalIndex++] = video;
         video.dbRef = videoRef.toString();
 
         // skill complete
         const complete = new SkillNode("Skill complete");
         complete.children = [];
-        complete.next = () => new Pair(1, new SkillNode("empty"));
+        complete.next = () => new Pair(1, 0, new SkillNode("empty"));
         complete.dbRef = "";
 
         const tail = new SkillNode("reentered");
-        this.graph[this.globalIndex++] = tail;
         tail.dbRef = problemRef.toString();
-        tail.children.push(new Pair(0, head));
-        tail.children.push(new Pair(2, complete));
+
+
+        tail.children.push(new Pair(0, this.globalIndex, head));
+        this.graph[this.globalIndex++] = head;
+
+
+        tail.children.push(new Pair(2, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
 
         function tailNext() {
             if (this.mistakeCount && this.mistakeCount <= 4) {
@@ -148,17 +152,25 @@ export class SkillLearn {
 
         tail.next = tailNext.bind(tail);
 
-        head.children.push(new Pair(1, video));
-        head.children.push(new Pair(2, complete));
-        video.children.push(new Pair(3, tail));
-        source.children.push(new Pair(111, head));
+        head.children.push(new Pair(1, this.globalIndex, video));
+        this.graph[this.globalIndex++] = video;
+
+
+        head.children.push(new Pair(2, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
+
+
+        video.children.push(new Pair(3, this.globalIndex, tail));
+        this.graph[this.globalIndex++] = tail;
+
+        source.children.push(new Pair(111, this.globalIndex, head));
+        this.graph[this.globalIndex++] = head;
     }
 
     public bindDirichlet = (problemRef: Problem, videoRef: Video, source: SkillNode, end: SkillNode) => {
 
         // head, meanwhile video node
         const head = new SkillNode("Video tutorial");
-        this.graph[this.globalIndex++] = head;
         head.dbRef = videoRef.toString();
 
         function headNext() {
@@ -169,9 +181,10 @@ export class SkillLearn {
 
         // only child guided problem 2 node
         const problem = new SkillNode("Guided problem 2");
-        this.graph[this.globalIndex++] = problem;
         problem.dbRef = problemRef.toString();
-        problem.children.push(new Pair(111, end));
+
+        problem.children.push(new Pair(111, this.globalIndex, end));
+        this.graph[this.globalIndex++] = end;
 
         function problemNext() {
             return this.children[0];
@@ -179,15 +192,19 @@ export class SkillLearn {
 
         problem.next = problemNext.bind(problem);
 
-        head.children.push(new Pair(1, problem));
-        source.children.push(new Pair(111, head));
+        head.children.push(new Pair(1, this.globalIndex, problem));
+        this.graph[this.globalIndex++] = problem;
+
+
+        source.children.push(new Pair(111, this.globalIndex, head));
+        this.graph[this.globalIndex++] = head;
+
     }
 
     public bindPoincare = (problemRef: Problem, videoRef: Video, source: SkillNode) => {
 
         // video node
         const video = new SkillNode("Video tutorial");
-        this.graph[this.globalIndex++] = video;
         video.dbRef = videoRef.toString();
 
         function videoNext() {
@@ -198,16 +215,20 @@ export class SkillLearn {
 
         // skill complete
         const complete = new SkillNode("Skill complete");
-        this.graph[this.globalIndex++] = complete;
         complete.children = [];
-        complete.next = () => new Pair(1, new SkillNode("empty"));
+        complete.next = () => new Pair(1, 0, new SkillNode("empty"));
         complete.dbRef = "";
 
         // start procedure node
         const head = new SkillNode("Guided problem 3");
-        this.graph[this.globalIndex++] = head;
-        head.children.push(new Pair(1, video));
-        head.children.push(new Pair(2, complete));
+
+        head.children.push(new Pair(1, this.globalIndex, video));
+        this.graph[this.globalIndex++] = video;
+
+
+        head.children.push(new Pair(2, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
+
 
         function headNext() {
             if (this.mistakeCount && this.mistakeCount <= 2) {
@@ -221,10 +242,15 @@ export class SkillLearn {
         head.dbRef = problemRef.toString();
 
         const tail = new SkillNode("reentered");
-        this.graph[this.globalIndex++] = tail;
         tail.dbRef = problemRef.toString();
-        tail.children.push(new Pair(0, head));
-        tail.children.push(new Pair(2, complete));
+
+        tail.children.push(new Pair(0, this.globalIndex, head));
+        this.graph[this.globalIndex++] = head;
+
+
+        tail.children.push(new Pair(2, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
+
 
         function tailNext() {
             if (this.mistakeCount && this.mistakeCount <= 1) {
@@ -236,8 +262,11 @@ export class SkillLearn {
 
         tail.next = tailNext.bind(tail);
 
-        video.children.push(new Pair(3, tail));
-        source.children.push(new Pair(111, head));
+        video.children.push(new Pair(3, this.globalIndex, tail));
+        this.graph[this.globalIndex++] = tail;
+
+        source.children.push(new Pair(111, this.globalIndex, head));
+        this.graph[this.globalIndex++] = head;
 
 
     }
@@ -245,7 +274,6 @@ export class SkillLearn {
     public bindPythagoras = (problemRef: Problem, videoRef: Video, source: SkillNode) => {
         // video node
         const video = new SkillNode("Video tutorial");
-        this.graph[this.globalIndex++] = video;
         video.dbRef = videoRef.toString();
 
         function videoNext() {
@@ -256,17 +284,21 @@ export class SkillLearn {
 
         // skill complete
         const complete = new SkillNode("Skill complete");
-        this.graph[this.globalIndex++] = complete;
         complete.children = [];
-        complete.next = () => new Pair(1, new SkillNode("empty"));
+        complete.next = () => new Pair(1, 0, new SkillNode("empty"));
         complete.dbRef = "";
 
 
         // start procedure node
         const head = new SkillNode("Guided problem 3");
-        this.graph[this.globalIndex++] = head;
-        head.children.push(new Pair(1, video));
-        head.children.push(new Pair(2, complete));
+
+
+        head.children.push(new Pair(1, this.globalIndex, video));
+        this.graph[this.globalIndex++] = video;
+
+        head.children.push(new Pair(2, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
+
 
         function headNext() {
             if (this.mistakeCount && this.mistakeCount <= 4) {
@@ -281,10 +313,13 @@ export class SkillLearn {
 
 
         const tail = new SkillNode("reentered");
-        this.graph[this.globalIndex++] = tail;
         tail.dbRef = problemRef.toString();
-        tail.children.push(new Pair(0, head));
-        tail.children.push(new Pair(2, complete));
+
+        tail.children.push(new Pair(0, this.globalIndex, head));
+        this.graph[this.globalIndex++] = head;
+
+        tail.children.push(new Pair(2, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
 
         function tailNext() {
             if (this.mistakeCount && this.mistakeCount <= 4) {
@@ -296,8 +331,11 @@ export class SkillLearn {
 
         tail.next = tailNext.bind(tail);
 
-        video.children.push(new Pair(3, tail));
-        source.children.push(new Pair(222, head));
+        video.children.push(new Pair(3, this.globalIndex, tail));
+        this.graph[this.globalIndex++] = tail;
+
+        source.children.push(new Pair(222, this.globalIndex, head));
+        this.graph[this.globalIndex++] = head;
     }
 
     public getPythagorasInstance = (problemRef: Problem, videoRef: Video): SkillNode[] => {
@@ -315,14 +353,14 @@ export class SkillLearn {
         // skill complete
         const complete = new SkillNode("Skill complete");
         complete.children = [];
-        complete.next = () => new Pair(1, new SkillNode("empty"));
+        complete.next = () => new Pair(1, 0, new SkillNode("empty"));
         complete.dbRef = "";
 
 
         // start procedure node
         const head = new SkillNode("Guided problem 3");
-        head.children.push(new Pair(1, video));
-        head.children.push(new Pair(2, complete));
+        head.children.push(new Pair(1, 0, video));
+        head.children.push(new Pair(2, 0, complete));
 
         function headNext() {
             if (this.mistakeCount && this.mistakeCount <= 4) {
@@ -338,8 +376,8 @@ export class SkillLearn {
 
         const tail = new SkillNode("reentered");
         tail.dbRef = problemRef.toString();
-        tail.children.push(new Pair(0, head));
-        tail.children.push(new Pair(2, complete));
+        tail.children.push(new Pair(0, 0, head));
+        tail.children.push(new Pair(2, 0, complete));
 
         function tailNext() {
             if (this.mistakeCount && this.mistakeCount <= 4) {
@@ -351,7 +389,7 @@ export class SkillLearn {
 
         tail.next = tailNext.bind(tail);
 
-        video.children.push(new Pair(3, tail));
+        video.children.push(new Pair(3, 0, tail));
 
 
         const tree: SkillNode[] = [];

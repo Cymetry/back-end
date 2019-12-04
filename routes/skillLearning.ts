@@ -65,13 +65,27 @@ skillLearning.get("/start", async (req, res, next) => {
             const videoUrl = await dbHelpers.getVideoById(skillLearningRecord.video.toString());
 
             if (videoUrl) {
+                // retrieve guided problem 1
+                const gp1 = skillLearningRecord.problems.filter(
+                    (problem) => problem.name === "Guided problem 1")[0];
+
+                // retrieve guided problem 2
+                const gp2 = skillLearningRecord.problems.filter(
+                    (problem) => problem.name === "Guided problem 2")[0];
+
+                // retrieve guided problem 3
                 const gp3 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 3")[0];
+
+
                 // needs to be redone for the whole tree
-                const process = new SkillLearn().getPythagorasInstance(gp3.problemRef, videoUrl);
+                // const process = new SkillLearn().getPythagorasInstance(gp3.problemRef, videoUrl);
+
+                const skillLearn = new SkillLearn();
+                skillLearn.init(gp1.problemRef, gp2.problemRef, gp3.problemRef, videoUrl);
 
                 // retrieve current node's content
-                const problemRecord = await dbHelpers.getProblemById(process[0].dbRef);
+                const problemRecord = await dbHelpers.getProblemById(skillLearn.graph[0].dbRef);
 
                 if (problemRecord) {
                     res.send({statusCode: 200, content: problemRecord});
@@ -142,58 +156,76 @@ skillLearning.get("/resume", async (req, res, next) => {
             // sync with process wizard
             if (skillLearningRecord) {
 
+                // retrieve guided problem 1
+                const gp1 = skillLearningRecord.problems.filter(
+                    (problem) => problem.name === "Guided problem 1")[0];
+
+                // retrieve guided problem 2
+                const gp2 = skillLearningRecord.problems.filter(
+                    (problem) => problem.name === "Guided problem 2")[0];
+
+                // retrieve guided problem 3
                 const gp3 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 3")[0];
-                // needs to be redone for the whole tree
-                const process = new SkillLearn().getPythagorasInstance(gp3.problemRef,
-                    skillLearningRecord.video,
-                );
 
-                if (process[currentPosition.lastPosition].name === "Skill complete") {
+                // needs to be redone for the whole tree
+                // const process = new SkillLearn().getPythagorasInstance(gp3.problemRef,
+                //     skillLearningRecord.video,
+                // );
+
+                const skillLearn = new SkillLearn();
+                skillLearn.init(gp1.problemRef, gp2.problemRef, gp3.problemRef, skillLearningRecord.video);
+
+
+                if (skillLearn.graph[currentPosition.lastPosition].name === "Skill complete") {
                     res.send({statusCode: 200, message: "Skill has been completed"});
                     return;
                 }
 
-                process[currentPosition.lastPosition].mistakeCount = currentPosition.mistakeCount;
+                skillLearn.graph[currentPosition.lastPosition].mistakeCount = currentPosition.mistakeCount;
 
                 let problemRecord;
                 if (currentPosition.isFinished &&
-                    process[currentPosition.lastPosition].next().node.name === "Skill complete") {
+                    skillLearn.graph[currentPosition.lastPosition].next().node.name === "Skill complete") {
                     await dbHelpers.updatePositionRecordPosition(
                         userId,
                         skillId,
-                        process[currentPosition.lastPosition].next().id,
+                        skillLearn.graph[currentPosition.lastPosition].next().id,
                     );
                     res.send({statusCode: 200, message: "Skill Complete!"});
                 } else {
                     if (currentPosition.isFinished) {
-                        if (process[currentPosition.lastPosition].next().node.name !== "Video tutorial") {
+                        if (skillLearn.graph[currentPosition.lastPosition].next().node.name !== "Video tutorial") {
                             problemRecord = await dbHelpers.getProblemById(
-                                process[currentPosition.lastPosition].next().node.dbRef);
+                                skillLearn.graph[currentPosition.lastPosition].next().node.dbRef);
                         } else {
                             problemRecord = await dbHelpers.getVideoById(
-                                process[currentPosition.lastPosition].next().node.dbRef);
+                                skillLearn.graph[currentPosition.lastPosition].next().node.dbRef);
                         }
 
                         // update latest position
                         await dbHelpers.updatePositionRecordPosition(
                             userId,
                             skillId,
-                            process[currentPosition.lastPosition].next().id,
+                            skillLearn.graph[currentPosition.lastPosition].next().index,
                         );
 
                     } else {
-                        if (process[currentPosition.lastPosition].name !== "Video tutorial") {
-                            problemRecord = await dbHelpers.getProblemById(process[currentPosition.lastPosition].dbRef);
+                        if (skillLearn.graph[currentPosition.lastPosition].name !== "Video tutorial") {
+                            problemRecord = await dbHelpers.getProblemById(
+                                skillLearn.graph[currentPosition.lastPosition].dbRef,
+                            );
                         } else {
-                            problemRecord = await dbHelpers.getVideoById(process[currentPosition.lastPosition].dbRef);
+                            problemRecord = await dbHelpers.getVideoById(
+                                skillLearn.graph[currentPosition.lastPosition].dbRef,
+                            );
                         }
                     }
 
 
                     if (problemRecord) {
-                        if (process[currentPosition.lastPosition].name === "reentered"
-                            && process[currentPosition.lastPosition].next().node.name === "Guided problem 3"
+                        if (skillLearn.graph[currentPosition.lastPosition].name === "reentered"
+                            && skillLearn.graph[currentPosition.lastPosition].next().node.name === "Guided problem 3"
                             && currentPosition.isFinished
                         ) {
                             res.send({statusCode: 200, content: problemRecord, reentered: true});

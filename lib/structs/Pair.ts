@@ -6,8 +6,11 @@ export class Pair {
 
     public id: number;
 
-    constructor(id: number, node: SkillNode) {
+    public index: number;
+
+    constructor(id: number, index: number, node: SkillNode) {
         this.id = id;
+        this.index = index;
         this.node = node;
     }
 
