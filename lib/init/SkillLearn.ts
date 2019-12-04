@@ -125,6 +125,12 @@ export class SkillLearn {
         const video = new SkillNode("Video tutorial");
         video.dbRef = videoRef.toString();
 
+        function videoNext() {
+            return this.children[0];
+        }
+
+        video.next = videoNext.bind(video);
+
         // skill complete
         const complete = new SkillNode("Skill complete");
         complete.children = [];
@@ -196,7 +202,7 @@ export class SkillLearn {
         this.graph[this.globalIndex++] = problem;
 
 
-        source.children.push(new Pair(111, this.globalIndex, head));
+        source.children.push(new Pair(333, this.globalIndex, head));
         this.graph[this.globalIndex++] = head;
 
     }
@@ -336,70 +342,6 @@ export class SkillLearn {
 
         source.children.push(new Pair(222, this.globalIndex, head));
         this.graph[this.globalIndex++] = head;
-    }
-
-    public getPythagorasInstance = (problemRef: Problem, videoRef: Video): SkillNode[] => {
-
-        // video node
-        const video = new SkillNode("Video tutorial");
-        video.dbRef = videoRef.toString();
-
-        function videoNext() {
-            return this.children[0];
-        }
-
-        video.next = videoNext.bind(video);
-
-        // skill complete
-        const complete = new SkillNode("Skill complete");
-        complete.children = [];
-        complete.next = () => new Pair(1, 0, new SkillNode("empty"));
-        complete.dbRef = "";
-
-
-        // start procedure node
-        const head = new SkillNode("Guided problem 3");
-        head.children.push(new Pair(1, 0, video));
-        head.children.push(new Pair(2, 0, complete));
-
-        function headNext() {
-            if (this.mistakeCount && this.mistakeCount <= 4) {
-                return this.children.filter((elm) => elm.id === 2)[0];
-            } else {
-                return this.children.filter((elm) => elm.id === 1)[0];
-            }
-        }
-
-        head.next = headNext.bind(head);
-        head.dbRef = problemRef.toString();
-
-
-        const tail = new SkillNode("reentered");
-        tail.dbRef = problemRef.toString();
-        tail.children.push(new Pair(0, 0, head));
-        tail.children.push(new Pair(2, 0, complete));
-
-        function tailNext() {
-            if (this.mistakeCount && this.mistakeCount <= 4) {
-                return this.children.filter((elm) => elm.id === 2)[0];
-            } else {
-                return this.children.filter((elm) => elm.id === 0)[0];
-            }
-        }
-
-        tail.next = tailNext.bind(tail);
-
-        video.children.push(new Pair(3, 0, tail));
-
-
-        const tree: SkillNode[] = [];
-        tree[0] = head;
-        tree[1] = video;
-        tree[2] = complete;
-        tree[3] = tail;
-
-
-        return tree;
     }
 }
 
