@@ -185,6 +185,8 @@ skillLearning.get("/resume", async (req, res, next) => {
                 skillLearn.graph[currentPosition.lastPosition].mistakeCount = currentPosition.mistakeCount;
 
                 let problemRecord;
+                let givenRecord;
+
                 if (currentPosition.isFinished &&
                     skillLearn.graph[currentPosition.lastPosition].next().node.name === "Skill complete") {
                     await dbHelpers.updatePositionRecordPosition(
@@ -215,6 +217,12 @@ skillLearning.get("/resume", async (req, res, next) => {
                             problemRecord = await dbHelpers.getProblemById(
                                 skillLearn.graph[currentPosition.lastPosition].dbRef,
                             );
+
+                            if (skillLearn.graph[currentPosition.lastPosition].givenRef !== "") {
+                                givenRecord = await dbHelpers.getProblemById(
+                                    skillLearn.graph[currentPosition.lastPosition].givenRef,
+                                );
+                            }
                         } else {
                             problemRecord = await dbHelpers.getVideoById(
                                 skillLearn.graph[currentPosition.lastPosition].dbRef,
@@ -228,9 +236,18 @@ skillLearning.get("/resume", async (req, res, next) => {
                             && skillLearn.graph[currentPosition.lastPosition].next().node.name === "Guided problem 3"
                             && currentPosition.isFinished
                         ) {
-                            res.send({statusCode: 200, content: problemRecord, reentered: true});
+                            res.send({
+                                content: problemRecord,
+                                given: givenRecord ? givenRecord : null,
+                                reentered: true,
+                                statusCode: 200,
+                            });
                         } else {
-                            res.send({statusCode: 200, content: problemRecord});
+                            res.send({
+                                content: problemRecord,
+                                given: givenRecord ? givenRecord : null,
+                                statusCode: 200,
+                            });
                         }
 
                     } else {

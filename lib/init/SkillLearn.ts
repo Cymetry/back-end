@@ -18,6 +18,12 @@ export class SkillLearn {
         this.graph[this.globalIndex++] = source;
         source.dbRef = problemRef2.toString();
 
+
+
+
+
+
+
         this.bindGrothendieck(problemRef1, problemRef2, problemRef3, videoRef, source);
     }
 
