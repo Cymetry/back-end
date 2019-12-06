@@ -1,10 +1,23 @@
 import position from "./models/Position";
 import problem from "./models/Problem";
 import process from "./models/Process";
+import submission from "./models/Submission";
 import video, {Video} from "./models/Video";
 
 
 export class DbHelpers {
+
+    public async createOrUpdateSubmission(userId: string, procedure: string, content: any[]) {
+        return await submission.update(
+            {userId, procedure},
+            content,
+            {upsert: true},
+        );
+    }
+
+    public async getSubmission(userId: string, procedure: string) {
+        return await submission.findOne({userId, procedure});
+    }
 
     public async createVideoRecord(content: string) {
         return await video.create({

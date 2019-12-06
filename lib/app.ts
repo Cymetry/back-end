@@ -3,6 +3,7 @@ import * as express from "express";
 import * as errorhandler from "strong-error-handler";
 import {skillLearning} from "../routes/skillLearning";
 
+
 export const app = express();
 
 // middleware for parsing application/x-www-form-urlencoded
@@ -23,7 +24,11 @@ app.use((req, res, next) => {
 
 app.use("/skillLearning", skillLearning);
 
-app.use(errorhandler({
-    debug: process.env.ENV !== "prod",
-    log: true,
-}));
+app.use(
+    errorhandler(
+        {
+            debug: process.env.ENV !== "prod",
+            log: true,
+        },
+    ),
+);
