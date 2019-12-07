@@ -6,6 +6,7 @@ export interface Position extends Document {
     skillId: string;
     lastPosition: number;
     mistakeCount: number;
+    correctCount: number;
     userId: string;
     isFinished: boolean;
 
@@ -13,6 +14,7 @@ export interface Position extends Document {
 }
 
 const PositionSchema: Schema = new Schema({
+    correctCount: {type: Number, required: true},
     isFinished: {type: Boolean, required: true},
     lastPosition: {type: Number, required: true},
     mistakeCount: {type: Number, required: true},

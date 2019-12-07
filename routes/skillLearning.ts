@@ -55,7 +55,7 @@ skillLearning.get("/start", async (req, res, next) => {
 
     try {
         // init SkillLearning with 0 score
-        await dbHelpers.createPositionRecord(skillId, 0, 0, userId, false);
+        await dbHelpers.createPositionRecord(skillId, 0, 0, userId, false, 0);
 
         // retrieve record from db
         const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
@@ -105,10 +105,10 @@ skillLearning.get("/start", async (req, res, next) => {
 });
 
 skillLearning.put("/saveProgress", async (req, res, next) => {
-    const {skillId, userId, mistakeCount} = req.body;
+    const {skillId, userId, mistakeCount, correctCount} = req.body;
 
     try {
-        const updated = await dbHelpers.updatePositionRecord(userId, skillId, true, mistakeCount);
+        const updated = await dbHelpers.updatePositionRecord(userId, skillId, true, mistakeCount, correctCount);
         res.send({statusCode: 200, record: JSON.stringify(updated)});
     } catch (e) {
         console.error(e);

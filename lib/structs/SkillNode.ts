@@ -14,6 +14,8 @@ export class SkillNode {
 
     public mistakeCount: number;
 
+    public correctCount: number;
+
     public next: () => Pair;
 
     constructor(name: string) {
@@ -23,6 +25,7 @@ export class SkillNode {
         this.mistakeCount = 0;
         this.solutionRef = "";
         this.givenRef = "";
+        this.correctCount = 0;
     }
 
 }

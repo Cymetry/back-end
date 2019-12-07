@@ -46,8 +46,10 @@ export class DbHelpers {
                                       lastPosition: number,
                                       mistakeCount: number,
                                       userId: string,
-                                      isFinished: boolean) {
+                                      isFinished: boolean,
+                                      correctCount: number) {
         return await position.create({
+            correctCount,
             isFinished,
             lastPosition,
             mistakeCount,
@@ -63,8 +65,9 @@ export class DbHelpers {
         });
     }
 
-    public async updatePositionRecord(userId: string, skillId: string, isFinished: boolean, mistakeCount: number) {
-        return await position.update({userId, skillId}, {isFinished, mistakeCount});
+    public async updatePositionRecord(userId: string, skillId: string, isFinished: boolean, mistakeCount: number,
+                                      correctCount: number) {
+        return await position.update({userId, skillId}, {correctCount, isFinished, mistakeCount});
     }
 
     public async updatePositionRecordPosition(userId: string, skillId: string, lastPosition: number) {
