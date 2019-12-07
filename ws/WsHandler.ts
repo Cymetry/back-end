@@ -42,7 +42,7 @@ export class WsHandler {
         }
 
         return result;
-    };
+    }
 
     public insertOrUpdate = async (message: WsMessage): Promise<WsResponse> => {
 
@@ -73,6 +73,6 @@ export class WsHandler {
         }
 
         return result;
-    };
+    }
 
 }
