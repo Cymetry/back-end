@@ -230,6 +230,8 @@ skillLearning.get("/resume", async (req, res, next) => {
                         }
                     }
 
+                    const submission = await dbHelpers.getSubmission(userId, skillLearningRecord._id);
+
 
                     if (problemRecord) {
                         if (skillLearn.graph[currentPosition.lastPosition].name === "reentered"
@@ -247,6 +249,7 @@ skillLearning.get("/resume", async (req, res, next) => {
                                 content: problemRecord,
                                 given: givenRecord ? givenRecord : null,
                                 statusCode: 200,
+                                submission: submission ? submission : null,
                             });
                         }
 
