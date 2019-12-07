@@ -18,6 +18,7 @@ const StepSchema = new Schema({
 
 export interface Problem extends Document {
     question: string;
+    type: string;
     steps: [
         {
             instruction: string,
@@ -38,6 +39,7 @@ export interface Problem extends Document {
 const ProblemSchema: Schema = new Schema({
     question: {type: String, required: true},
     steps: {type: Array(StepSchema), required: true},
+    type: {type: String, required: true},
 });
 
 export default mongoose.model<Problem>("Problems", ProblemSchema);

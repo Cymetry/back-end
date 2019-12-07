@@ -17,7 +17,7 @@ skillLearning.post("/create", async (req, res, next) => {
     try {
 
         await problems.forEach(async (problem) => {
-            const ref = await dbHelpers.createProblemRecord(problem.question, problem.steps);
+            const ref = await dbHelpers.createProblemRecord(problem.question, problem.name, problem.steps);
             problemRecords.push(
                 {
                     name: problem.name,
@@ -249,7 +249,8 @@ skillLearning.get("/resume", async (req, res, next) => {
                                 content: problemRecord,
                                 given: givenRecord ? givenRecord : null,
                                 statusCode: 200,
-                                submission: submission ? submission : null,
+                                submission: submission ? submission.content.filter(
+                                    (record) => record.problem === problemRecord.type) : null,
                             });
                         }
 

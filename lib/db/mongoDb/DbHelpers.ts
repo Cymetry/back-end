@@ -25,10 +25,11 @@ export class DbHelpers {
         });
     }
 
-    public async createProblemRecord(question: string, steps: any[]) {
+    public async createProblemRecord(question: string, type: string, steps: any[]) {
         return await problem.create({
             question,
             steps,
+            type,
         });
     }
 
