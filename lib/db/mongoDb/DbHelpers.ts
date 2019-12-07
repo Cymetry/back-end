@@ -10,7 +10,7 @@ export class DbHelpers {
     public async createOrUpdateSubmission(userId: string, procedure: string, content: any[]) {
         return await submission.update(
             {userId, procedure},
-            content,
+            {$set: {content}},
             {upsert: true},
         );
     }

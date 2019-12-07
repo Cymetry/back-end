@@ -8,4 +8,8 @@ export class WsResponse {
         this.error = error;
     }
 
+    public toString = () => {
+        return JSON.stringify(this);
+    }
+
 }

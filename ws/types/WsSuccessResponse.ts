@@ -10,4 +10,8 @@ export class WsSuccessResponse extends WsResponse {
         this.data = data;
     }
 
+    public toString = () => {
+        return JSON.stringify(this);
+    }
+
 }

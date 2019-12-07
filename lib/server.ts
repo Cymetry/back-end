@@ -24,8 +24,11 @@ const port = process.env.PORT || 3000;
 
     wss.on("connection", async (ws: WebSocket) => {
         const wsHandler = new WsHandler(ws);
-        ws.on("message", async (message: WsMessage) => {
-            await wsHandler.insertOrUpdate(message);
+        ws.on("message", async (message: any) => {
+            const parsed = JSON.parse(message);
+            const wsMessage = new WsMessage(parsed.userId, parsed.skillId, parsed.content);
+            const response = await wsHandler.insertOrUpdate(wsMessage);
+            ws.send(response.toString());
         });
     });
 

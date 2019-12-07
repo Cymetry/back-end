@@ -21,10 +21,9 @@ export class WsHandler {
         let result: WsResponse;
 
         try {
-            const {userId, skillId} = message;
-            const procedure = await this.dbHelpers.getProcessRecordBySkillRef(skillId);
+            const procedure = await this.dbHelpers.getProcessRecordBySkillRef(message.skillId);
             if (procedure) {
-                const submission = await this.dbHelpers.getSubmission(userId, procedure._id);
+                const submission = await this.dbHelpers.getSubmission(message.userId, procedure._id);
                 if (submission) {
                     result = new WsSuccessResponse(
                         "Success",
@@ -43,17 +42,19 @@ export class WsHandler {
         }
 
         return result;
-    }
+    };
 
     public insertOrUpdate = async (message: WsMessage): Promise<WsResponse> => {
 
         let result: WsResponse;
 
         try {
-            const {userId, skillId, content} = message;
-            const procedure = await this.dbHelpers.getProcessRecordBySkillRef(skillId);
+            const procedure = await this.dbHelpers.getProcessRecordBySkillRef(message.skillId);
             if (procedure) {
-                const submission = await this.dbHelpers.createOrUpdateSubmission(userId, procedure._id, content);
+                const submission = await this.dbHelpers.createOrUpdateSubmission(
+                    message.userId,
+                    procedure._id,
+                    message.content);
                 if (submission) {
                     result = new WsSuccessResponse(
                         "Success",
@@ -72,6 +73,6 @@ export class WsHandler {
         }
 
         return result;
-    }
+    };
 
 }

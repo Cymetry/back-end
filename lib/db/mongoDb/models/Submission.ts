@@ -3,10 +3,13 @@ import * as mongoose from "mongoose";
 import {Process} from "./Process";
 
 const ContentSchema = new Schema({
-    answer: String,
-    fillIn: Boolean,
-    step: String,
-    submissions: [],
+    data: [{
+        answer: String,
+        fillIn: Boolean,
+        step: String,
+        submissions: [],
+    }],
+    problem: String,
 });
 
 export interface Submission extends Document {
@@ -14,10 +17,15 @@ export interface Submission extends Document {
     procedure: Process;
     content: [
         {
-            answer: string,
-            fillIn: boolean,
-            step: string,
-            submissions: [],
+            problem: string
+            data: [
+                {
+                    answer: string,
+                    fillIn: boolean,
+                    step: string,
+                    submissions: [],
+                }
+                ],
         }
         ];
 
@@ -26,7 +34,7 @@ export interface Submission extends Document {
 const SubmissionSchema: Schema = new Schema({
     content: {type: Array(ContentSchema), required: true},
     procedure: {type: Schema.Types.ObjectId, required: true},
-    userID: {type: String, required: true},
+    userId: {type: String, required: true},
 });
 
 export default mongoose.model<Submission>("Submissions", SubmissionSchema);
