@@ -219,9 +219,8 @@ skillLearning.get("/resume", async (req, res, next) => {
                                 skillLearn.graph[currentPosition.lastPosition].dbRef,
                             );
 
-                            const current = await dbHelpers.getPositionRecord(userId, skillId);
-
-                            if (skillLearn.graph[current.lastPosition].givenRef !== "") {
+                            if (skillLearn.graph[currentPosition.lastPosition].givenRef !== "") {
+                                const current = await dbHelpers.getPositionRecord(userId, skillId);
                                 if (current) {
                                     givenRecord = await dbHelpers.getProblemById(
                                         skillLearn.graph[current.lastPosition].givenRef,
