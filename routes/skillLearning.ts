@@ -88,7 +88,7 @@ skillLearning.get("/start", async (req, res, next) => {
                 const problemRecord = await dbHelpers.getProblemById(skillLearn.graph[0].dbRef);
 
                 if (problemRecord) {
-                    res.send({statusCode: 200, content: problemRecord});
+                    res.send({statusCode: 200, body: {content: problemRecord}});
                 } else {
                     res.send({statusCode: 500, message: "No content found"});
                 }
