@@ -14,17 +14,163 @@ export class SkillLearn {
                    problemRef3: Problem,
                    videoRef: Video) => {
 
-        const source = new SkillNode("Guided Problem 2");
+        // source node
+        const source = new SkillNode("Guided Problem 1");
         this.graph[this.globalIndex++] = source;
-        source.dbRef = problemRef2.toString();
+        source.dbRef = problemRef1.toString();
+
+        // guided problem 2 tree-level 1
+        const gp2L1 = new SkillNode("Guided Problem 2");
+        gp2L1.dbRef = problemRef2.toString();
+
+        // guided video tree-level 1
+        const videoL1 = new SkillNode("Video tutorial");
+        vidoeL1.dbRef = videoRef.toString();
+
+        // guided problem 3 tree-level 1
+        const gp3L1 = new SkillNode("Guided Problem 3");
+        gp3L1.dbRef = problemRef3.toString();
+
+        // complete tree-level 1
+        const complete = new SkillNode("Complete");
+        complete.children = [];
+        complete.next = () => new Pair(1, 0, new SkillNode("empty"));
+        complete.dbRef = "";
+
+        // push 4 child nodes for the source
+        source.children.push(new Pair(1, this.globalIndex, gp2L1));
+        this.graph[this.globalIndex++] = gp2L1;
+
+        source.children.push(new Pair(2, this.globalIndex, videoL1));
+        this.graph[this.globalIndex++] = videoL1;
+
+        source.children.push(new Pair(3, this.globalIndex, gp3L1));
+        this.graph[this.globalIndex++] = gp3L1;
+
+        source.children.push(new Pair(4, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
+
+        // define deepening logic
+        function sourceNext() {
+            if (this.correctCount >= 0.5) {
+                return this.children.filter((elm) => elm.id === 1)[0];
+            } else if (this.correctCount < 0.5 && this.mistakeCount === 2) {
+                return this.children.filter((elm) => elm.id === 2)[0];
+            } else if (this.mistakeCount === 1) {
+                return this.children.filter((elm) => elm.id === 3)[0];
+            } else if (this.mistakeCount === 0) {
+                return this.children.filter((elm) => elm.id === 4)[0];
+            }
+        }
+
+        source.next = sourceNext.bind(source);
+
+        // guided problem 1 on level 3 under Dirichlet procedure
+        const gp1L3 = new SkillNode("Guided problem 1");
+        gp1L3.dbRef = problemRef1.toString();
+
+        // bind guided problem 1 on level 3 to level 2 guided problem 2
+        gp2L1.children.push(new Pair(5, this.globalIndex, gp1L3));
+        this.graph[this.globalIndex++] = gp1L3;
+
+        this.bindDirichlet(problemRef2, videoRef, gp2L1, gp1L3);
+
+        function gp2L1Next() {
+            if (this.mistakeCount === 0) {
+                return this.children.filter((elm) => elm.id === 5)[0];
+            } else {
+                return this.children.filter((elm) => elm.id === 333)[0];
+            }
+        }
+
+        gp2L1.next = gp2L1Next.bind(gp2L1);
+        this.bindGrothendieck(problemRef1, problemRef2, problemRef3, videoRef, gp1L3);
+
+        const gp1L2 = new SkillNode("Guided problem 1");
+        gp1L2.dbRef = problemRef2.toString();
+
+        videoL1.children.push(new Pair(6, this.globalIndex, gp1L2));
+        this.graph[this.globalIndex++] = gp1L2;
+
+        function videoL1Next() {
+            return this.children[0];
+        }
+
+        videoL1.next = videoL1Next.bind(videoL1);
+
+        const gp3L3 = new SkillNode("Guided problem 3");
+        gp3L3.dbRef = problemRef3.toString();
+
+        const gp2L3 = new SkillNode("Guided problem 2");
+        gp2L3.dbRef = problemRef2.toString();
+
+        gp1L2.children.push(new Pair(7, this.globalIndex, gp3L3));
+        this.graph[this.globalIndex++] = gp3L3;
+
+        gp1L2.children.push(new Pair(8, this.globalIndex, gp2L3));
+        this.graph[this.globalIndex++] = gp2L3;
+
+        function gp1L2Next() {
+            if (this.mistakeCount === 0) {
+                return this.children.filter((elm) => elm.id === 7)[0];
+            } else {
+                return this.children.filter((elm) => elm.id === 8)[0];
+            }
+        }
+
+        gp1L2.next = gp1L2Next.bind(gp1L2);
 
 
+        this.bindKolmogorov(problemRef3, problemRef1, videoRef, gp3L3);
+
+        gp3L3.children.push(new Pair(9, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
+
+        function gp3L3Next() {
+            if (this.mistakeCount === 3) {
+                return this.children.filter((elm) => elm.id === 111)[0];
+            } else if (this.mistakeCount <= 2) {
+                return this.children.filter((elm) => elm.id === 9)[0];
+            }
+        }
+
+        gp3L3.next = gp3L3Next.bind(gp3L3);
 
 
+        const gp1L4 = new SkillNode("Guided problem 1");
+        gp1L4.dbRef = problemRef1;
 
+        this.bindDirichlet(problemRef2, videoRef, gp2L3, gp1L4);
 
+        gp2L3.children.push(new Pair(10, this.globalIndex, gp1L4));
+        this.graph[this.globalIndex++] = gp1L4;
 
-        this.bindGrothendieck(problemRef1, problemRef2, problemRef3, videoRef, source);
+        function gp2L3Next() {
+            if (this.mistakeCount === 0) {
+                return this.children.filter((elm) => elm.id === 10)[0];
+            } else {
+                return this.children.filter((elm) => elm.id === 333)[0];
+            }
+        }
+
+        gp2L3.next = gp2L3Next.bind(gp2L3);
+
+        this.bindPythagoras(problemRef3, videoRef, gp1L4);
+
+        gp3L1.children.push(new Pair(11, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
+
+        this.bindKolmogorov(problemRef3, problemRef1, videoRef, gp3L1);
+
+        function gp3L1Next() {
+            if (this.mistakeCount <= 2) {
+                return this.children.filter((elm) => elm.id === 11)[0];
+            } else if (this.mistakeCount === 3) {
+                return this.children.filter((elm) => elm.id === 111)[0];
+            }
+        }
+
+        gp3L1.next = gp3L1Next.bind(gp3L1);
     }
 
     public bindGrothendieck = (
