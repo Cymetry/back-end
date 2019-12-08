@@ -170,18 +170,10 @@ skillLearning.get("/resume", async (req, res, next) => {
                 const gp3 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 3")[0];
 
-                // needs to be redone for the whole tree
-                // const process = new SkillLearn().getPythagorasInstance(gp3.problemRef,
-                //     skillLearningRecord.video,
-                // );
-
                 const skillLearn = new SkillLearn();
                 skillLearn.init(gp1.problemRef, gp2.problemRef, gp3.problemRef, skillLearningRecord.video);
 
-                console.log("valod", skillLearn.graph[currentPosition.lastPosition].name);
-
                 if (skillLearn.graph[currentPosition.lastPosition].name === "Skill complete") {
-                    console.log("araa");
                     res.send({statusCode: 200, message: "Skill has been completed"});
                     return;
                 }
@@ -194,8 +186,6 @@ skillLearning.get("/resume", async (req, res, next) => {
 
                 if (currentPosition.isFinished &&
                     skillLearn.graph[currentPosition.lastPosition].next().node.name === "Skill complete") {
-                    console.log("a1", skillLearn.graph[currentPosition.lastPosition].next().node);
-                    console.log("a2", skillLearn.graph[currentPosition.lastPosition]);
                     await dbHelpers.updatePositionRecordPosition(
                         userId,
                         skillId,
@@ -229,8 +219,9 @@ skillLearning.get("/resume", async (req, res, next) => {
                                 skillLearn.graph[currentPosition.lastPosition].dbRef,
                             );
 
-                            if (skillLearn.graph[currentPosition.lastPosition].givenRef !== "") {
-                                const current = await dbHelpers.getPositionRecord(userId, skillId);
+                            const current = await dbHelpers.getPositionRecord(userId, skillId);
+
+                            if (skillLearn.graph[current.lastPosition].givenRef !== "") {
                                 if (current) {
                                     givenRecord = await dbHelpers.getProblemById(
                                         skillLearn.graph[current.lastPosition].givenRef,
