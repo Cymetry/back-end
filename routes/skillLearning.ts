@@ -213,6 +213,15 @@ skillLearning.get("/resume", async (req, res, next) => {
                             skillLearn.graph[currentPosition.lastPosition].next().index,
                         );
 
+                        if (skillLearn.graph[currentPosition.lastPosition].next().node.givenRef !== "") {
+                            const current = await dbHelpers.getPositionRecord(userId, skillId);
+                            if (current) {
+                                givenRecord = await dbHelpers.getProblemById(
+                                    skillLearn.graph[current.lastPosition].givenRef,
+                                );
+                            }
+                        }
+
                     } else {
                         if (skillLearn.graph[currentPosition.lastPosition].name !== "Video tutorial") {
                             problemRecord = await dbHelpers.getProblemById(
