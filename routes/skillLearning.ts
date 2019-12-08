@@ -156,6 +156,8 @@ skillLearning.get("/resume", async (req, res, next) => {
             // sync with process wizard
             if (skillLearningRecord) {
 
+
+
                 // retrieve guided problem 1
                 const gp1 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 1")[0];
@@ -176,33 +178,42 @@ skillLearning.get("/resume", async (req, res, next) => {
                 const skillLearn = new SkillLearn();
                 skillLearn.init(gp1.problemRef, gp2.problemRef, gp3.problemRef, skillLearningRecord.video);
 
+                console.log("valod", skillLearn.graph[currentPosition.lastPosition].name);
 
                 if (skillLearn.graph[currentPosition.lastPosition].name === "Skill complete") {
+                    console.log("araa");
                     res.send({statusCode: 200, message: "Skill has been completed"});
                     return;
                 }
 
                 skillLearn.graph[currentPosition.lastPosition].mistakeCount = currentPosition.mistakeCount;
+                skillLearn.graph[currentPosition.lastPosition].correctCount = currentPosition.correctCount;
 
                 let problemRecord;
                 let givenRecord;
 
                 if (currentPosition.isFinished &&
                     skillLearn.graph[currentPosition.lastPosition].next().node.name === "Skill complete") {
+                    console.log("a1", skillLearn.graph[currentPosition.lastPosition].next().node);
+                    console.log("a2", skillLearn.graph[currentPosition.lastPosition]);
                     await dbHelpers.updatePositionRecordPosition(
                         userId,
                         skillId,
-                        skillLearn.graph[currentPosition.lastPosition].next().id,
+                        skillLearn.graph[currentPosition.lastPosition].next().index,
                     );
                     res.send({statusCode: 200, message: "Skill Complete!"});
                 } else {
                     if (currentPosition.isFinished) {
+
                         if (skillLearn.graph[currentPosition.lastPosition].next().node.name !== "Video tutorial") {
                             problemRecord = await dbHelpers.getProblemById(
                                 skillLearn.graph[currentPosition.lastPosition].next().node.dbRef);
+
+
                         } else {
                             problemRecord = await dbHelpers.getVideoById(
                                 skillLearn.graph[currentPosition.lastPosition].next().node.dbRef);
+
                         }
 
                         // update latest position
@@ -219,9 +230,12 @@ skillLearning.get("/resume", async (req, res, next) => {
                             );
 
                             if (skillLearn.graph[currentPosition.lastPosition].givenRef !== "") {
-                                givenRecord = await dbHelpers.getProblemById(
-                                    skillLearn.graph[currentPosition.lastPosition].givenRef,
-                                );
+                                const current = await dbHelpers.getPositionRecord(userId, skillId);
+                                if (current) {
+                                    givenRecord = await dbHelpers.getProblemById(
+                                        skillLearn.graph[current.lastPosition].givenRef,
+                                    );
+                                }
                             }
                         } else {
                             problemRecord = await dbHelpers.getVideoById(
@@ -230,27 +244,39 @@ skillLearning.get("/resume", async (req, res, next) => {
                         }
                     }
 
-                    const submission = await dbHelpers.getSubmission(userId, skillLearningRecord._id);
+                    let submission;
+                    if (skillLearningRecord) {
+                        submission = await dbHelpers.getSubmission(userId, skillLearningRecord._id);
+                    }
 
 
                     if (problemRecord) {
+                        const current = await dbHelpers.getPositionRecord(userId, skillId);
                         if (skillLearn.graph[currentPosition.lastPosition].name === "reentered"
                             && skillLearn.graph[currentPosition.lastPosition].next().node.name === "Guided problem 3"
                             && currentPosition.isFinished
                         ) {
                             res.send({
-                                content: problemRecord,
-                                given: givenRecord ? givenRecord : null,
-                                reentered: true,
+                                body: {
+                                    content: problemRecord,
+                                    given: givenRecord ? givenRecord : null,
+                                    maxMistakes: current ? skillLearn.graph[current.lastPosition].maxMistakeCount
+                                        : null,
+                                    reentered: true,
+                                },
                                 statusCode: 200,
                             });
                         } else {
                             res.send({
-                                content: problemRecord,
-                                given: givenRecord ? givenRecord : null,
+                                body: {
+                                    content: problemRecord,
+                                    given: givenRecord ? givenRecord : null,
+                                    maxMistakes: current ? skillLearn.graph[current.lastPosition].maxMistakeCount
+                                        : null,
+                                    submission: submission ? submission.content.filter(
+                                        (record) => record.problem === problemRecord.type) : null,
+                                },
                                 statusCode: 200,
-                                submission: submission ? submission.content.filter(
-                                    (record) => record.problem === problemRecord.type) : null,
                             });
                         }
 

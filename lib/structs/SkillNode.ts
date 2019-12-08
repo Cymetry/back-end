@@ -12,9 +12,11 @@ export class SkillNode {
 
     public givenRef: string;
 
-    public mistakeCount: number;
+    public mistakeCount?: number;
 
-    public correctCount: number;
+    public correctCount?: number;
+
+    public maxMistakeCount?: number;
 
     public next: () => Pair;
 
@@ -22,10 +24,8 @@ export class SkillNode {
         this.name = name;
         this.dbRef = "";
         this.next = () => new Pair(1, 0, new SkillNode("empty"));
-        this.mistakeCount = 0;
         this.solutionRef = "";
         this.givenRef = "";
-        this.correctCount = 0;
     }
 
 }

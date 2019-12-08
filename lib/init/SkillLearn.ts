@@ -22,19 +22,20 @@ export class SkillLearn {
         // guided problem 2 tree-level 1
         const gp2L1 = new SkillNode("Guided Problem 2");
         gp2L1.dbRef = problemRef2.toString();
+        gp2L1.maxMistakeCount = 0;
 
         // guided video tree-level 1
         const videoL1 = new SkillNode("Video tutorial");
-        vidoeL1.dbRef = videoRef.toString();
+        videoL1.dbRef = videoRef.toString();
 
         // guided problem 3 tree-level 1
         const gp3L1 = new SkillNode("Guided Problem 3");
         gp3L1.dbRef = problemRef3.toString();
+        gp3L1.maxMistakeCount = 2;
 
         // complete tree-level 1
-        const complete = new SkillNode("Complete");
+        const complete = new SkillNode("Skill complete");
         complete.children = [];
-        complete.next = () => new Pair(1, 0, new SkillNode("empty"));
         complete.dbRef = "";
 
         // push 4 child nodes for the source
@@ -68,6 +69,7 @@ export class SkillLearn {
         // guided problem 1 on level 3 under Dirichlet procedure
         const gp1L3 = new SkillNode("Guided problem 1");
         gp1L3.dbRef = problemRef1.toString();
+        gp1L3.maxMistakeCount = 1;
 
         // bind guided problem 1 on level 3 to level 2 guided problem 2
         gp2L1.children.push(new Pair(5, this.globalIndex, gp1L3));
@@ -87,7 +89,8 @@ export class SkillLearn {
         this.bindGrothendieck(problemRef1, problemRef2, problemRef3, videoRef, gp1L3);
 
         const gp1L2 = new SkillNode("Guided problem 1");
-        gp1L2.dbRef = problemRef2.toString();
+        gp1L2.dbRef = problemRef1.toString();
+        gp1L2.maxMistakeCount = 0;
 
         videoL1.children.push(new Pair(6, this.globalIndex, gp1L2));
         this.graph[this.globalIndex++] = gp1L2;
@@ -100,9 +103,11 @@ export class SkillLearn {
 
         const gp3L3 = new SkillNode("Guided problem 3");
         gp3L3.dbRef = problemRef3.toString();
+        gp3L3.maxMistakeCount = 2;
 
         const gp2L3 = new SkillNode("Guided problem 2");
         gp2L3.dbRef = problemRef2.toString();
+        gp2L3.maxMistakeCount = 0;
 
         gp1L2.children.push(new Pair(7, this.globalIndex, gp3L3));
         this.graph[this.globalIndex++] = gp3L3;
@@ -138,7 +143,8 @@ export class SkillLearn {
 
 
         const gp1L4 = new SkillNode("Guided problem 1");
-        gp1L4.dbRef = problemRef1;
+        gp1L4.dbRef = problemRef1.toString();
+        gp1L4.maxMistakeCount = Number.MAX_VALUE;
 
         this.bindDirichlet(problemRef2, videoRef, gp2L3, gp1L4);
 
@@ -156,6 +162,12 @@ export class SkillLearn {
         gp2L3.next = gp2L3Next.bind(gp2L3);
 
         this.bindPythagoras(problemRef3, videoRef, gp1L4);
+
+        function gp1L4Next() {
+            return this.children[0];
+        }
+
+        gp1L4.next = gp1L4Next.bind(gp1L4);
 
         gp3L1.children.push(new Pair(11, this.globalIndex, complete));
         this.graph[this.globalIndex++] = complete;
@@ -207,6 +219,7 @@ export class SkillLearn {
         // guided problem 1
         const problem1 = new SkillNode("Guided problem 1");
         problem1.dbRef = problemRef1.toString();
+        problem1.maxMistakeCount = 1;
 
         // bind video child
         video.children.push(new Pair(0, this.globalIndex, problem1));
@@ -225,6 +238,7 @@ export class SkillLearn {
         const problem1Given2 = new SkillNode("Guided problem 1");
         problem1Given2.dbRef = problemRef1.toString();
         problem1Given2.givenRef = problemRef2.toString();
+        problem1Given2.maxMistakeCount = 2;
 
         // add problem 1 given 2 to problem 1 children
         problem1.children.push(new Pair(1, this.globalIndex, problem1Given2));
@@ -263,6 +277,7 @@ export class SkillLearn {
         const head = new SkillNode("Guided problem 3");
         head.dbRef = problemRef.toString();
         head.givenRef = givenProblemRef.toString();
+        head.maxMistakeCount = 4;
 
         function headNext() {
             if (this.mistakeCount && this.mistakeCount <= 4) {
@@ -291,6 +306,7 @@ export class SkillLearn {
 
         const tail = new SkillNode("reentered");
         tail.dbRef = problemRef.toString();
+        tail.maxMistakeCount = 4;
 
 
         tail.children.push(new Pair(0, this.globalIndex, head));
@@ -340,6 +356,7 @@ export class SkillLearn {
         // only child guided problem 2 node
         const problem = new SkillNode("Guided problem 2");
         problem.dbRef = problemRef.toString();
+        problem.maxMistakeCount = Number.MAX_SAFE_INTEGER;
 
         problem.children.push(new Pair(111, this.globalIndex, end));
         this.graph[this.globalIndex++] = end;
@@ -398,9 +415,11 @@ export class SkillLearn {
 
         head.next = headNext.bind(head);
         head.dbRef = problemRef.toString();
+        head.maxMistakeCount = 2;
 
         const tail = new SkillNode("reentered");
         tail.dbRef = problemRef.toString();
+        tail.maxMistakeCount = 1;
 
         tail.children.push(new Pair(0, this.globalIndex, head));
         this.graph[this.globalIndex++] = head;
@@ -468,10 +487,12 @@ export class SkillLearn {
 
         head.next = headNext.bind(head);
         head.dbRef = problemRef.toString();
+        head.maxMistakeCount = 4;
 
 
         const tail = new SkillNode("reentered");
         tail.dbRef = problemRef.toString();
+        tail.maxMistakeCount = 4;
 
         tail.children.push(new Pair(0, this.globalIndex, head));
         this.graph[this.globalIndex++] = head;
