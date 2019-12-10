@@ -1,8 +1,11 @@
 import * as bodyParser from "body-parser";
+import * as cors from "cors";
 import * as express from "express";
+import * as helmet from "helmet";
 import * as errorhandler from "strong-error-handler";
+import {authRouter} from "../routes/auth";
 import {skillLearning} from "../routes/skillLearning";
-
+import {userRouter} from "../routes/user";
 
 export const app = express();
 
@@ -11,6 +14,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // middleware for json body parsing
 app.use(bodyParser.json({limit: "5mb"}));
+
+app.use(cors());
+app.use(helmet());
 
 // enable corse for all origins
 app.use((req, res, next) => {
@@ -23,6 +29,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/skillLearning", skillLearning);
+app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 app.use(
     errorhandler(
