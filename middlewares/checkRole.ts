@@ -1,27 +1,28 @@
 import {NextFunction, Request, Response} from "express";
-import {getRepository} from "typeorm";
 
-import {User} from "../lib/db/entity/User";
+import {User} from "../lib/db/postgresSQL/models/User";
 
 export const checkRole = (roles: string[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        // Get the user ID from previous middleware
         const id = res.locals.jwtPayload.userId;
 
-        // Get user role from the database
-        const userRepository = getRepository(User);
-        let user: User;
+        let user: User | null;
+
         try {
-            user = await userRepository.findOneOrFail(id);
+            user = await User.findOne({where: {id}});
         } catch (id) {
             res.status(401).send();
+            return;
         }
 
-        // Check if array of authorized roles includes the user's role
-        if (roles.indexOf(user.role) > -1) {
-            next();
+        if (user) {
+            if (roles.indexOf(user.role) > -1) {
+                next();
+            } else {
+                res.status(401).send();
+            }
         } else {
-            res.status(401).send();
+            res.status(500).send("missing user record");
         }
     };
 };

@@ -11,7 +11,7 @@ class UserController {
     }
 
     public static getOneById = async (req: Request, res: Response) => {
-        const id: number = req.params.id;
+        const id: string = req.params.id;
 
         try {
             const user = await User.findAll({
@@ -71,7 +71,7 @@ class UserController {
         }
 
         try {
-            await User.update(user);
+            await User.update(user, {where: {id}});
         } catch (e) {
             res.status(409).send("username already in use");
             return;
@@ -82,10 +82,11 @@ class UserController {
     public static deleteUser = async (req: Request, res: Response) => {
         const id = req.params.id;
 
-        let user: User;
+        let user: User | null;
 
         try {
             user = await User.findOne({where: {id}});
+            console.log("User record found", user);
         } catch (error) {
             res.status(404).send("User not found");
             return;
