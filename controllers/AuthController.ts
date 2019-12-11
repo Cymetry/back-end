@@ -67,7 +67,8 @@ class AuthController {
             }
 
             user.hashPassword();
-            await User.update(user, {where: {id}});
+            await User.update({password: user.password}, {where: {id}});
+
 
             res.status(204).send();
         } else {

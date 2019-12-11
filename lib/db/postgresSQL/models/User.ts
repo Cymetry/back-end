@@ -6,6 +6,7 @@ import {AllowNull, AutoIncrement, Column, CreatedAt, Model, PrimaryKey, Table, U
 export class User extends Model<User> {
     @PrimaryKey
     @AutoIncrement
+    @Column
     public id!: number;
 
     @Length(4, 20)

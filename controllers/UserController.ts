@@ -40,7 +40,8 @@ class UserController {
         user.hashPassword();
 
         try {
-            await User.create(user);
+            const record = await User.create({username, password: user.password, role});
+            await record.save();
         } catch (e) {
             res.status(409).send("username already in use");
             return;
