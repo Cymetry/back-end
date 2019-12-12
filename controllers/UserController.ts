@@ -118,7 +118,6 @@ class UserController {
             dob,
             name,
             password: user.password,
-            role,
             school,
             surname,
         }));

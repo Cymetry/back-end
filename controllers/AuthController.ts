@@ -16,7 +16,7 @@ class AuthController {
         try {
             user = await User.findOne({where: {email}});
         } catch (error) {
-            res.status(401).send(e.message);
+            res.status(401).send(error.message);
             return;
         }
         if (user) {
