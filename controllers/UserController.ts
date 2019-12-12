@@ -87,30 +87,6 @@ class UserController {
             res.status(404).send("User not found");
             return;
         }
-        if (user.name) {
-            user.name = name;
-        }
-        if (user.surname) {
-            user.surname = surname;
-        }
-        if (user.dob) {
-            user.dob = dob;
-        }
-        if (country) {
-            user.country = country;
-        }
-        if (city) {
-            user.city = city;
-        }
-        if (school) {
-            user.school = school;
-        }
-
-        const errors = await validate(user);
-        if (errors.length > 0) {
-            res.status(400).send(errors);
-            return;
-        }
 
         const dbObject = JSON.parse(JSON.stringify({
             city,
