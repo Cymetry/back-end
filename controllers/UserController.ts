@@ -6,7 +6,7 @@ import {User} from "../lib/db/postgresSQL/models/User";
 class UserController {
 
     public static listAll = async (req: Request, res: Response) => {
-        const users = await User.findAll({attributes: ["id", "username", "role"]});
+        const users = await User.findAll({attributes: ["id", "name", "surname", "email", "dob", "country", "city", "school", "role"]});
         res.send(users);
     }
 
@@ -15,7 +15,7 @@ class UserController {
 
         try {
             const user = await User.findAll({
-                attributes: ["id", "username", "role"],
+                attributes: ["id", "name", "surname", "email", "dob", "country", "city", "school", "role"],
                 where: {id},
             });
             res.send(user);
@@ -25,10 +25,22 @@ class UserController {
     }
 
     public static newUser = async (req: Request, res: Response) => {
-        const {username, password, role} = req.body;
+        const {name, surname, email, password, dob, country, city, school, role} = req.body;
         const user = new User();
-        user.username = username;
+        user.name = name;
+        user.surname = surname;
+        user.email = email;
         user.password = password;
+        user.dob = dob;
+        if (country) {
+            user.country = country;
+        }
+        if (city) {
+            user.city = city;
+        }
+        if (school) {
+            user.school = school;
+        }
         user.role = role;
 
         const errors = await validate(user);
@@ -39,11 +51,24 @@ class UserController {
 
         user.hashPassword();
 
+        const dbObject = JSON.parse(JSON.stringify({
+            city,
+            country,
+            dob,
+            email,
+            name,
+            password: user.password,
+            role,
+            school,
+            surname,
+        }));
+
         try {
-            const record = await User.create({username, password: user.password, role});
+            const record = await User.create(dbObject);
             await record.save();
         } catch (e) {
-            res.status(409).send("username already in use");
+            console.log(e);
+            res.status(409).send(e.message);
             return;
         }
 
@@ -53,7 +78,7 @@ class UserController {
 
     public static editUser = async (req: Request, res: Response) => {
         const id = req.params.id;
-        const {username, role} = req.body;
+        const {name, surname, dob, country, city, school} = req.body;
 
         let user;
         try {
@@ -62,17 +87,44 @@ class UserController {
             res.status(404).send("User not found");
             return;
         }
+        if (user.name) {
+            user.name = name;
+        }
+        if (user.surname) {
+            user.surname = surname;
+        }
+        if (user.dob) {
+            user.dob = dob;
+        }
+        if (country) {
+            user.country = country;
+        }
+        if (city) {
+            user.city = city;
+        }
+        if (school) {
+            user.school = school;
+        }
 
-        user.username = username;
-        user.role = role;
         const errors = await validate(user);
         if (errors.length > 0) {
             res.status(400).send(errors);
             return;
         }
 
+        const dbObject = JSON.parse(JSON.stringify({
+            city,
+            country,
+            dob,
+            name,
+            password: user.password,
+            role,
+            school,
+            surname,
+        }));
+
         try {
-            await User.update(user, {where: {id}});
+            await User.update(dbObject, {where: {id}});
         } catch (e) {
             res.status(409).send("username already in use");
             return;

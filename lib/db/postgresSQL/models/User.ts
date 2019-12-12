@@ -12,12 +12,38 @@ export class User extends Model<User> {
     @Length(4, 20)
     @AllowNull(false)
     @Column
-    public username!: string;
+    public name!: string;
+
+    @Length(4, 20)
+    @AllowNull(false)
+    @Column
+    public surname!: string;
+
+    @Length(4, 40)
+    @AllowNull(false)
+    @Column
+    public email!: string;
 
     @Length(4, 20)
     @AllowNull(false)
     @Column
     public password!: string;
+
+    @AllowNull(false)
+    @Column
+    public dob!: Date;
+
+    @AllowNull(true)
+    @Column
+    public country!: string;
+
+    @AllowNull(true)
+    @Column
+    public city!: string;
+
+    @AllowNull(true)
+    @Column
+    public school!: string;
 
     @AllowNull(false)
     @Column

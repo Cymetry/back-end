@@ -7,16 +7,16 @@ import {User} from "../lib/db/postgresSQL/models/User";
 
 class AuthController {
     public static login = async (req: Request, res: Response) => {
-        const {username, password} = req.body;
-        if (!(username && password)) {
+        const {email, password} = req.body;
+        if (!(email && password)) {
             res.status(400).send();
         }
 
         let user: User | null;
         try {
-            user = await User.findOne({where: {username}});
+            user = await User.findOne({where: {email}});
         } catch (error) {
-            res.status(401).send();
+            res.status(401).send(e.message);
             return;
         }
         if (user) {
@@ -26,7 +26,7 @@ class AuthController {
             }
 
             const token = jwt.sign(
-                {userId: user.id, username: user.username},
+                {userId: user.id, email: user.email},
                 config.jwtSecret,
                 {expiresIn: "1h"},
             );
