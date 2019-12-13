@@ -8,10 +8,10 @@ import {
     Model,
     PrimaryKey, Table,
 } from "sequelize-typescript";
-import {Topic} from "./Topic";
+import {Program} from "./Program";
 
 @Table
-export class Skill extends Model<Skill> {
+export class Curriculum extends Model<Curriculum> {
 
     @PrimaryKey
     @AutoIncrement
@@ -22,13 +22,13 @@ export class Skill extends Model<Skill> {
     @Column
     public name!: string;
 
-    @ForeignKey(() => Topic)
+    @ForeignKey(() => Program)
     @AllowNull(false)
     @Column
-    public topicId!: number;
+    public programId!: number;
 
-    @BelongsTo(() => Topic)
-    public topic!: Topic;
+    @BelongsTo(() => Program)
+    public program!: Program;
 
     @CreatedAt
     public creationDate!: Date;
