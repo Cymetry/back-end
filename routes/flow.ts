@@ -1,37 +1,38 @@
 import {Router} from "express";
 import FlowController from "../controllers/FlowController";
 import {checkJwt} from "../middlewares/checkJwt";
+import {checkRole} from "../middlewares/checkRole";
 
 export const flowRouter = Router();
 
-flowRouter.get("/program", FlowController.loadPrograms);
+flowRouter.get("/program", [checkJwt], FlowController.loadPrograms);
 
-flowRouter.post("/program", FlowController.createProgram);
+flowRouter.post("/program", [checkJwt, checkRole(["ADMIN"])], FlowController.createProgram);
 
-flowRouter.patch("/program", FlowController.editProgram);
+flowRouter.patch("/program", [checkJwt, checkRole(["ADMIN"])], FlowController.editProgram);
 
-flowRouter.delete("/program", FlowController.deleteProgram);
+flowRouter.delete("/program", [checkJwt, checkRole(["ADMIN"])], FlowController.deleteProgram);
 
 flowRouter.get("/curriculum", [checkJwt], FlowController.loadCurriculumByProgram);
 
-flowRouter.post("/curriculum", [checkJwt], FlowController.createCurriculum);
+flowRouter.post("/curriculum", [checkJwt, checkRole(["ADMIN"])], FlowController.createCurriculum);
 
-flowRouter.patch("/curriculum", [checkJwt], FlowController.editCurriculum);
+flowRouter.patch("/curriculum", [checkJwt, checkRole(["ADMIN"])], FlowController.editCurriculum);
 
-flowRouter.delete("/curriculum", [checkJwt], FlowController.deleteCurriculum);
+flowRouter.delete("/curriculum", [checkJwt, checkRole(["ADMIN"])], FlowController.deleteCurriculum);
 
 flowRouter.get("/topic", [checkJwt], FlowController.loadTopicsByCurriculum);
 
-flowRouter.post("/topic", [checkJwt], FlowController.createTopic);
+flowRouter.post("/topic", [checkJwt, checkRole(["ADMIN"])], FlowController.createTopic);
 
-flowRouter.patch("/topic", [checkJwt], FlowController.editTopic);
+flowRouter.patch("/topic", [checkJwt, checkRole(["ADMIN"])], FlowController.editTopic);
 
-flowRouter.delete("/topic", [checkJwt], FlowController.deleteTopic);
+flowRouter.delete("/topic", [checkJwt, checkRole(["ADMIN"])], FlowController.deleteTopic);
 
 flowRouter.get("/skill", [checkJwt], FlowController.loadSkillsByTopic);
 
-flowRouter.post("/skill", [checkJwt], FlowController.createSkill);
+flowRouter.post("/skill", [checkJwt, checkRole(["ADMIN"])], FlowController.createSkill);
 
-flowRouter.patch("/skill", [checkJwt], FlowController.editSkill);
+flowRouter.patch("/skill", [checkJwt, checkRole(["ADMIN"])], FlowController.editSkill);
 
-flowRouter.delete("/skill", [checkJwt], FlowController.deleteSkill);
+flowRouter.delete("/skill", [checkJwt, checkRole(["ADMIN"])], FlowController.deleteSkill);
