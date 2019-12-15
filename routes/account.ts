@@ -6,7 +6,7 @@ export const accountRouter = Router();
 
 accountRouter.get("/", [checkJwt], AccountController.loadAccount);
 
-accountRouter.get("/help", [checkJwt], AccountController.loadHelpAndFeedback);
+accountRouter.post("/help", [checkJwt], AccountController.loadHelpAndFeedback);
 
 accountRouter.get("/payment", [checkJwt], AccountController.loadPayment);
 
