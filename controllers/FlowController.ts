@@ -1,11 +1,13 @@
 import {Request, Response} from "express";
 
+import {DbHelpers} from "../lib/db/mongoDb/DbHelpers";
 import {Curriculum} from "../lib/db/postgresSQL/models/Curriculum";
 import {Program} from "../lib/db/postgresSQL/models/Program";
 import {Skill} from "../lib/db/postgresSQL/models/Skill";
 import {Topic} from "../lib/db/postgresSQL/models/Topic";
 
 
+const dbHelpers = new DbHelpers();
 
 
 class FlowController {
@@ -20,7 +22,7 @@ class FlowController {
     }
 
     public static loadCurriculumByProgram = async (req: Request, res: Response) => {
-        const programId: number = parseInt(req.params.programId);
+        const programId: number = parseInt(req.params.programId, 10);
         try {
             const curriculum = await Curriculum.findAll({where: {programId}});
             res.status(200).send(curriculum);
@@ -30,20 +32,57 @@ class FlowController {
     }
 
     public static loadTopicsByCurriculum = async (req: Request, res: Response) => {
-        const curriculumId: number = parseInt(req.params.curriculumId);
+        const userId = res.locals.jwtPayload.userId;
+        const curriculumId: number = parseInt(req.params.curriculumId, 10);
         try {
             const topics = await Topic.findAll({where: {curriculumId}});
-            res.status(200).send(topics);
+            const mapped = topics.map(async (topic) => {
+                const progressRecord = await dbHelpers.getCompleteSkills(userId, topic.id);
+                if (progressRecord) {
+                    return {
+                        complete: progressRecord.skillsComplete.length,
+                        id: topic.id,
+                        name: topic.name,
+                        total: topic.skillCount,
+                    };
+                } else {
+                    return {
+                        complete: 0,
+                        id: topic.id,
+                        name: topic.name,
+                        total: topic.skillCount,
+                    };
+                }
+            });
+
+            res.status(200).send(mapped);
         } catch (error) {
             res.status(404).send(error.message);
         }
     }
 
     public static loadSkillsByTopic = async (req: Request, res: Response) => {
-        const topicId: number = parseInt(req.params.topicId);
+        const topicId: number = parseInt(req.params.topicId, 10);
+        const userId = res.locals.jwtPayload.userId;
         try {
             const skills = await Skill.findAll({where: {topicId}});
-            res.status(200).send(skills);
+            const progressRecord = await dbHelpers.getCompleteSkills(userId, topicId);
+            const mapped = skills.map((skill) => {
+                if (progressRecord) {
+                    return {
+                        complete: progressRecord.skillsComplete.includes(skill.id),
+                        id: skill.id,
+                        name: skill.name,
+                    };
+                } else {
+                    return {
+                        complete: false,
+                        id: skill.id,
+                        name: skill.name,
+                    };
+                }
+            });
+            res.status(200).send(mapped);
 
         } catch (error) {
             res.status(404).send(error.message);
@@ -62,7 +101,7 @@ class FlowController {
     }
 
     public static editProgram = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
         const {name} = req.body;
 
         try {
@@ -74,7 +113,7 @@ class FlowController {
     }
 
     public static deleteProgram = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
         try {
             const rowsAffected = await Program.destroy({where: {id}});
             if (rowsAffected === 1) {
@@ -100,7 +139,7 @@ class FlowController {
     }
 
     public static editCurriculum = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
         const {name} = req.body;
 
         try {
@@ -112,7 +151,7 @@ class FlowController {
     }
 
     public static deleteCurriculum = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
         try {
             const rowsAffected = await Curriculum.destroy({where: {id}});
             if (rowsAffected === 1) {
@@ -138,7 +177,7 @@ class FlowController {
     }
 
     public static editTopic = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
         const {name, skillCount} = req.body;
 
         try {
@@ -150,7 +189,7 @@ class FlowController {
     }
 
     public static deleteTopic = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
         try {
             const rowsAffected = await Topic.destroy({where: {id}});
             if (rowsAffected === 1) {
@@ -176,7 +215,7 @@ class FlowController {
     }
 
     public static editSkill = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
         const {name} = req.body;
 
         try {
@@ -188,7 +227,7 @@ class FlowController {
     }
 
     public static deleteSkill = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
         try {
             const rowsAffected = await Skill.destroy({where: {id}});
             if (rowsAffected === 1) {

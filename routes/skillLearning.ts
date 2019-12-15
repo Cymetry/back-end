@@ -6,11 +6,15 @@ import {Router} from "express";
 export const skillLearning = Router();
 
 import {DbHelpers} from "../lib/db/mongoDb/DbHelpers";
+import {Skill} from "../lib/db/postgresSQL/models/Skill";
+import {checkJwt} from "../middlewares/checkJwt";
+import {checkRole} from "../middlewares/checkRole";
+
 
 const dbHelpers = new DbHelpers();
 
 
-skillLearning.post("/create", async (req, res, next) => {
+skillLearning.post("/create", [checkJwt, checkRole(["ADMIN"])], async (req, res, next) => {
 
     const {problems, videoUrl, skillRef} = req.body;
     const problemRecords: any[] = [];
@@ -48,10 +52,9 @@ skillLearning.post("/create", async (req, res, next) => {
 
 });
 
-skillLearning.get("/start", async (req, res, next) => {
-
+skillLearning.get("/start", [checkJwt], async (req, res, next) => {
+    const userId = res.locals.jwtPayload.userId;
     const skillId = req.query.skillId;
-    const userId = req.query.userId;
 
     try {
         // init SkillLearning with 0 score
@@ -104,8 +107,9 @@ skillLearning.get("/start", async (req, res, next) => {
     }
 });
 
-skillLearning.put("/saveProgress", async (req, res, next) => {
-    const {skillId, userId, mistakeCount, correctCount} = req.body;
+skillLearning.put("/saveProgress", [checkJwt], async (req, res, next) => {
+    const userId = res.locals.jwtPayload.userId;
+    const {skillId, mistakeCount, correctCount} = req.body;
 
     try {
         const updated = await dbHelpers.updatePositionRecord(userId, skillId, true, mistakeCount, correctCount);
@@ -117,9 +121,9 @@ skillLearning.put("/saveProgress", async (req, res, next) => {
 
 });
 
-skillLearning.get("/check", async (req, res, next) => {
+skillLearning.get("/check", [checkJwt],  async (req, res, next) => {
+    const userId = res.locals.jwtPayload.userId;
     const skillId = req.query.skillId;
-    const userId = req.query.userId;
 
     try {
         const currentPosition = await dbHelpers.getPositionRecord(userId, skillId);
@@ -140,10 +144,9 @@ skillLearning.get("/check", async (req, res, next) => {
 });
 
 
-skillLearning.get("/resume", async (req, res, next) => {
-
+skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
+    const userId = res.locals.jwtPayload.userId;
     const skillId = req.query.skillId;
-    const userId = req.query.userId;
 
     try {
         // get user's current position
@@ -191,6 +194,14 @@ skillLearning.get("/resume", async (req, res, next) => {
                         skillId,
                         skillLearn.graph[currentPosition.lastPosition].next().index,
                     );
+
+                    const skillRecord = await Skill.findByPk(parseInt(skillId, 10));
+                    if (skillRecord) {
+                        await dbHelpers.completeSkill(userId, skillRecord.topicId, skillId);
+                    } else {
+                        res.send({statusCode: 200, message: "Skill Complete, but progress has not been saved!"});
+                    }
+
                     res.send({statusCode: 200, message: "Skill Complete!"});
                 } else {
                     if (currentPosition.isFinished) {

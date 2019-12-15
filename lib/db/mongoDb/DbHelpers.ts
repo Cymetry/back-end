@@ -1,3 +1,4 @@
+import complete from "./models/Complete";
 import position from "./models/Position";
 import problem from "./models/Problem";
 import process from "./models/Process";
@@ -40,6 +41,22 @@ export class DbHelpers {
             skillRef,
             video: videoURL,
         });
+    }
+
+    public async completeSkill(userId: number, topicId: number, skill: number) {
+        const record = await complete.findOne({userId, topicId});
+
+        if (record) {
+            return await complete.updateOne({userId, topicId}, {$push: {skillsComplete: skill}});
+        } else {
+            const skillsComplete: number[] = [];
+            skillsComplete.push(skill);
+            return await complete.create({userId, topicId, skillsComplete});
+        }
+    }
+
+    public async getCompleteSkills(userId: number, topicId: number) {
+        return await complete.findOne({userId, topicId});
     }
 
     public async createPositionRecord(id: string,
