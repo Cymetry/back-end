@@ -17,31 +17,30 @@ const dbHelpers = new DbHelpers();
 skillLearning.post("/create", [checkJwt, checkRole(["ADMIN"])], async (req, res, next) => {
 
     const {problems, videoUrl, skillRef} = req.body;
-    const problemRecords: any[] = [];
     try {
-
-        await problems.forEach(async (problem) => {
+        const problemsPromises = Promise.all(problems.map(async (problem) => {
             const ref = await dbHelpers.createProblemRecord(problem.question, problem.name, problem.steps);
-            problemRecords.push(
-                {
-                    name: problem.name,
-                    problemRef: ref._id,
-                });
-        });
+            return {
+                name: problem.name,
+                problemRef: ref._id,
+            };
+        }));
 
-        const videoRecord = await dbHelpers.createVideoRecord(videoUrl);
-        const processRecord = await dbHelpers.createProcess(problemRecords, videoRecord, skillRef);
-        if (processRecord) {
-            res.send({
-                response: JSON.stringify(processRecord),
-                statusCode: 200,
-            });
-        } else {
-            res.send({
-                message: JSON.stringify("something went wrong"),
-                statusCode: 200,
-            });
-        }
+        problemsPromises.then(async (problemRecords) => {
+            const videoRecord = await dbHelpers.createVideoRecord(videoUrl);
+            const processRecord = await dbHelpers.createProcess(problemRecords, videoRecord, skillRef);
+            if (processRecord) {
+                res.send({
+                    response: JSON.stringify(processRecord),
+                    statusCode: 200,
+                });
+            } else {
+                res.send({
+                    message: JSON.stringify("something went wrong"),
+                    statusCode: 200,
+                });
+            }
+        });
     } catch (e) {
         console.error(e);
         res.send({
@@ -72,13 +71,19 @@ skillLearning.get("/start", [checkJwt], async (req, res, next) => {
                 const gp1 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 1")[0];
 
+                console.log("valod1", gp1);
+
                 // retrieve guided problem 2
                 const gp2 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 2")[0];
 
+                console.log("valod2", gp2);
+
                 // retrieve guided problem 3
                 const gp3 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 3")[0];
+
+                console.log("valod3", gp3);
 
 
                 // needs to be redone for the whole tree
@@ -103,7 +108,7 @@ skillLearning.get("/start", [checkJwt], async (req, res, next) => {
         }
     } catch (e) {
         console.error(e);
-        res.send({statusCode: 500, message: JSON.stringify(e)});
+        res.status(500).send({message: JSON.stringify(e.message)});
     }
 });
 
@@ -121,7 +126,7 @@ skillLearning.put("/saveProgress", [checkJwt], async (req, res, next) => {
 
 });
 
-skillLearning.get("/check", [checkJwt],  async (req, res, next) => {
+skillLearning.get("/check", [checkJwt], async (req, res, next) => {
     const userId = res.locals.jwtPayload.userId;
     const skillId = req.query.skillId;
 
@@ -142,7 +147,6 @@ skillLearning.get("/check", [checkJwt],  async (req, res, next) => {
         res.send({statusCode: 500, message: JSON.stringify(e)});
     }
 });
-
 
 skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
     const userId = res.locals.jwtPayload.userId;
