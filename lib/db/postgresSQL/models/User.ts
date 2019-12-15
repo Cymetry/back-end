@@ -1,6 +1,16 @@
 import * as bcrypt from "bcryptjs";
 import {Length} from "class-validator";
-import {AllowNull, AutoIncrement, Column, CreatedAt, Model, PrimaryKey, Table, UpdatedAt} from "sequelize-typescript";
+import {
+    AllowNull,
+    AutoIncrement,
+    Column,
+    CreatedAt,
+    Default,
+    Model,
+    PrimaryKey,
+    Table,
+    UpdatedAt,
+} from "sequelize-typescript";
 
 @Table
 export class User extends Model<User> {
@@ -44,6 +54,11 @@ export class User extends Model<User> {
     @AllowNull(true)
     @Column
     public school!: string;
+
+    @AllowNull(false)
+    @Default(false)
+    @Column
+    public isPremium!: boolean;
 
     @AllowNull(false)
     @Column
