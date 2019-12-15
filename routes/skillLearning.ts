@@ -30,22 +30,19 @@ skillLearning.post("/create", [checkJwt, checkRole(["ADMIN"])], async (req, res,
             const videoRecord = await dbHelpers.createVideoRecord(videoUrl);
             const processRecord = await dbHelpers.createProcess(problemRecords, videoRecord, skillRef);
             if (processRecord) {
-                res.send({
+                res.status(200).send({
                     response: JSON.stringify(processRecord),
-                    statusCode: 200,
                 });
             } else {
-                res.send({
+                res.status(200).send({
                     message: JSON.stringify("something went wrong"),
-                    statusCode: 200,
                 });
             }
         });
     } catch (e) {
         console.error(e);
-        res.send({
+        res.status(500).send({
             message: JSON.stringify(e),
-            statusCode: 500,
         });
     }
 
@@ -71,19 +68,15 @@ skillLearning.get("/start", [checkJwt], async (req, res, next) => {
                 const gp1 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 1")[0];
 
-                console.log("valod1", gp1);
 
                 // retrieve guided problem 2
                 const gp2 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 2")[0];
 
-                console.log("valod2", gp2);
 
                 // retrieve guided problem 3
                 const gp3 = skillLearningRecord.problems.filter(
                     (problem) => problem.name === "Guided problem 3")[0];
-
-                console.log("valod3", gp3);
 
 
                 // needs to be redone for the whole tree
@@ -96,15 +89,15 @@ skillLearning.get("/start", [checkJwt], async (req, res, next) => {
                 const problemRecord = await dbHelpers.getProblemById(skillLearn.graph[0].dbRef);
 
                 if (problemRecord) {
-                    res.send({statusCode: 200, body: {content: problemRecord}});
+                    res.status(200).send({body: {content: problemRecord}});
                 } else {
-                    res.send({statusCode: 500, message: "No content found"});
+                    res.status(500).send({message: "No content found"});
                 }
             } else {
-                res.send({statusCode: 500, message: "Video is missing"});
+                res.status(500).send({message: "Video is missing"});
             }
         } else {
-            res.send({statusCode: 500, message: "Missing skill record on db"});
+            res.status(500).send({message: "Missing skill record on db"});
         }
     } catch (e) {
         console.error(e);
@@ -118,10 +111,10 @@ skillLearning.put("/saveProgress", [checkJwt], async (req, res, next) => {
 
     try {
         const updated = await dbHelpers.updatePositionRecord(userId, skillId, true, mistakeCount, correctCount);
-        res.send({statusCode: 200, record: JSON.stringify(updated)});
+        res.status(200).send({record: JSON.stringify(updated)});
     } catch (e) {
         console.error(e);
-        res.send({statusCode: 500, message: JSON.stringify(e)});
+        res.status(500).send({message: JSON.stringify(e)});
     }
 
 });
@@ -134,17 +127,17 @@ skillLearning.get("/check", [checkJwt], async (req, res, next) => {
         const currentPosition = await dbHelpers.getPositionRecord(userId, skillId);
         if (currentPosition) {
             if (currentPosition.isFinished) {
-                res.send({statusCode: 200, message: "Current Node is finished", task: "resume"});
+                res.status(200).send({message: "Current Node is finished", task: "resume"});
             } else {
-                res.send({statusCode: 200, message: "Current Node is not finished", task: "resume"});
+                res.status(200).send({message: "Current Node is not finished", task: "resume"});
             }
 
         } else {
-            res.send({statusCode: 200, message: "No record found", task: "start"});
+            res.status(200).send({message: "No record found", task: "start"});
         }
     } catch (e) {
         console.log(e);
-        res.send({statusCode: 500, message: JSON.stringify(e)});
+        res.status(500).send({message: JSON.stringify(e)});
     }
 });
 
@@ -181,7 +174,7 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
                 skillLearn.init(gp1.problemRef, gp2.problemRef, gp3.problemRef, skillLearningRecord.video);
 
                 if (skillLearn.graph[currentPosition.lastPosition].name === "Skill complete") {
-                    res.send({statusCode: 200, message: "Skill has been completed"});
+                    res.status(200).send({message: "Skill has been completed"});
                     return;
                 }
 
@@ -203,10 +196,10 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
                     if (skillRecord) {
                         await dbHelpers.completeSkill(userId, skillRecord.topicId, skillId);
                     } else {
-                        res.send({statusCode: 200, message: "Skill Complete, but progress has not been saved!"});
+                        res.status(200).send({message: "Skill Complete, but progress has not been saved!"});
                     }
 
-                    res.send({statusCode: 200, message: "Skill Complete!"});
+                    res.status(200).send({message: "Skill Complete!"});
                 } else {
                     if (currentPosition.isFinished) {
 
@@ -270,7 +263,7 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
                             && skillLearn.graph[currentPosition.lastPosition].next().node.name === "Guided problem 3"
                             && currentPosition.isFinished
                         ) {
-                            res.send({
+                            res.status(200).send({
                                 body: {
                                     content: problemRecord,
                                     given: givenRecord ? givenRecord : null,
@@ -278,10 +271,9 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
                                         : null,
                                     reentered: true,
                                 },
-                                statusCode: 200,
                             });
                         } else {
-                            res.send({
+                            res.status(200).send({
                                 body: {
                                     content: problemRecord,
                                     given: givenRecord ? givenRecord : null,
@@ -290,25 +282,24 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
                                     submission: submission ? submission.content.filter(
                                         (record) => record.problem === problemRecord.type) : null,
                                 },
-                                statusCode: 200,
                             });
                         }
 
                     } else {
-                        res.send({statusCode: 500, message: "Missing skill record on db"});
+                        res.status(500).send({message: "Missing skill record on db"});
                     }
                 }
 
 
             }
         } else {
-            res.send({statusCode: 500, message: "Missing position record"});
+            res.status(500).send({message: "Missing position record"});
         }
 
 
     } catch (e) {
         console.error(e);
-        res.send({statusCode: 500, message: JSON.stringify(e)});
+        res.status(500).send({message: JSON.stringify(e)});
     }
 });
 
