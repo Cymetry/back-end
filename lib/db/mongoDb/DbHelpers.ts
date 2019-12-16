@@ -1,4 +1,5 @@
 import complete from "./models/Complete";
+import faq from "./models/FAQ";
 import position from "./models/Position";
 import problem from "./models/Problem";
 import process from "./models/Process";
@@ -103,6 +104,22 @@ export class DbHelpers {
 
     public async getVideoById(id: string) {
         return await video.findById(id);
+    }
+
+    public async loadFAQs() {
+        return await faq.find({});
+    }
+
+    public async addFAQ(title: string, content: string) {
+        return await faq.create({title, content});
+    }
+
+    public async editFAQ(recordId: string, object: any) {
+        return await faq.updateOne({_id: recordId}, object);
+    }
+
+    public async deleteFAQ(recordId) {
+        return await faq.deleteOne({_id: recordId});
     }
 }
 

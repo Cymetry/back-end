@@ -1,8 +1,7 @@
 *.env.js
 *.map
 .idea/
-config/config.ts
-config/emailConfig.ts
+config/
 *.js
 # Logs
 logs
