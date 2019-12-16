@@ -11,4 +11,4 @@ const FAQSchema: Schema = new Schema({
     title: {type: String, required: true},
 });
 
-export default mongoose.model<FAQ>("Process", FAQSchema);
+export default mongoose.model<FAQ>("FAQ", FAQSchema);
