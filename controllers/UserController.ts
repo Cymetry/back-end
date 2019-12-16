@@ -72,13 +72,16 @@ class UserController {
         try {
             const record = await User.create(dbObject);
             await record.save();
+            try {
+                const token = Math.floor(100000 + Math.random() * 900000);
+                await Secret.create({userId: record.id, token});
 
-            const token = Math.floor(100000 + Math.random() * 900000);
-            await Secret.create({userId: record.id, token});
-
-            const subject = "Umath email verification";
-            const text = "Please type the secret: " + token + "in the application";
-            await emailSender.sendEmail(emailConfig.email, user.email, subject, text);
+                const subject = "Umath email verification";
+                const text = "Please type the secret: " + token + "in the application";
+                await emailSender.sendEmail(emailConfig.email, user.email, subject, text);
+            } catch (e) {
+                console.log(e.message);
+            }
         } catch (e) {
             console.log(e);
             res.status(409).send(e.message);
