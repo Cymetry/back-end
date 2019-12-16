@@ -3,9 +3,9 @@ import * as cors from "cors";
 import * as express from "express";
 import * as helmet from "helmet";
 import * as errorhandler from "strong-error-handler";
+import {accountRouter} from "../routes/account";
 import {authRouter} from "../routes/auth";
 import {flowRouter} from "../routes/flow";
-import {accountRouter} from "../routes/account";
 import {skillLearning} from "../routes/skillLearning";
 import {userRouter} from "../routes/user";
 
