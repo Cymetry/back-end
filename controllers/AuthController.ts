@@ -3,6 +3,7 @@ import {Request, Response} from "express";
 import * as jwt from "jsonwebtoken";
 
 import config from "../config/config";
+import {Secret} from "../lib/db/postgresSQL/models/Secret";
 import {User} from "../lib/db/postgresSQL/models/User";
 
 class AuthController {
@@ -73,6 +74,23 @@ class AuthController {
             res.status(204).send();
         } else {
             res.status(500).send("missing user record");
+        }
+    }
+
+    public static checkSecret = async (req: Request, res: Response) => {
+        const secret = req.query.secret;
+        const userId = res.locals.jwtPayload.userId;
+
+        const secretRecord = await Secret.findOne({userId});
+        if (secretRecord) {
+            if (secretRecord.token === secret) {
+                await User.update({isVerified: true});
+                res.status(200).send({message: "email successfully verified"});
+            } else {
+                res.status(400).send({message: "Secret mismatch"});
+            }
+        } else {
+            res.status(500).send({message: "Noe token found on db"});
         }
     }
 }

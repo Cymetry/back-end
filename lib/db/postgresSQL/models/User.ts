@@ -61,6 +61,11 @@ export class User extends Model<User> {
     public isPremium!: boolean;
 
     @AllowNull(false)
+    @Default(false)
+    @Column
+    public isVerified!: boolean;
+
+    @AllowNull(false)
     @Column
     public role!: string;
 

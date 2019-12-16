@@ -1,7 +1,13 @@
 import {validate} from "class-validator";
 import {Request, Response} from "express";
 
+import emailConfig from "../config/emailConfig";
+import {Secret} from "../lib/db/postgresSQL/models/Secret";
 import {User} from "../lib/db/postgresSQL/models/User";
+import {Email} from "../lib/Email";
+
+
+const emailSender = new Email(emailConfig.username, emailConfig.password);
 
 class UserController {
 
@@ -66,6 +72,13 @@ class UserController {
         try {
             const record = await User.create(dbObject);
             await record.save();
+
+            const token = Math.floor(100000 + Math.random() * 900000);
+            await Secret.create({userId: record.id, token});
+
+            const subject = "Umath email verification";
+            const text = "Please type the secret: " + token + "in the application";
+            await emailSender.sendEmail(emailConfig.email, user.email, subject, text);
         } catch (e) {
             console.log(e);
             res.status(409).send(e.message);

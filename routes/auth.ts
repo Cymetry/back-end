@@ -8,3 +8,6 @@ authRouter.post("/login", AuthController.login);
 
 // Change my password
 authRouter.post("/change-password", [checkJwt], AuthController.changePassword);
+
+// verify email
+authRouter.post("/verify", [checkJwt], AuthController.checkSecret);
