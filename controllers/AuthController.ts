@@ -81,10 +81,10 @@ class AuthController {
         const secret = req.query.secret;
         const userId = res.locals.jwtPayload.userId;
 
-        const secretRecord = await Secret.findOne({userId});
-        if (secretRecord) {
-            if (secretRecord.token === secret) {
-                await User.update({isVerified: true});
+        const secretRecords = await Secret.findAll({limit: 1, where: {userId}});
+        if (secretRecords) {
+            if (secretRecords[0].token === secret) {
+                await User.update({isVerified: true}, {where: {id: userId}});
                 res.status(200).send({message: "email successfully verified"});
             } else {
                 res.status(400).send({message: "Secret mismatch"});

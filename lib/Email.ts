@@ -2,8 +2,6 @@ import * as nodemailer from "nodemailer";
 
 export class Email {
 
-    public email: string;
-
     public transporter: nodemailer.Transporter;
 
     constructor(username: string, password: string) {

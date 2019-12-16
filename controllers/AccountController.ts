@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 
-import {User} from "../lib/db/postgresSQL/models/Topic";
+import {User} from "../lib/db/postgresSQL/models/User";
 
 
 class FlowController {
