@@ -1,7 +1,6 @@
 *.env.js
 *.map
 .idea/
-config/
 *.js
 # Logs
 logs
