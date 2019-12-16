@@ -2,7 +2,7 @@ import {Document, Schema} from "mongoose";
 import * as mongoose from "mongoose";
 
 const StepSchema = new Schema({
-    answer: String,
+    answer: [String],
     fillIn: Boolean,
     index: String,
     instruction: String,
@@ -29,7 +29,7 @@ export interface Problem extends Document {
                     content: string,
                 }
                 ],
-            answer: string,
+            answer: [string],
             solution: string,
             index: string,
         }
