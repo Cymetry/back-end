@@ -25,6 +25,8 @@ class FlowController {
         } catch (error) {
             res.status(404).send(error.message);
         }
+        // todo
+        // the part related with progress chart
     }
 
     public static loadPayment = async (req: Request, res: Response) => {
