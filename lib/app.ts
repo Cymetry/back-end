@@ -7,6 +7,7 @@ import {accountRouter} from "../routes/account";
 import {authRouter} from "../routes/auth";
 import {flowRouter} from "../routes/flow";
 import {skillLearning} from "../routes/skillLearning";
+import {testingRouter} from "../routes/testing";
 import {userRouter} from "../routes/user";
 
 export const app = express();
@@ -35,6 +36,7 @@ app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/", flowRouter);
 app.use("/account", accountRouter);
+app.use("/testing", testingRouter);
 
 app.use(
     errorhandler(
