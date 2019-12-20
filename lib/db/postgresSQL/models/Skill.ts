@@ -24,7 +24,7 @@ export class Skill extends Model<Skill> {
 
     @AllowNull(false)
     @Column
-    public difficulty!: number;
+    public difficulty!: string;
 
     @ForeignKey(() => Topic)
     @AllowNull(false)
