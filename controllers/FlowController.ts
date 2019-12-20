@@ -175,9 +175,9 @@ class FlowController {
     }
 
     public static createTopic = async (req: Request, res: Response) => {
-        const {name, skillCount, curriculumId} = req.body;
+        const {name, skillCount, curriculumId, minTestNum, maxTestNum} = req.body;
         try {
-            const record = await Topic.create({name, skillCount, curriculumId});
+            const record = await Topic.create({name, skillCount, curriculumId, minTestNum, maxTestNum});
             await record.save();
             res.status(204).send();
         } catch (error) {
@@ -187,10 +187,10 @@ class FlowController {
 
     public static editTopic = async (req: Request, res: Response) => {
         const id = parseInt(req.query.id, 10);
-        const {name, skillCount} = req.body;
+        const {name, skillCount, minTestNum, maxTestNum} = req.body;
 
         try {
-            await Topic.update({name, skillCount}, {where: {id}});
+            await Topic.update({name, skillCount, minTestNum, maxTestNum}, {where: {id}});
             res.status(204).send();
         } catch (error) {
             res.status(500).send(error.message);

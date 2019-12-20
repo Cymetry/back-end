@@ -27,6 +27,14 @@ export class Topic extends Model<Topic> {
     @Column
     public skillCount!: number;
 
+    @AllowNull(false)
+    @Column
+    public minTestNum!: number;
+
+    @AllowNull(false)
+    @Column
+    public maxTestNum!: number;
+
     @ForeignKey(() => Curriculum)
     @AllowNull(false)
     @Column
