@@ -3,11 +3,24 @@ import faq from "./models/FAQ";
 import position from "./models/Position";
 import problem from "./models/Problem";
 import process from "./models/Process";
+import question from "./models/Question";
 import submission from "./models/Submission";
 import video, {Video} from "./models/Video";
 
 
 export class DbHelpers {
+
+    public async createQuestion(skillsCovered: any[], difficulty: number, score: number) {
+        return await question.create({skillsCovered, difficulty, score});
+    }
+
+    public async getQuestion(id: string) {
+        return await question.findOne({_id: id});
+    }
+
+    public async deleteQuestion(id: string) {
+        return await question.deleteOne({_id: id});
+    }
 
     public async createOrUpdateSubmission(userId: string, procedure: string, content: any[]) {
         return await submission.update(

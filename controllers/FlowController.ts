@@ -213,9 +213,9 @@ class FlowController {
     }
 
     public static createSkill = async (req: Request, res: Response) => {
-        const {name, topicId} = req.body;
+        const {name, topicId, difficulty} = req.body;
         try {
-            const record = await Skill.create({name, topicId});
+            const record = await Skill.create({name, topicId, difficulty});
             await record.save();
             res.status(204).send();
         } catch (error) {
@@ -225,10 +225,11 @@ class FlowController {
 
     public static editSkill = async (req: Request, res: Response) => {
         const id = parseInt(req.query.id, 10);
-        const {name} = req.body;
+        const {name, difficulty} = req.body;
+        const values = JSON.parse(JSON.stringify({name, difficulty}));
 
         try {
-            await Skill.update({name}, {where: {id}});
+            await Skill.update(values, {where: {id}});
             res.status(204).send();
         } catch (error) {
             res.status(500).send(error.message);
