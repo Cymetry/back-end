@@ -1,6 +1,5 @@
 import {Document, Schema} from "mongoose";
 import * as mongoose from "mongoose";
-import {Question} from "./Question";
 
 export interface TestPosition extends Document {
 
@@ -8,19 +7,19 @@ export interface TestPosition extends Document {
     userId: string;
     isFinished: boolean;
     lastPosition: number;
-    correctAnswers: [Question];
-    wrongAnswers: [Question];
+    correctAnswers: [string];
+    wrongAnswers: [string];
 
 
 }
 
 const TestPositionSchema: Schema = new Schema({
-    correctAnswers: {type: Array(Question), required: true},
+    correctAnswers: {type: Array(String), required: true},
     isFinished: {type: Boolean, required: true},
     lastPosition: {type: Number, required: true},
     topicId: {type: String, required: true},
     userId: {type: String, required: true},
-    wrongAnswers: {type: Array(Question), required: true},
+    wrongAnswers: {type: Array(String), required: true},
 });
 
 export default mongoose.model<TestPosition>("TestPositions", TestPositionSchema);

@@ -22,9 +22,19 @@ export class DbHelpers {
         });
     }
 
-    public async updateTestPositionRecord(topicId: string, userId: string, correctAnswers: any[], wrongAnswers: any[],
-                                          lastPosition: number) {
-        return await testPosition.updateOne({topicId, userId}, {correctAnswers, wrongAnswers, lastPosition});
+    public async getTestPositionRecord(userId: string, topicId: string) {
+        return await testPosition.findOne({
+            topicId,
+            userId,
+        });
+    }
+
+    public async updateTestPositionRecord(topicId: string, userId: string, correctAnswers: any[], wrongAnswers: any[]) {
+        return await testPosition.updateOne({topicId, userId}, {
+            correctAnswers,
+            isFinished: true,
+            wrongAnswers,
+        });
     }
 
     public async createQuestion(skillsCovered: any[], difficulty: number, score: number) {
