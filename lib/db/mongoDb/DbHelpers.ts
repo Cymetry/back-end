@@ -5,10 +5,27 @@ import problem from "./models/Problem";
 import process from "./models/Process";
 import question from "./models/Question";
 import submission from "./models/Submission";
+import testPosition from "./models/TestPosition";
 import video, {Video} from "./models/Video";
 
 
 export class DbHelpers {
+
+    public async createTestPositionRecord(topicId: string, userId: string) {
+        return await testPosition.create({
+            correctAnswers: [],
+            isFinished: false,
+            lastPosition: 0,
+            topicId,
+            userId,
+            wrongAnswers: [],
+        });
+    }
+
+    public async updateTestPositionRecord(topicId: string, userId: string, correctAnswers: any[], wrongAnswers: any[],
+                                          lastPosition: number) {
+        return await testPosition.updateOne({topicId, userId}, {correctAnswers, wrongAnswers, lastPosition});
+    }
 
     public async createQuestion(skillsCovered: any[], difficulty: number, score: number) {
         return await question.create({skillsCovered, difficulty, score});
@@ -40,9 +57,9 @@ export class DbHelpers {
         });
     }
 
-    public async createProblemRecord(question: string, type: string, steps: any[]) {
+    public async createProblemRecord(questionRec: string, type: string, steps: any[]) {
         return await problem.create({
-            question,
+            question: questionRec,
             steps,
             type,
         });
