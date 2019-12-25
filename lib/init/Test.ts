@@ -1,5 +1,6 @@
 import {Question} from "../db/mongoDb/models/Question";
 import {TestNode} from "../structs/TestNode";
+import {TestPair} from "../structs/TestPair";
 
 export interface IHash {
     [details: string]: number;
@@ -11,12 +12,76 @@ export class Test {
 
     public graph: TestNode[] = [];
 
-    public pickQuestions = (questions: Question[], coverable: string[], minBound: number, upBound: number) => {
-        // todo
+    public init = (bank: Question[], coverable: string[], minBound: number, upBound: number) => {
+
+        // round 1
+        const start = new TestNode("round1");
+        this.graph[this.globalIndex++] = start;
+        start.questions = this.pickQuestions(bank, coverable, minBound, upBound);
+
+        // round 2
+        const round2 = new TestNode("round2");
+        const weakSet = this.computeSkillWeaknessWeight(start.wrongAnswers, start.correctAnswers);
+        round2.questions = this.pickQuestions(bank, weakSet, minBound, upBound);
+        round2.solution = true;
+
+        // bind round 2 to start(round 1)
+        start.children.push(new TestPair(0, this.globalIndex, round2));
+        this.graph[this.globalIndex++] = round2;
+
+
+        function startNext() {
+            return this.children[0];
+        }
+
+        start.next = startNext.bind(start);
+
+        // round 3
+        const round3 = new TestNode("round3");
+        round3.questions = start.wrongAnswers;
+        round3.solution = true;
+
+        // bind round 3
+        round2.children.push(new TestPair(0, this.globalIndex, round3));
+        this.graph[this.globalIndex++] = round3;
+
+        function round2Next() {
+            return this.children[0];
+        }
+
+        round2.next = round2Next.bind(round2);
+
+        // round 4
+        const round4 = new TestNode("round4");
+        const lastWeakSet = this.computeSkillWeaknessWeight(round3.wrongAnswers, round3.correctAnswers);
+        round4.questions = this.pickQuestions(bank, lastWeakSet, minBound, upBound);
+        round4.solution = true;
+
+        // bind round 4
+        round3.children.push(new TestPair(0, this.globalIndex, round4));
+        this.graph[this.globalIndex++] = round4;
+
+
+        function round3Next() {
+            return this.children[0];
+        }
+
+        round3.next = round3Next.bind(round3);
+
+        const complete = new TestNode("Test complete");
+        complete.children = [];
+
+        round4.children.push(new TestPair(0, this.globalIndex, complete));
+        this.graph[this.globalIndex++] = complete;
 
     }
 
-    private computeSkillWeaknessWeight = (wrongAnswers: Question[], correctAnswers: Question[]) => {
+    public pickQuestions = (questions: Question[], coverable: string[], minBound: number, upBound: number)
+        : Question[] => {
+        // todo
+    }
+
+    private computeSkillWeaknessWeight = (wrongAnswers: Question[], correctAnswers: Question[]): string[] => {
 
         const wrongCount: Map<number, number> = new Map<number, number>();
         const correctCount: Map<number, number> = new Map<number, number>();
