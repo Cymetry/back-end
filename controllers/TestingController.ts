@@ -65,7 +65,26 @@ class TestingController {
     }
 
     public static resume = async (req: Request, res: Response) => {
-        // todo
+        const userId = res.locals.jwtPayload.userId;
+        const topicId = req.query.topicId;
+
+        try {
+
+            const currentRecord = await dbHelpers.getTestPositionRecord(userId, topicId);
+
+            if (currentRecord) {
+
+
+            } else {
+                res.status(400).send({message: "Missing position record please refer to start endpoint"});
+                return;
+            }
+
+
+        } catch (e) {
+            console.error(e);
+            res.status(500).send({message: JSON.stringify(e)});
+        }
     }
 
     public static check = async (req: Request, res: Response) => {

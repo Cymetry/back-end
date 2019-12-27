@@ -17,7 +17,6 @@ export interface Question extends Document {
     score: number;
     question: string;
     answer: string;
-    userAnswer: string;
     created: Date;
 }
 
