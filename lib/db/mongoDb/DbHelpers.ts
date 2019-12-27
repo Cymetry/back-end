@@ -6,10 +6,23 @@ import process from "./models/Process";
 import question from "./models/Question";
 import submission from "./models/Submission";
 import testPosition from "./models/TestPosition";
+import testSkills from "./models/TestSkills";
 import video, {Video} from "./models/Video";
 
 
 export class DbHelpers {
+
+    public async findCoverableSkills(topicId: string) {
+        return await testSkills.findOne({
+            topicId,
+        });
+    }
+
+    public async findCoveredQuestions(skillIds: number[]) {
+        return await question.find({
+            skillsCovered: {$elemMatch: {skillId: {$in: skillIds}}},
+        });
+    }
 
     public async createTestPositionRecord(topicId: string, userId: string) {
         return await testPosition.create({

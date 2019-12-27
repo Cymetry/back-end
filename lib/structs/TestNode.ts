@@ -1,5 +1,5 @@
-import {TestPair} from "./TestPair";
 import {Question} from "../db/mongoDb/models/Question";
+import {TestPair} from "./TestPair";
 
 export class TestNode {
 
