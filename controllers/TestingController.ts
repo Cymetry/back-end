@@ -128,6 +128,7 @@ class TestingController {
                                             res.status(200).send({
                                                 answers: test.graph[currentRecord.lastPosition].next().node.solution,
                                                 body: resQuestions,
+                                                weakSet: test.graph[currentRecord.lastPosition].next().node.weakSet,
                                             });
                                         } else {
                                             res.status(500).send({message: "No questions found!"});
@@ -138,6 +139,7 @@ class TestingController {
                                             res.status(200).send({
                                                 answers: test.graph[currentRecord.lastPosition].solution,
                                                 body: resQuestions,
+                                                weakSet: test.graph[currentRecord.lastPosition].weakSet,
                                             });
                                         } else {
                                             res.status(500).send({message: "No questions found!"});

@@ -9,6 +9,7 @@ import {flowRouter} from "../routes/flow";
 import {skillLearning} from "../routes/skillLearning";
 import {testingRouter} from "../routes/testing";
 import {userRouter} from "../routes/user";
+import {videoRouter} from "../routes/video";
 
 export const app = express();
 
@@ -35,6 +36,7 @@ app.use("/skillLearning", skillLearning);
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/", flowRouter);
+app.use("/", videoRouter);
 app.use("/account", accountRouter);
 app.use("/testing", testingRouter);
 

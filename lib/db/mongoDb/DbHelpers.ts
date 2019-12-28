@@ -12,6 +12,14 @@ import video, {Video} from "./models/Video";
 
 export class DbHelpers {
 
+    public async findAllProcessesBySkills(skills: any[]) {
+        return await process.find({
+            skillRef: {
+                $in: skills,
+            },
+        });
+    }
+
     public async findCoverableSkills(topicId: string) {
         return await testSkills.findOne({
             topicId,
@@ -164,6 +172,12 @@ export class DbHelpers {
 
     public async getVideoById(id: string) {
         return await video.findById(id);
+    }
+
+    public async getVideosByIds(ids: any[]) {
+        return await video.find({
+            _id: {$in: ids},
+        });
     }
 
     public async loadFAQs() {

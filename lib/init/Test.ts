@@ -38,6 +38,7 @@ export class Test {
         const weakSet = this.computeSkillWeaknessWeight(start.wrongAnswers, start.correctAnswers);
         round2.questions = this.pickQuestions(bank, weakSet, minBound, upBound);
         round2.solution = true;
+        round2.weakSet = weakSet;
 
         // bind round 2 to start(round 1)
         start.children.push(new TestPair(0, this.globalIndex, round2));
