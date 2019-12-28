@@ -22,7 +22,7 @@ export class WsHandler {
 
         try {
             const progressRecord = await this.dbHelpers.getTestPositionRecord(message.userId, message.topicId);
-            if (procedure) {
+            if (progressRecord) {
                 const testSubmission = await this.dbHelpers.createOrUpdateTestSubmission(
                     message.userId,
                     message.topicId,

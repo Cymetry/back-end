@@ -8,6 +8,7 @@ import {sequelize} from "./db/postgresSQL/sequalize";
 
 import {WsMessage} from "../ws/types/WsMessage";
 import "./env";
+import {WsTestMessage} from "../ws/types/WsTestMessage";
 
 
 const port = process.env.PORT || 3000;
@@ -26,9 +27,16 @@ const port = process.env.PORT || 3000;
         const wsHandler = new WsHandler(ws);
         ws.on("message", async (message: any) => {
             const parsed = JSON.parse(message);
-            const wsMessage = new WsMessage(parsed.userId, parsed.skillId, parsed.content);
-            const response = await wsHandler.insertOrUpdate(wsMessage);
-            ws.send(response.toString());
+            if (parsed.type === "testing") {
+                const wsMessage = new WsMessage(parsed.userId, parsed.skillId, parsed.content);
+                const response = await wsHandler.insertOrUpdate(wsMessage);
+                ws.send(response.toString());
+            } else {
+                const wsMessage = new WsTestMessage(parsed.userId, parsed.topicId, parsed.content);
+                const response = await wsHandler.insertOrUpdateTestSubmission(wsMessage);
+                ws.send(response.toString());
+
+            }
         });
     });
 
