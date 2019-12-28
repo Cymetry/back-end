@@ -7,10 +7,27 @@ import question from "./models/Question";
 import submission from "./models/Submission";
 import testPosition from "./models/TestPosition";
 import testSkills from "./models/TestSkills";
+import testSubmission from "./models/TestSubmission";
 import video, {Video} from "./models/Video";
 
 
 export class DbHelpers {
+
+    public async createOrUpdateTestSubmission(userId: string, topicId: string, phase: number, submissions: any[]) {
+        return await testSubmission.update(
+            {userId, topicId},
+            {$set: {phase, submissions}},
+            {upsert: true},
+        );
+    }
+
+    public async getTestSubmission(userId: string, topicId: string, phase: number) {
+        return await testSubmission.findOne({
+            phase,
+            topicId,
+            userId,
+        });
+    }
 
     public async findAllProcessesBySkills(skills: any[]) {
         return await process.find({

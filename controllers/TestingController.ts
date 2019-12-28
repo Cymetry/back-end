@@ -136,11 +136,26 @@ class TestingController {
                                     } else {
                                         const resQuestions = test.graph[currentRecord.lastPosition].questions;
                                         if (questions) {
-                                            res.status(200).send({
-                                                answers: test.graph[currentRecord.lastPosition].solution,
-                                                body: resQuestions,
-                                                weakSet: test.graph[currentRecord.lastPosition].weakSet,
-                                            });
+                                            const submission = await dbHelpers.getTestSubmission(
+                                                userId,
+                                                topicId,
+                                                currentRecord.lastPosition);
+
+                                            if (submission) {
+                                                res.status(200).send({
+                                                    answers: test.graph[currentRecord.lastPosition].solution,
+                                                    body: resQuestions,
+                                                    submission: submission.submissions,
+                                                    weakSet: test.graph[currentRecord.lastPosition].weakSet,
+                                                });
+                                            } else {
+                                                res.status(200).send({
+                                                    answers: test.graph[currentRecord.lastPosition].solution,
+                                                    body: resQuestions,
+                                                    submission: [],
+                                                    weakSet: test.graph[currentRecord.lastPosition].weakSet,
+                                                });
+                                            }
                                         } else {
                                             res.status(500).send({message: "No questions found!"});
                                         }
