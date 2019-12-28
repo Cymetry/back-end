@@ -48,6 +48,13 @@ export class DbHelpers {
             isFinished: true,
             wrongAnswers,
         });
+
+    }
+
+    public async updateProgress(topicId: string, userId: string, lastPosition: number) {
+        return await testPosition.updateOne({topicId, userId}, {
+            lastPosition,
+        });
     }
 
     public async createQuestion(skillsCovered: any[], difficulty: number, score: number) {

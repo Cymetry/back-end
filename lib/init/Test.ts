@@ -12,12 +12,26 @@ export class Test {
 
     public graph: TestNode[] = [];
 
+    public round1WrongCount: Question[];
+    public round1CorrectCount: Question[];
+    public round3WrongCount: Question[];
+    public round3CorrectCount: Question[];
+
+    constructor(round1WrongCount, round1CorrectCount, round3WrongCount, round3CorrectCount) {
+        this.round1WrongCount = round1WrongCount;
+        this.round1CorrectCount = round1CorrectCount;
+        this.round3WrongCount = round3WrongCount;
+        this.round3CorrectCount = round3CorrectCount;
+    }
+
     public init = (bank: Question[], coverable: string[], minBound: number, upBound: number) => {
 
         // round 1
         const start = new TestNode("round1");
         this.graph[this.globalIndex++] = start;
         start.questions = this.pickQuestions(bank, coverable, minBound, upBound);
+        start.wrongAnswers = this.round1WrongCount;
+        start.correctAnswers = this.round1CorrectCount;
 
         // round 2
         const round2 = new TestNode("round2");
@@ -40,6 +54,8 @@ export class Test {
         const round3 = new TestNode("round3");
         round3.questions = start.wrongAnswers;
         round3.solution = true;
+        round3.wrongAnswers = this.round3WrongCount;
+        round3.correctAnswers = this.round3CorrectCount;
 
         // bind round 3
         round2.children.push(new TestPair(0, this.globalIndex, round3));

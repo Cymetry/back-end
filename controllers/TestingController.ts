@@ -17,7 +17,7 @@ class TestingController {
             // initiate base position in db
             await dbHelpers.createTestPositionRecord(topicId, userId);
 
-            const test = new Test();
+            const test = new Test([], [], [], []);
 
             const topicRecord = await Topic.findByPk(topicId);
 
@@ -72,7 +72,97 @@ class TestingController {
 
             const currentRecord = await dbHelpers.getTestPositionRecord(userId, topicId);
 
+            const topicRecord = await Topic.findByPk(topicId);
+
+
             if (currentRecord) {
+                let test;
+                // if round 3 is finished
+                if (currentRecord.lastPosition >= 2 && currentRecord.isFinished) {
+                    test = new Test([], [], currentRecord.wrongAnswers, currentRecord.correctAnswers);
+                } else {
+                    test = new Test(currentRecord.wrongAnswers, currentRecord.correctAnswers, [], []);
+                }
+
+                if (test.graph[currentRecord.lastPosition].name === "Test complete") {
+                    res.status(200).send({message: "Test has been completed"});
+                    return;
+                }
+
+                if (topicRecord) {
+
+                    const minBound = topicRecord.minTestNum;
+                    const maxBound = topicRecord.maxTestNum;
+
+                    const skills = await Skill.findAll({where: {topicId}});
+
+                    if (skills) {
+                        const skillIds = skills.map((skill) => skill.id);
+
+                        const questions = await dbHelpers.findCoveredQuestions(skillIds);
+
+                        if (questions) {
+                            const coverable = await dbHelpers.findCoverableSkills(topicId);
+                            if (coverable) {
+
+                                test.init(questions, coverable.skills, minBound, maxBound);
+
+                                if (currentRecord.isFinished &&
+                                    test.graph[currentRecord.lastPosition].next().node.name === "Test complete") {
+                                    await dbHelpers.updateProgress(
+                                        topicId,
+                                        userId,
+                                        test.graph[currentRecord.lastPosition].next().index);
+                                    res.status(200).send({message: "Test Complete!"});
+                                    return;
+                                } else {
+                                    if (currentRecord.isFinished) {
+                                        await dbHelpers.updateProgress(
+                                            topicId,
+                                            userId,
+                                            test.graph[currentRecord.lastPosition].next().index);
+
+                                        const resQuestions = test.graph[currentRecord.lastPosition]
+                                            .next().node.questions;
+                                        if (questions) {
+                                            res.status(200).send({
+                                                answers: test.graph[currentRecord.lastPosition].next().node.solution,
+                                                body: resQuestions,
+                                            });
+                                        } else {
+                                            res.status(500).send({message: "No questions found!"});
+                                        }
+                                    } else {
+                                        const resQuestions = test.graph[currentRecord.lastPosition].questions;
+                                        if (questions) {
+                                            res.status(200).send({
+                                                answers: test.graph[currentRecord.lastPosition].solution,
+                                                body: resQuestions,
+                                            });
+                                        } else {
+                                            res.status(500).send({message: "No questions found!"});
+                                        }
+                                    }
+
+                                }
+                            } else {
+                                res.status(500).send({message: "Failed to find coverable skills for test"});
+                                return;
+                            }
+                        } else {
+                            res.status(500).send({message: "Failed to fetch question for given skills"});
+                            return;
+                        }
+
+
+                    } else {
+                        res.status(500).send({message: "Failed to fetch skills for given topic"});
+                        return;
+                    }
+                } else {
+                    res.status(500).send({message: "Failed to load topic record"});
+                    return;
+                }
 
 
             } else {
@@ -92,9 +182,9 @@ class TestingController {
         const topicId = req.query.topicId;
 
         try {
-            const currentPosition = await dbHelpers.getTestPositionRecord(userId, topicId);
-            if (currentPosition) {
-                if (currentPosition.isFinished) {
+            const currentRecord = await dbHelpers.getTestPositionRecord(userId, topicId);
+            if (currentRecord) {
+                if (currentRecord.isFinished) {
                     res.status(200).send({message: "Current Node is finished", task: "resume"});
                 } else {
                     res.status(200).send({message: "Current Node is not finished", task: "resume"});
