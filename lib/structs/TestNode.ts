@@ -15,7 +15,7 @@ export class TestNode {
 
     public wrongAnswers: Question[] = [];
 
-    public weakSet: string[] = [];
+    public weakSet: number[] = [];
 
     public solution: boolean;
 

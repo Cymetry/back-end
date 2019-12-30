@@ -3,11 +3,11 @@ import * as mongoose from "mongoose";
 
 export interface TestSkills extends Document {
     topicId: string;
-    skills: [string];
+    skills: [number];
 }
 
 const TestSkillsSchema: Schema = new Schema({
-    skills: {type: Array(String), required: true},
+    skills: {type: Array(Number), required: true},
     topicId: {type: String, required: true},
 });
 

@@ -24,7 +24,7 @@ export class Test {
         this.round3CorrectCount = round3CorrectCount;
     }
 
-    public init = (bank: Question[], coverable: string[], minBound: number, upBound: number) => {
+    public init = (bank: Question[], coverable: number[], minBound: number, upBound: number) => {
 
         // round 1
         const start = new TestNode("round1");
@@ -93,16 +93,21 @@ export class Test {
 
     }
 
-    public pickQuestions = (questions: Question[], coverable: string[], minBound: number, upBound: number)
+    public pickQuestions = (questions: Question[], coverable: number[], minBound: number, upBound: number)
         : Question[] => {
         // todo
     }
 
-    private computeSkillWeaknessWeight = (wrongAnswers: Question[], correctAnswers: Question[]): string[] => {
+    private computeSkillWeaknessWeight = (wrongAnswers: Question[], correctAnswers: Question[]):
+        number[]  => {
 
-        const wrongCount: Map<number, number> = new Map<number, number>();
-        const correctCount: Map<number, number> = new Map<number, number>();
-        const intersection: Set<number> = new Set<number>();
+        const wrongCount: Map<number, number | undefined> = new Map<number, | undefined>();
+        const correctCount: Map<number, number | undefined> = new Map<number, number | undefined>();
+        const intersection: Map<number, number | undefined> = new Map<number, number | undefined>();
+        const intersectionWrong: Map<number, number | undefined> = new Map<number, number | undefined>();
+        const complexityRateWrong: Map<number, number | undefined> = new Map<number, number | undefined>();
+        const complexityRateCorrect: Map<number, number | undefined> = new Map<number, number | undefined>();
+        const resultMap: Map<number, number | undefined> = new Map<number, number | undefined>();
 
 
         // compute frequency for each wrong answered skill
@@ -138,12 +143,89 @@ export class Test {
         // compute intersection
         wrongCount.forEach((value, key) => {
             if (correctCount.has(key)) {
-                intersection.add(key);
+                intersection.set(key, correctCount.get(key));
+                intersectionWrong.set(key, wrongCount.get(key));
             }
         });
 
-        // todo
-        // complexity rate
+        // complexity rate wrong ones
+        wrongCount.forEach(((value, key) => {
+            const sigma = wrongAnswers.filter((question) => {
+                return question.skillsCovered.some((skill) => key === skill.skillId);
+            }).map((question) => {
+                return question.difficulty + question.skillsCovered.filter(
+                    (skill) => skill.skillId === key)
+                    [0].difficulty;
+            }).reduce((a, b) => a + b, 0);
+
+            if (value) {
+                complexityRateWrong.set(key, sigma / value);
+            }
+        }));
+
+        // complexity rate correct ones
+        correctCount.forEach(((value, key) => {
+            const sigma = correctAnswers.filter((question) => {
+                question.skillsCovered.some((skill) => key === skill.skillId);
+            }).map((question) => {
+                return question.difficulty + question.skillsCovered.filter(
+                    (skill) => skill.skillId === key)
+                    [0].difficulty;
+            }).reduce((a, b) => a + b, 0);
+
+            if (intersectionWrong.has(key) && value) {
+                complexityRateCorrect.set(key, sigma / value);
+            }
+        }));
+
+        let M = 0;
+        let m1 = 0;
+        let m2 = 0;
+
+        wrongCount.forEach(((value, key) => {
+            const m = complexityRateWrong.get(key);
+            const u = wrongCount.get(key);
+            if (m && u) {
+                m1 += m * u;
+            }
+        }));
+
+        correctCount.forEach(((value, key) => {
+            const d = complexityRateCorrect.get(key);
+            const w = correctCount.get(key);
+            if (d && w) {
+                m2 += d * w;
+            }
+        }));
+
+        M = m1 - m2;
+
+
+        wrongCount.forEach(((value, key) => {
+            const m = complexityRateWrong.get(key);
+            const u = wrongCount.get(key);
+            if (m && u) {
+                const first = m * u;
+                let second = 0;
+                const d = intersectionWrong.get(key);
+                const w = correctCount.get(key);
+                if (d && w) {
+                    second = d * w;
+                }
+                resultMap.set(key, (first - second) / M);
+            }
+        }));
+
+        const sorted = new Map([...resultMap.entries()].reverse());
+        const sortedArray: number[] = [];
+
+        sorted.forEach((value, key) => {
+            if (value) {
+                sortedArray.push(value);
+            }
+        });
+
+        return sortedArray;
     }
 
 }
