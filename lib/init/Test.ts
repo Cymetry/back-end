@@ -2,10 +2,6 @@ import {Question} from "../db/mongoDb/models/Question";
 import {TestNode} from "../structs/TestNode";
 import {TestPair} from "../structs/TestPair";
 
-export interface IHash {
-    [details: string]: number;
-}
-
 export class Test {
 
     public globalIndex: number = 0;
@@ -24,19 +20,24 @@ export class Test {
         this.round3CorrectCount = round3CorrectCount;
     }
 
-    public init = (bank: Question[], coverable: number[], minBound: number, upBound: number) => {
+    public init = (bank: Question[], coverage: number[], minBound: number) => {
+
+        // sort questions by number of skills covered(decreasing)
+        bank = bank.sort((a: Question, b: Question) => {
+            return b.skillsCovered.length - a.skillsCovered.length;
+        });
 
         // round 1
         const start = new TestNode("round1");
         this.graph[this.globalIndex++] = start;
-        start.questions = this.pickQuestions(bank, coverable, minBound, upBound);
+        start.questions = this.pickQuestions(bank, coverage, minBound);
         start.wrongAnswers = this.round1WrongCount;
         start.correctAnswers = this.round1CorrectCount;
 
         // round 2
         const round2 = new TestNode("round2");
         const weakSet = this.computeSkillWeaknessWeight(start.wrongAnswers, start.correctAnswers);
-        round2.questions = this.pickQuestions(bank, weakSet, minBound, upBound);
+        round2.questions = this.pickQuestions(bank, weakSet, minBound);
         round2.solution = true;
         round2.weakSet = weakSet;
 
@@ -71,7 +72,7 @@ export class Test {
         // round 4
         const round4 = new TestNode("round4");
         const lastWeakSet = this.computeSkillWeaknessWeight(round3.wrongAnswers, round3.correctAnswers);
-        round4.questions = this.pickQuestions(bank, lastWeakSet, minBound, upBound);
+        round4.questions = this.pickQuestions(bank, lastWeakSet, minBound);
         round4.solution = true;
 
         // bind round 4
@@ -93,13 +94,34 @@ export class Test {
 
     }
 
-    public pickQuestions = (questions: Question[], coverable: number[], minBound: number, upBound: number)
-        : Question[] => {
-        // todo
+    public pickQuestions = (questions: Question[], coverage: number[], minBound: number): Question[] => {
+
+        const result: Question[] = [];
+        const coverageSet: Set<number> = new Set<number>([...coverage]);
+
+        for (const question of questions) {
+
+            if (coverageSet.size === 0 && result.length >= minBound) {
+                break;
+            }
+
+            result.push(question);
+
+            // to not enter into foreach if coverage is satisfied but minimum bound not
+            if (coverageSet.size > 0) {
+                // filling skills covered
+                question.skillsCovered.forEach((skill) => {
+                    if (coverageSet.has(skill.skillId)) {
+                        coverageSet.delete(skill.skillId);
+                    }
+                });
+            }
+        }
+
+        return result;
     }
 
-    private computeSkillWeaknessWeight = (wrongAnswers: Question[], correctAnswers: Question[]):
-        number[] => {
+    private computeSkillWeaknessWeight = (wrongAnswers: Question[], correctAnswers: Question[]): number[] => {
 
         const wrongCount: Map<number, number | undefined> = new Map<number, | undefined>();
         const correctCount: Map<number, number | undefined> = new Map<number, number | undefined>();
@@ -216,7 +238,9 @@ export class Test {
             }
         }));
 
-        const sorted = new Map([...resultMap.entries()].sort((a, b) => b[1] - a[1]));
+        const sorted = new Map([...resultMap.entries()].sort((a: any[], b: any[]) => {
+            return b[1] - a[1];
+        }));
         const sortedArray: number[] = [];
 
         sorted.forEach((value, key) => {

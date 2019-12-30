@@ -24,7 +24,6 @@ class TestingController {
             if (topicRecord) {
 
                 const minBound = topicRecord.minTestNum;
-                const maxBound = topicRecord.maxTestNum;
 
                 const skills = await Skill.findAll({where: {topicId}});
 
@@ -36,7 +35,7 @@ class TestingController {
                     if (questions) {
                         const coverable = await dbHelpers.findCoverableSkills(topicId);
                         if (coverable) {
-                            test.init(questions, coverable.skills, minBound, maxBound);
+                            test.init(questions, coverable.skills, minBound);
                             const resQuestions = test.graph[0].questions;
                             res.status(200).send({body: resQuestions});
                         } else {
@@ -92,7 +91,6 @@ class TestingController {
                 if (topicRecord) {
 
                     const minBound = topicRecord.minTestNum;
-                    const maxBound = topicRecord.maxTestNum;
 
                     const skills = await Skill.findAll({where: {topicId}});
 
@@ -105,7 +103,7 @@ class TestingController {
                             const coverable = await dbHelpers.findCoverableSkills(topicId);
                             if (coverable) {
 
-                                test.init(questions, coverable.skills, minBound, maxBound);
+                                test.init(questions, coverable.skills, minBound);
 
                                 if (currentRecord.isFinished &&
                                     test.graph[currentRecord.lastPosition].next().node.name === "Test complete") {
