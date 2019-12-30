@@ -99,7 +99,7 @@ export class Test {
     }
 
     private computeSkillWeaknessWeight = (wrongAnswers: Question[], correctAnswers: Question[]):
-        number[]  => {
+        number[] => {
 
         const wrongCount: Map<number, number | undefined> = new Map<number, | undefined>();
         const correctCount: Map<number, number | undefined> = new Map<number, number | undefined>();
@@ -216,16 +216,34 @@ export class Test {
             }
         }));
 
-        const sorted = new Map([...resultMap.entries()].reverse());
+        const sorted = new Map([...resultMap.entries()].sort((a, b) => b[1] - a[1]));
         const sortedArray: number[] = [];
 
         sorted.forEach((value, key) => {
             if (value) {
-                sortedArray.push(value);
+                sortedArray.push(key);
             }
         });
 
-        return sortedArray;
+        const numToFill = wrongAnswers.length;
+        let filled = 0;
+        const usedQuestion: Set<string> = new Set<string>();
+        const resArray: number[] = [];
+        for (const skillId of sortedArray) {
+            if (filled === numToFill) {
+                break;
+            }
+            resArray.push(skillId);
+            wrongAnswers.forEach((question) => {
+                if (!usedQuestion.has(question._id) &&
+                    question.skillsCovered.some((skill) => skillId === skill.skillId)) {
+                    filled++;
+                    usedQuestion.add(question._id);
+                }
+            });
+        }
+
+        return resArray;
     }
 
 }
