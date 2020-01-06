@@ -140,18 +140,12 @@ class TestingController {
                                             userId,
                                             test.graph[currentRecord.lastPosition].next().index);
 
-                                        const submission = await dbHelpers.getTestSubmission(
-                                            userId,
-                                            topicId,
-                                            currentRecord.lastPosition);
-
                                         const resQuestions = test.graph[currentRecord.lastPosition]
                                             .next().node.questions;
                                         if (questions) {
                                             res.status(200).send({
                                                 answers: test.graph[currentRecord.lastPosition].next().node.solution,
                                                 body: resQuestions,
-                                                submission: submission ? submission : [],
                                                 weakSet: test.graph[currentRecord.lastPosition].next().node.weakSet,
                                             });
                                         } else {
