@@ -5,7 +5,7 @@ import {checkRole} from "../middlewares/checkRole";
 
 export const flowRouter = Router();
 
-flowRouter.get("/program", [checkJwt], FlowController.loadPrograms);
+flowRouter.get("/program", FlowController.loadPrograms);
 
 flowRouter.post("/program", [checkJwt, checkRole(["ADMIN"])], FlowController.createProgram);
 
@@ -13,7 +13,7 @@ flowRouter.patch("/program", [checkJwt, checkRole(["ADMIN"])], FlowController.ed
 
 flowRouter.delete("/program", [checkJwt, checkRole(["ADMIN"])], FlowController.deleteProgram);
 
-flowRouter.get("/curriculum", [checkJwt], FlowController.loadCurriculumByProgram);
+flowRouter.get("/curriculum",  FlowController.loadCurriculumByProgram);
 
 flowRouter.post("/curriculum", [checkJwt, checkRole(["ADMIN"])], FlowController.createCurriculum);
 
