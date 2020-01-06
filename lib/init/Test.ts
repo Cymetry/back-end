@@ -92,6 +92,12 @@ export class Test {
         round4.children.push(new TestPair(0, this.globalIndex, complete));
         this.graph[this.globalIndex++] = complete;
 
+        function round4Next() {
+            return this.children[0];
+        }
+
+        round4.next = round4Next.bind(round4);
+
     }
 
     public pickQuestions = (questions: Question[], coverage: number[], minBound: number): Question[] => {

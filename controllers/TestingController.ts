@@ -140,12 +140,18 @@ class TestingController {
                                             userId,
                                             test.graph[currentRecord.lastPosition].next().index);
 
+                                        const submission = await dbHelpers.getTestSubmission(
+                                            userId,
+                                            topicId,
+                                            currentRecord.lastPosition);
+
                                         const resQuestions = test.graph[currentRecord.lastPosition]
                                             .next().node.questions;
                                         if (questions) {
                                             res.status(200).send({
                                                 answers: test.graph[currentRecord.lastPosition].next().node.solution,
                                                 body: resQuestions,
+                                                submission: submission ? submission : [],
                                                 weakSet: test.graph[currentRecord.lastPosition].next().node.weakSet,
                                             });
                                         } else {
@@ -239,10 +245,11 @@ class TestingController {
         const topicId = req.query.topicId;
 
 
-        const {correctAnswers, wrongAnswers} = req.body;
+        const {correctAnswers, wrongAnswers, isFinished} = req.body;
 
         try {
-            const updated = await dbHelpers.updateTestPositionRecord(topicId, userId, correctAnswers, wrongAnswers);
+            const updated = await dbHelpers.updateTestPositionRecord(topicId, userId, correctAnswers, wrongAnswers,
+                isFinished);
             res.status(200).send({record: JSON.stringify(updated)});
         } catch (e) {
             console.error(e);

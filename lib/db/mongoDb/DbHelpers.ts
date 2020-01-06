@@ -74,13 +74,13 @@ export class DbHelpers {
         });
     }
 
-    public async updateTestPositionRecord(topicId: string, userId: string, correctAnswers: any[], wrongAnswers: any[]) {
+    public async updateTestPositionRecord(topicId: string, userId: string, correctAnswers: any[], wrongAnswers: any[],
+                                          isFinished: boolean) {
         return await testPosition.updateOne({topicId, userId}, {
             correctAnswers,
-            isFinished: true,
+            isFinished,
             wrongAnswers,
         });
-
     }
 
     public async updateProgress(topicId: string, userId: string, lastPosition: number) {
