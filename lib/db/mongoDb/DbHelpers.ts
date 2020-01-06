@@ -101,6 +101,10 @@ export class DbHelpers {
         return await question.findOne({_id: id});
     }
 
+    public async getQuestionsByIds(ids: any[]) {
+        return await question.find({_id: ids});
+    }
+
     public async deleteQuestion(id: string) {
         return await question.deleteOne({_id: id});
     }

@@ -94,18 +94,16 @@ class TestingController {
             if (currentRecord) {
                 let test;
                 // if round 3 is finished
+                const wrongs = await dbHelpers.getQuestionsByIds(currentRecord.wrongAnswers);
+                const corrects = await dbHelpers.getQuestionsByIds(currentRecord.correctAnswers);
+
                 if (currentRecord.lastPosition >= 2 && currentRecord.isFinished) {
-                    test = new Test([], [], currentRecord.wrongAnswers, currentRecord.correctAnswers);
+                    test = new Test([], [], wrongs, corrects);
                 } else {
-                    test = new Test(currentRecord.wrongAnswers, currentRecord.correctAnswers, [], []);
+                    test = new Test(wrongs, corrects, [], []);
                 }
 
-                if (test.graph[currentRecord.lastPosition].name === "Test complete") {
-                    res.status(200).send({message: "Test has been completed"});
-                    return;
-                }
-
-                if (topicRecord) {
+                if (topicRecord && wrongs && corrects) {
 
                     const minBound = topicRecord.minTestNum;
 
@@ -121,6 +119,11 @@ class TestingController {
                             if (coverable) {
 
                                 test.init(questions, coverable.skills, minBound);
+
+                                if (test.graph[currentRecord.lastPosition].name === "Test complete") {
+                                    res.status(200).send({message: "Test has been completed"});
+                                    return;
+                                }
 
                                 if (currentRecord.isFinished &&
                                     test.graph[currentRecord.lastPosition].next().node.name === "Test complete") {
@@ -233,7 +236,10 @@ class TestingController {
 
     public static save = async (req: Request, res: Response) => {
         const userId = res.locals.jwtPayload.userId;
-        const {topicId, correctAnswers, wrongAnswers} = req.body;
+        const topicId = req.query.topicId;
+
+
+        const {correctAnswers, wrongAnswers} = req.body;
 
         try {
             const updated = await dbHelpers.updateTestPositionRecord(topicId, userId, correctAnswers, wrongAnswers);
