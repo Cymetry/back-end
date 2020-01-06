@@ -43,6 +43,13 @@ export class DbHelpers {
         });
     }
 
+    public async addCoverableSkills(topicId: string, skills: any[]) {
+        return await testSkills.create({
+            skills,
+            topicId,
+        });
+    }
+
     public async findCoveredQuestions(skillIds: number[]) {
         return await question.find({
             skillsCovered: {$elemMatch: {skillId: {$in: skillIds}}},

@@ -9,6 +9,23 @@ const dbHelpers = new DbHelpers();
 
 class TestingController {
 
+    public static defineSkills = async (req: Request, res: Response) => {
+        const topicId = req.query.topicId;
+        const {skills} = req.body;
+
+        try {
+            const record = await dbHelpers.addCoverableSkills(topicId, skills);
+            if (record) {
+                res.status(200).send(record);
+            } else {
+                res.status(500).send({message: "could not create record"});
+            }
+        } catch (e) {
+            console.log(e);
+            res.status(500).send({message: JSON.stringify(e)});
+        }
+    }
+
     public static start = async (req: Request, res: Response) => {
         const userId = res.locals.jwtPayload.userId;
         const topicId = req.query.topicId;
