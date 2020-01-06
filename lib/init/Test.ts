@@ -38,7 +38,7 @@ export class Test {
         const round2 = new TestNode("round2");
         const weakSet = this.computeSkillWeaknessWeight(start.wrongAnswers, start.correctAnswers);
         round2.questions = this.pickQuestions(bank, weakSet, minBound);
-        round2.solution = true;
+        round2.solution = false;
         round2.weakSet = weakSet;
 
         // bind round 2 to start(round 1)
