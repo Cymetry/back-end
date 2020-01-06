@@ -19,22 +19,23 @@ class QuestionController {
     }
 
     public static addQuestion = async (req: Request, res: Response) => {
-        const {skillsCovered, difficulty, score} = req.body;
+        const {skillsCovered, difficulty, score, question, answer} = req.body;
 
         try {
-            const skillRecords = Skill.findAll({where: {id: skillsCovered}});
-            const covered = skillRecords.map((record) => {
-                return {
-                    difficulty: record.difficulty,
-                    skillId: record.id,
-                };
-            });
-            if (skillRecord) {
-                const record = await dbHelpers.createQuestion(covered, difficulty, score);
-                res.status(200, record);
+            const skillRecords = await Skill.findAll({where: {id: skillsCovered}});
+            if (skillRecords) {
+                const covered = skillRecords.map((record) => {
+                    return {
+                        difficulty: record.difficulty,
+                        skillId: record.id,
+                    };
+                });
+
+                const resRecord = await dbHelpers.createQuestion(covered, difficulty, score, question, answer);
+                res.status(200).send(resRecord);
 
             } else {
-                res.status(400, {body: "Invalid skill reference"});
+                res.status(400).send({body: "Invalid skill reference"});
             }
         } catch (e) {
             console.log(e.message);

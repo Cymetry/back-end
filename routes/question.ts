@@ -11,5 +11,5 @@ questionRouter.post("/", [checkJwt, checkRole(["ADMIN"])], questionController.ad
 
 questionRouter.patch("/", [checkJwt, checkRole(["ADMIN"])], questionController.editQuestion);
 
-questionRouter.delete("/", [checkJwt.checkRole(["ADMIN"])], questionController.deleteQuestion);
+questionRouter.delete("/", [checkJwt, checkRole(["ADMIN"])], questionController.deleteQuestion);
 

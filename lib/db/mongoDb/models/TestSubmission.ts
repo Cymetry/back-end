@@ -23,4 +23,4 @@ const SubmissionSchema: Schema = new Schema({
     userId: {type: String, required: true},
 });
 
-export default mongoose.model<Submission>("Submissions", SubmissionSchema);
+export default mongoose.model<Submission>("TestSubmissions", SubmissionSchema);

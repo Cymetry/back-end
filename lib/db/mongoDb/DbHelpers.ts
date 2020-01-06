@@ -82,8 +82,12 @@ export class DbHelpers {
         });
     }
 
-    public async createQuestion(skillsCovered: any[], difficulty: number, score: number) {
-        return await question.create({skillsCovered, difficulty, score});
+    public async createQuestion(skillsCovered: any[], difficulty: number, score: number, setting: string,
+                                answer: string) {
+        return await question.create({
+            answer, created: new Date(), difficulty, question: setting,
+            score, skillsCovered,
+        });
     }
 
     public async getQuestion(id: string) {

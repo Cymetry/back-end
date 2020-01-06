@@ -2,10 +2,11 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as express from "express";
 import * as helmet from "helmet";
-import * as errorhandler from "strong-error-handler";
+// import * as errorhandler from "strong-error-handler";
 import {accountRouter} from "../routes/account";
 import {authRouter} from "../routes/auth";
 import {flowRouter} from "../routes/flow";
+import {questionRouter} from "../routes/question";
 import {skillLearning} from "../routes/skillLearning";
 import {testingRouter} from "../routes/testing";
 import {userRouter} from "../routes/user";
@@ -36,15 +37,16 @@ app.use("/skillLearning", skillLearning);
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/", flowRouter);
+app.use("/question", questionRouter);
 app.use("/", videoRouter);
 app.use("/account", accountRouter);
 app.use("/testing", testingRouter);
 
-app.use(
-    errorhandler(
-        {
-            debug: process.env.ENV !== "prod",
-            log: true,
-        },
-    ),
-);
+// app.use(
+//     errorhandler(
+//         {
+//             debug: process.env.ENV !== "prod",
+//             log: true,
+//         },
+//     ),
+// );
