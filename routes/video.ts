@@ -4,7 +4,7 @@ import {checkJwt} from "../middlewares/checkJwt";
 
 export const videoRouter = Router();
 
-videoRouter.post("/videos", [checkJwt], videoController.loadVideosBySkills);
+videoRouter.get("/videos", [checkJwt], videoController.loadVideosBySkills);
 
 
 

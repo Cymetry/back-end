@@ -105,6 +105,10 @@ export class Test {
         const result: Question[] = [];
         const coverageSet: Set<number> = new Set<number>([...coverage]);
 
+        if (coverage.length === 0) {
+            return result;
+        }
+
         for (const question of questions) {
 
             if (coverageSet.size === 0 && result.length >= minBound) {

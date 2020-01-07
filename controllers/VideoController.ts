@@ -14,7 +14,7 @@ class VideoController {
             const resVideos = await dbHelpers.getVideosByIds(videoRefs);
 
             if (resVideos) {
-                res.status(200).send({body: resVideos});
+                res.status(200).send({body: resVideos.map((obj) => obj.content)});
             } else {
                 res.send(500).send("Missing video records");
             }

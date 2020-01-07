@@ -54,7 +54,17 @@ class TestingController {
                         if (coverable) {
                             test.init(questions, coverable.skills, minBound);
                             const resQuestions = test.graph[0].questions;
-                            res.status(200).send({body: resQuestions});
+                            res.status(200).send({
+                                body: resQuestions.map((question) => {
+                                    return {
+                                        difficulty: question.difficulty,
+                                        fillIn: question.fillIn,
+                                        options: question.options,
+                                        question: question.question,
+                                        score: question.score,
+                                    };
+                                }),
+                            });
                         } else {
                             res.status(500).send({message: "Failed to find coverable skills for test"});
                             return;
@@ -145,7 +155,15 @@ class TestingController {
                                         if (questions) {
                                             res.status(200).send({
                                                 answers: test.graph[currentRecord.lastPosition].next().node.solution,
-                                                body: resQuestions,
+                                                body: resQuestions.map((question) => {
+                                                    return {
+                                                        difficulty: question.difficulty,
+                                                        fillIn: question.fillIn,
+                                                        options: question.options,
+                                                        question: question.question,
+                                                        score: question.score,
+                                                    };
+                                                }),
                                                 weakSet: test.graph[currentRecord.lastPosition].next().node.weakSet,
                                             });
                                         } else {
@@ -162,14 +180,30 @@ class TestingController {
                                             if (submission) {
                                                 res.status(200).send({
                                                     answers: test.graph[currentRecord.lastPosition].solution,
-                                                    body: resQuestions,
+                                                    body: resQuestions.map((question) => {
+                                                        return {
+                                                            difficulty: question.difficulty,
+                                                            fillIn: question.fillIn,
+                                                            options: question.options,
+                                                            question: question.question,
+                                                            score: question.score,
+                                                        };
+                                                    }),
                                                     submission: submission.submissions,
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
                                                 });
                                             } else {
                                                 res.status(200).send({
                                                     answers: test.graph[currentRecord.lastPosition].solution,
-                                                    body: resQuestions,
+                                                    body: resQuestions.map((question) => {
+                                                        return {
+                                                            difficulty: question.difficulty,
+                                                            fillIn: question.fillIn,
+                                                            options: question.options,
+                                                            question: question.question,
+                                                            score: question.score,
+                                                        };
+                                                    }),
                                                     submission: [],
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
                                                 });

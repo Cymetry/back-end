@@ -90,9 +90,9 @@ export class DbHelpers {
     }
 
     public async createQuestion(skillsCovered: any[], difficulty: number, score: number, setting: string,
-                                answer: string) {
+                                fillIn: boolean, options: any[]) {
         return await question.create({
-            answer, created: new Date(), difficulty, question: setting,
+            created: new Date(), difficulty, fillIn, options, question: setting,
             score, skillsCovered,
         });
     }

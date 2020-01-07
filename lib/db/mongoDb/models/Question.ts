@@ -16,14 +16,16 @@ export interface Question extends Document {
     difficulty: number;
     score: number;
     question: string;
-    answer: string;
+    options: [string];
+    fillIn: boolean;
     created: Date;
 }
 
 const QuestionSchema: Schema = new Schema({
-    answer: {type: String, required: true},
     created: {type: Date, required: true},
     difficulty: {type: Number, required: true},
+    fillIn: {type: Boolean, required: true},
+    options: {type: Array(String), required: true},
     question: {type: String, required: true},
     score: {type: Number, required: true},
     skillsCovered: {type: Array(SkillSchema), required: true},
