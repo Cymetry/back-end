@@ -32,7 +32,7 @@ class AuthController {
                 {expiresIn: "1h"},
             );
 
-            res.send(token);
+            res.send({jwt: token, isPremium: user.isPremium});
         } else {
             res.status(500).send("missing user record");
         }
