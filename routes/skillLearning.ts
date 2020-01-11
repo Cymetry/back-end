@@ -303,3 +303,6 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
     }
 });
 
+skillLearning.patch("/program", [checkJwt, checkRole(["ADMIN"])], async (req, res, next) => {
+  // todo
+});

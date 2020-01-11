@@ -18,6 +18,7 @@ class FlowController {
             res.send(programs.map((program) => {
                 return {
                     id: program.id,
+                    logo: program.logo,
                     name: program.name,
                 };
             }));
@@ -31,7 +32,7 @@ class FlowController {
         try {
             const curriculum = await Curriculum.findAll({where: {programId}});
             res.status(200).send(curriculum.map((row) => {
-                return {id: row.id, name: row.name};
+                return {id: row.id, name: row.name, logo: row.logo};
             }));
         } catch (error) {
             res.status(404).send(error.message);
@@ -49,6 +50,7 @@ class FlowController {
                     return {
                         complete: progressRecord.skillsComplete.length,
                         id: topic.id,
+                        logo: topic.logo,
                         name: topic.name,
                         total: topic.skillCount,
                     };
@@ -56,6 +58,7 @@ class FlowController {
                     return {
                         complete: 0,
                         id: topic.id,
+                        logo: topic.logo,
                         name: topic.name,
                         total: topic.skillCount,
                     };
@@ -81,12 +84,14 @@ class FlowController {
                     return {
                         complete: progressRecord.skillsComplete.includes(skill.id),
                         id: skill.id,
+                        logo: skill.logo,
                         name: skill.name,
                     };
                 } else {
                     return {
                         complete: false,
                         id: skill.id,
+                        logo: skill.logo,
                         name: skill.name,
                     };
                 }
@@ -99,11 +104,11 @@ class FlowController {
     }
 
     public static createProgram = async (req: Request, res: Response) => {
-        const {name} = req.body;
+        const {name, logo} = req.body;
         try {
-            const record = await Program.create({name});
+            const record = await Program.create({name, logo});
             await record.save();
-            res.status(204).send();
+            res.status(200).send({id: record.id});
         } catch (error) {
             res.status(409).send(error.message);
         }
@@ -111,11 +116,13 @@ class FlowController {
 
     public static editProgram = async (req: Request, res: Response) => {
         const id = parseInt(req.query.id, 10);
-        const {name} = req.body;
+        const {name, logo} = req.body;
+        const dbObj = JSON.parse(JSON.stringify({name, logo}));
+        console.log("dbsada", dbObj);
 
         try {
-            await Program.update({name}, {where: {id}});
-            res.status(204).send();
+            await Program.update(dbObj, {where: {id}});
+            res.status(200).send();
         } catch (error) {
             res.status(500).send(error.message);
         }
@@ -126,7 +133,7 @@ class FlowController {
         try {
             const rowsAffected = await Program.destroy({where: {id}});
             if (rowsAffected === 1) {
-                res.status(204).send();
+                res.status(200).send();
             } else {
                 res.status(404).send("No record exists");
             }
@@ -137,11 +144,11 @@ class FlowController {
     }
 
     public static createCurriculum = async (req: Request, res: Response) => {
-        const {name, programId} = req.body;
+        const {name, programId, logo} = req.body;
         try {
-            const record = await Curriculum.create({name, programId});
+            const record = await Curriculum.create({name, programId, logo});
             await record.save();
-            res.status(204).send();
+            res.status(200).send({id: record.id});
         } catch (error) {
             res.status(409).send(error.message);
         }
@@ -149,11 +156,12 @@ class FlowController {
 
     public static editCurriculum = async (req: Request, res: Response) => {
         const id = parseInt(req.query.id, 10);
-        const {name} = req.body;
+        const {name, logo} = req.body;
+        const dbObj = JSON.parse(JSON.stringify({name, logo}));
 
         try {
-            await Curriculum.update({name}, {where: {id}});
-            res.status(204).send();
+            await Curriculum.update(dbObj, {where: {id}});
+            res.status(200).send();
         } catch (error) {
             res.status(500).send(error.message);
         }
@@ -164,7 +172,7 @@ class FlowController {
         try {
             const rowsAffected = await Curriculum.destroy({where: {id}});
             if (rowsAffected === 1) {
-                res.status(204).send();
+                res.status(200).send();
             } else {
                 res.status(404).send("No record exists");
             }
@@ -175,11 +183,11 @@ class FlowController {
     }
 
     public static createTopic = async (req: Request, res: Response) => {
-        const {name, skillCount, curriculumId, minTestNum, maxTestNum} = req.body;
+        const {name, skillCount, logo, curriculumId, minTestNum, maxTestNum} = req.body;
         try {
-            const record = await Topic.create({name, skillCount, curriculumId, minTestNum, maxTestNum});
+            const record = await Topic.create({name, skillCount, logo, curriculumId, minTestNum, maxTestNum});
             await record.save();
-            res.status(204).send();
+            res.status(200).send({id: record.id});
         } catch (error) {
             res.status(409).send(error.message);
         }
@@ -187,11 +195,12 @@ class FlowController {
 
     public static editTopic = async (req: Request, res: Response) => {
         const id = parseInt(req.query.id, 10);
-        const {name, skillCount, minTestNum, maxTestNum} = req.body;
+        const {name, skillCount, logo, minTestNum, maxTestNum} = req.body;
+        const dbObject = JSON.parse(JSON.stringify({name, skillCount, logo, minTestNum, maxTestNum}));
 
         try {
-            await Topic.update({name, skillCount, minTestNum, maxTestNum}, {where: {id}});
-            res.status(204).send();
+            await Topic.update(dbObject, {where: {id}});
+            res.status(200).send();
         } catch (error) {
             res.status(500).send(error.message);
         }
@@ -202,7 +211,7 @@ class FlowController {
         try {
             const rowsAffected = await Topic.destroy({where: {id}});
             if (rowsAffected === 1) {
-                res.status(204).send();
+                res.status(200).send();
             } else {
                 res.status(404).send("No record exists");
             }
@@ -213,11 +222,11 @@ class FlowController {
     }
 
     public static createSkill = async (req: Request, res: Response) => {
-        const {name, topicId, difficulty} = req.body;
+        const {name, topicId, difficulty, logo} = req.body;
         try {
-            const record = await Skill.create({name, topicId, difficulty});
+            const record = await Skill.create({name, topicId, difficulty, logo});
             await record.save();
-            res.status(204).send();
+            res.status(200).send({id: record.id});
         } catch (error) {
             res.status(409).send(error.message);
         }
@@ -225,12 +234,12 @@ class FlowController {
 
     public static editSkill = async (req: Request, res: Response) => {
         const id = parseInt(req.query.id, 10);
-        const {name, difficulty} = req.body;
-        const values = JSON.parse(JSON.stringify({name, difficulty}));
+        const {name, difficulty, logo} = req.body;
+        const dbObject = JSON.parse(JSON.stringify({name, difficulty, logo}));
 
         try {
-            await Skill.update(values, {where: {id}});
-            res.status(204).send();
+            await Skill.update(dbObject, {where: {id}});
+            res.status(200).send();
         } catch (error) {
             res.status(500).send(error.message);
         }
@@ -241,7 +250,7 @@ class FlowController {
         try {
             const rowsAffected = await Skill.destroy({where: {id}});
             if (rowsAffected === 1) {
-                res.status(204).send();
+                res.status(200).send();
             } else {
                 res.status(404).send("No record exists");
             }

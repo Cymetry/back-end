@@ -22,6 +22,10 @@ export class Skill extends Model<Skill> {
     @Column
     public name!: string;
 
+    @AllowNull(true)
+    @Column
+    public logo!: string;
+
     @AllowNull(false)
     @Column
     public difficulty!: string;

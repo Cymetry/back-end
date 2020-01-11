@@ -23,6 +23,10 @@ export class Topic extends Model<Topic> {
     @Column
     public name!: string;
 
+    @AllowNull(true)
+    @Column
+    public logo!: string;
+
     @AllowNull(false)
     @Column
     public skillCount!: number;

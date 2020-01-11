@@ -19,6 +19,10 @@ export class Program extends Model<Program> {
     @Column
     public name!: string;
 
+    @AllowNull(true)
+    @Column
+    public logo!: string;
+
     @CreatedAt
     public creationDate!: Date;
 

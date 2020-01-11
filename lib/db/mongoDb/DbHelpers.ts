@@ -135,6 +135,10 @@ export class DbHelpers {
         });
     }
 
+    public async deleteProblemRecord(id: string) {
+        return await problem.findByIdAndDelete(id);
+    }
+
     public async createProcess(problems: any[], videoURL: Video, skillRef: string) {
         return await process.create({
             created: new Date(),

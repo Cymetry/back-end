@@ -22,6 +22,10 @@ export class Curriculum extends Model<Curriculum> {
     @Column
     public name!: string;
 
+    @AllowNull(true)
+    @Column
+    public logo!: string;
+
     @ForeignKey(() => Program)
     @AllowNull(false)
     @Column
