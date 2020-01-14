@@ -29,13 +29,17 @@ class AuthController {
             const token = jwt.sign(
                 {userId: user.id, email: user.email},
                 config.jwtSecret,
-                {expiresIn: "1h"},
+                {expiresIn: "7d"},
             );
 
             res.send({jwt: token, isPremium: user.isPremium});
         } else {
             res.status(500).send("missing user record");
         }
+    }
+
+    public static refresh = async (req: Request, res: Response) => {
+
     }
 
     public static changePassword = async (req: Request, res: Response) => {
