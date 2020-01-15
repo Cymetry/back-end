@@ -54,7 +54,7 @@ class TestingController {
                         if (coverable) {
                             test.init(questions, coverable.skills, minBound);
                             const resQuestions = test.graph[0].questions;
-                            res.status(200).send({
+                            res.status(200).send(JSON.stringify({
                                 body: resQuestions.map((question) => {
                                     return {
                                         difficulty: question.difficulty,
@@ -64,7 +64,7 @@ class TestingController {
                                         score: question.score,
                                     };
                                 }),
-                            });
+                            }));
                         } else {
                             res.status(500).send({message: "Failed to find coverable skills for test"});
                             return;
@@ -131,7 +131,7 @@ class TestingController {
                                 test.init(questions, coverable.skills, minBound);
 
                                 if (test.graph[currentRecord.lastPosition].name === "Test complete") {
-                                    res.status(200).send({message: "Test has been completed"});
+                                    res.status(200).send(JSON.stringify({message: "Test has been completed"}));
                                     return;
                                 }
 
@@ -141,7 +141,7 @@ class TestingController {
                                         topicId,
                                         userId,
                                         test.graph[currentRecord.lastPosition].next().index);
-                                    res.status(200).send({message: "Test Complete!"});
+                                    res.status(200).send(JSON.stringify({message: "Test Complete!"}));
                                     return;
                                 } else {
                                     if (currentRecord.isFinished) {
@@ -153,7 +153,7 @@ class TestingController {
                                         const resQuestions = test.graph[currentRecord.lastPosition]
                                             .next().node.questions;
                                         if (questions) {
-                                            res.status(200).send({
+                                            res.status(200).send(JSON.stringify({
                                                 answers: test.graph[currentRecord.lastPosition].next().node.solution,
                                                 body: resQuestions.map((question) => {
                                                     return {
@@ -165,7 +165,7 @@ class TestingController {
                                                     };
                                                 }),
                                                 weakSet: test.graph[currentRecord.lastPosition].next().node.weakSet,
-                                            });
+                                            }));
                                         } else {
                                             res.status(500).send({message: "No questions found!"});
                                         }
@@ -178,7 +178,7 @@ class TestingController {
                                                 currentRecord.lastPosition);
 
                                             if (submission) {
-                                                res.status(200).send({
+                                                res.status(200).send(JSON.stringify({
                                                     answers: test.graph[currentRecord.lastPosition].solution,
                                                     body: resQuestions.map((question) => {
                                                         return {
@@ -191,9 +191,9 @@ class TestingController {
                                                     }),
                                                     submission: submission.submissions,
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
-                                                });
+                                                }));
                                             } else {
-                                                res.status(200).send({
+                                                res.status(200).send(JSON.stringify({
                                                     answers: test.graph[currentRecord.lastPosition].solution,
                                                     body: resQuestions.map((question) => {
                                                         return {
@@ -206,7 +206,7 @@ class TestingController {
                                                     }),
                                                     submission: [],
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
-                                                });
+                                                }));
                                             }
                                         } else {
                                             res.status(500).send({message: "No questions found!"});

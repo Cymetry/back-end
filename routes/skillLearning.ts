@@ -89,7 +89,7 @@ skillLearning.get("/start", [checkJwt], async (req, res, next) => {
                 const problemRecord = await dbHelpers.getProblemById(skillLearn.graph[0].dbRef);
 
                 if (problemRecord) {
-                    res.status(200).send({body: {content: problemRecord}});
+                    res.status(200).send(JSON.stringify({body: {content: problemRecord}}));
                 } else {
                     res.status(500).send({message: "No content found"});
                 }
@@ -196,10 +196,11 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
                     if (skillRecord) {
                         await dbHelpers.completeSkill(userId, skillRecord.topicId, skillId);
                     } else {
-                        res.status(200).send({message: "Skill Complete, but progress has not been saved!"});
+                        res.status(200).send(JSON.stringify(
+                            {message: "Skill Complete, but progress has not been saved!"}));
                     }
 
-                    res.status(200).send({message: "Skill Complete!"});
+                    res.status(200).send(JSON.stringify({message: "Skill Complete!"}));
                 } else {
                     if (currentPosition.isFinished) {
 
@@ -263,7 +264,7 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
                             && skillLearn.graph[currentPosition.lastPosition].next().node.name === "Guided problem 3"
                             && currentPosition.isFinished
                         ) {
-                            res.status(200).send({
+                            res.status(200).send(JSON.stringify({
                                 body: {
                                     content: problemRecord,
                                     given: givenRecord ? givenRecord : null,
@@ -271,9 +272,9 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
                                         : null,
                                     reentered: true,
                                 },
-                            });
+                            }));
                         } else {
-                            res.status(200).send({
+                            res.status(200).send(JSON.stringify({
                                 body: {
                                     content: problemRecord,
                                     given: givenRecord ? givenRecord : null,
@@ -282,7 +283,7 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
                                     submission: submission ? submission.content.filter(
                                         (record) => record.problem === problemRecord.type) : null,
                                 },
-                            });
+                            }));
                         }
 
                     } else {
