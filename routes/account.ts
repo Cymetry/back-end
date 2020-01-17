@@ -7,11 +7,11 @@ export const accountRouter = Router();
 
 accountRouter.get("/", [checkJwt], AccountController.loadAccount);
 
-accountRouter.post("/help", [checkJwt], AccountController.sendHelpAndFeedback);
+accountRouter.post("/help", AccountController.sendHelpAndFeedback);
 
 accountRouter.get("/payment", [checkJwt], AccountController.loadPayment);
 
-accountRouter.get("/FAQ", [checkJwt], AccountController.loadFAQ);
+accountRouter.get("/FAQ", AccountController.loadFAQ);
 
 accountRouter.post("/FAQ", [checkJwt, checkRole(["ADMIN"])], AccountController.addFAQ);
 
