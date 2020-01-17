@@ -141,6 +141,7 @@ class TestingController {
                                         topicId,
                                         userId,
                                         test.graph[currentRecord.lastPosition].next().index);
+                                    await dbHelpers.completeTest(userId, topicId);
                                     res.status(200).send(JSON.stringify({message: "Test Complete!"}));
                                     return;
                                 } else {

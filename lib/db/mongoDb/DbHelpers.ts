@@ -5,6 +5,7 @@ import problem from "./models/Problem";
 import process from "./models/Process";
 import question from "./models/Question";
 import submission from "./models/Submission";
+import testComplete from "./models/TestComplete";
 import testPosition from "./models/TestPosition";
 import testSkills from "./models/TestSkills";
 import testSubmission from "./models/TestSubmission";
@@ -12,6 +13,28 @@ import video, {Video} from "./models/Video";
 
 
 export class DbHelpers {
+    public async findCompleteSkills(userId: string) {
+        return await complete.find({
+            userId,
+        });
+    }
+
+    public async findCompleteTests(userId: string) {
+        return await testComplete.findOne({
+            userId,
+        });
+    }
+
+    public async completeTest(userId: number, topicId: number) {
+        const record = await testComplete.findOne({userId, topicId});
+
+        if (record) {
+            return await complete.updateOne({userId, topicId}, {$inc: {views: 1}});
+        } else {
+            return await complete.create({userId, topicId, testsComplete: 1});
+        }
+    }
+
 
     public async createOrUpdateTestSubmission(userId: string, topicId: string, phase: number, submissions: any[]) {
         return await testSubmission.update(

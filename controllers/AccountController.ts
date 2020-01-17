@@ -2,6 +2,8 @@ import {Request, Response} from "express";
 
 import emailConfig from "../config/emailConfig";
 import {DbHelpers} from "../lib/db/mongoDb/DbHelpers";
+import {Skill} from "../lib/db/postgresSQL/models/Skill";
+import {Topic} from "../lib/db/postgresSQL/models/Topic";
 import {User} from "../lib/db/postgresSQL/models/User";
 import {Email} from "../lib/Email";
 
@@ -18,9 +20,43 @@ class FlowController {
             const user = await User.findByPk(userId, {
                 attributes: ["name", "surname"],
             });
-            const result = {
-                user,
-            };
+
+            const skillsTotal = await Skill.findAndCountAll();
+            const topicsTotal = await Topic.findAndCountAll();
+
+            const testsComplete = await dbHelpers.findCompleteTests(userId);
+
+            let skillsComplete = 0;
+            const completes = await dbHelpers.findCompleteSkills(userId);
+
+            if (completes) {
+                completes.forEach((complete) => {
+                    skillsComplete += complete.skillsComplete.length;
+                });
+            }
+
+            let result;
+
+            if (skillsTotal && topicsTotal && testsComplete) {
+                result = {
+                    learning: skillsComplete / skillsTotal.count,
+                    revision: testsComplete.testsComplete / topicsTotal.count,
+                    user,
+                };
+            } else if (skillsTotal) {
+                result = {
+                    learning: skillsComplete / skillsTotal.count,
+                    revision: 0,
+                    user,
+                };
+            } else {
+                result = {
+                    learning: 0,
+                    revision: 0,
+                    user,
+                };
+            }
+
             res.status(200).send(result);
         } catch (error) {
             res.status(404).send(error.message);
