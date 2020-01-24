@@ -14,30 +14,30 @@ import video, {Video} from "./models/Video";
 
 export class DbHelpers {
     public async findCompleteSkills(userId: string) {
-        return await complete.find({
+        return complete.find({
             userId,
         });
     }
 
     public async findCompleteTests(userId: string) {
-        return await testComplete.findOne({
+        return testComplete.findOne({
             userId,
         });
     }
 
     public async completeTest(userId: number, topicId: number) {
-        const record = await testComplete.findOne({userId, topicId});
+        const record = testComplete.findOne({userId, topicId});
 
         if (record) {
-            return await complete.updateOne({userId, topicId}, {$inc: {views: 1}});
+            return complete.updateOne({userId, topicId}, {$inc: {views: 1}});
         } else {
-            return await complete.create({userId, topicId, testsComplete: 1});
+            return complete.create({userId, topicId, testsComplete: 1});
         }
     }
 
 
     public async createOrUpdateTestSubmission(userId: string, topicId: string, phase: number, submissions: any[]) {
-        return await testSubmission.update(
+        return testSubmission.update(
             {userId, topicId},
             {$set: {phase, submissions}},
             {upsert: true},
@@ -45,7 +45,7 @@ export class DbHelpers {
     }
 
     public async getTestSubmission(userId: string, topicId: string, phase: number) {
-        return await testSubmission.findOne({
+        return testSubmission.findOne({
             phase,
             topicId,
             userId,
@@ -53,7 +53,7 @@ export class DbHelpers {
     }
 
     public async findAllProcessesBySkills(skills: any[]) {
-        return await process.find({
+        return process.find({
             skillRef: {
                 $in: skills,
             },
@@ -61,26 +61,26 @@ export class DbHelpers {
     }
 
     public async findCoverableSkills(topicId: string) {
-        return await testSkills.findOne({
+        return testSkills.findOne({
             topicId,
         });
     }
 
     public async addCoverableSkills(topicId: string, skills: any[]) {
-        return await testSkills.create({
+        return testSkills.create({
             skills,
             topicId,
         });
     }
 
     public async findCoveredQuestions(skillIds: number[]) {
-        return await question.find({
+        return question.find({
             skillsCovered: {$elemMatch: {skillId: {$in: skillIds}}},
         });
     }
 
     public async createTestPositionRecord(topicId: string, userId: string) {
-        return await testPosition.create({
+        return testPosition.create({
             correctAnswers: [],
             isFinished: false,
             lastPosition: 0,
@@ -91,7 +91,7 @@ export class DbHelpers {
     }
 
     public async getTestPositionRecord(userId: string, topicId: string) {
-        return await testPosition.findOne({
+        return testPosition.findOne({
             topicId,
             userId,
         });
@@ -99,7 +99,7 @@ export class DbHelpers {
 
     public async updateTestPositionRecord(topicId: string, userId: string, correctAnswers: any[], wrongAnswers: any[],
                                           isFinished: boolean) {
-        return await testPosition.updateOne({topicId, userId}, {
+        return testPosition.updateOne({topicId, userId}, {
             correctAnswers,
             isFinished,
             wrongAnswers,
@@ -107,33 +107,33 @@ export class DbHelpers {
     }
 
     public async updateProgress(topicId: string, userId: string, lastPosition: number) {
-        return await testPosition.updateOne({topicId, userId}, {
+        return testPosition.updateOne({topicId, userId}, {
             lastPosition,
         });
     }
 
     public async createQuestion(skillsCovered: any[], difficulty: number, score: number, setting: string,
-                                fillIn: boolean, options: any[]) {
-        return await question.create({
-            created: new Date(), difficulty, fillIn, options, question: setting,
+                                fillIn: boolean, options: any[], graphs: string[]) {
+        return question.create({
+            created: new Date(), difficulty, fillIn, graphs, options, question: setting,
             score, skillsCovered,
         });
     }
 
     public async getQuestion(id: string) {
-        return await question.findOne({_id: id});
+        return question.findOne({_id: id});
     }
 
     public async getQuestionsByIds(ids: any[]) {
-        return await question.find({_id: ids});
+        return question.find({_id: ids});
     }
 
     public async deleteQuestion(id: string) {
-        return await question.deleteOne({_id: id});
+        return question.deleteOne({_id: id});
     }
 
     public async createOrUpdateSubmission(userId: string, procedure: string, content: any[]) {
-        return await submission.update(
+        return submission.update(
             {userId, procedure},
             {$set: {content}},
             {upsert: true},
@@ -141,17 +141,17 @@ export class DbHelpers {
     }
 
     public async getSubmission(userId: string, procedure: string) {
-        return await submission.findOne({userId, procedure});
+        return submission.findOne({userId, procedure});
     }
 
     public async createVideoRecord(content: string) {
-        return await video.create({
+        return video.create({
             content,
         });
     }
 
     public async createProblemRecord(questionRec: string, type: string, steps: any[]) {
-        return await problem.create({
+        return problem.create({
             question: questionRec,
             steps,
             type,
@@ -159,11 +159,11 @@ export class DbHelpers {
     }
 
     public async deleteProblemRecord(id: string) {
-        return await problem.findByIdAndDelete(id);
+        return problem.findByIdAndDelete(id);
     }
 
     public async createProcess(problems: any[], videoURL: Video, skillRef: string) {
-        return await process.create({
+        return process.create({
             created: new Date(),
             problems,
             skillRef,
@@ -172,19 +172,19 @@ export class DbHelpers {
     }
 
     public async completeSkill(userId: number, topicId: number, skill: number) {
-        const record = await complete.findOne({userId, topicId});
+        const record = complete.findOne({userId, topicId});
 
         if (record) {
-            return await complete.updateOne({userId, topicId}, {$push: {skillsComplete: skill}});
+            return complete.updateOne({userId, topicId}, {$push: {skillsComplete: skill}});
         } else {
             const skillsComplete: number[] = [];
             skillsComplete.push(skill);
-            return await complete.create({userId, topicId, skillsComplete});
+            return complete.create({userId, topicId, skillsComplete});
         }
     }
 
     public async getCompleteSkills(userId: number, topicId: number) {
-        return await complete.findOne({userId, topicId});
+        return complete.findOne({userId, topicId});
     }
 
     public async createPositionRecord(id: string,
@@ -193,7 +193,7 @@ export class DbHelpers {
                                       userId: string,
                                       isFinished: boolean,
                                       correctCount: number) {
-        return await position.create({
+        return position.create({
             correctCount,
             isFinished,
             lastPosition,
@@ -204,7 +204,7 @@ export class DbHelpers {
     }
 
     public async getPositionRecord(userId: string, skillId: string) {
-        return await position.findOne({
+        return position.findOne({
             skillId,
             userId,
         });
@@ -212,47 +212,47 @@ export class DbHelpers {
 
     public async updatePositionRecord(userId: string, skillId: string, isFinished: boolean, mistakeCount: number,
                                       correctCount: number) {
-        return await position.update({userId, skillId}, {correctCount, isFinished, mistakeCount});
+        return position.update({userId, skillId}, {correctCount, isFinished, mistakeCount});
     }
 
     public async updatePositionRecordPosition(userId: string, skillId: string, lastPosition: number) {
-        return await position.update({userId, skillId}, {lastPosition, isFinished: false});
+        return position.update({userId, skillId}, {lastPosition, isFinished: false});
     }
 
     public async getProcessRecordBySkillRef(skillRef: string) {
-        return await process.findOne({
+        return process.findOne({
             skillRef,
         });
     }
 
     public async getProblemById(id: string) {
-        return await problem.findById(id);
+        return problem.findById(id);
     }
 
     public async getVideoById(id: string) {
-        return await video.findById(id);
+        return video.findById(id);
     }
 
     public async getVideosByIds(ids: any[]) {
-        return await video.find({
+        return video.find({
             _id: {$in: ids},
         });
     }
 
     public async loadFAQs() {
-        return await faq.find({});
+        return faq.find({});
     }
 
     public async addFAQ(title: string, content: string) {
-        return await faq.create({title, content});
+        return faq.create({title, content});
     }
 
     public async editFAQ(recordId: string, object: any) {
-        return await faq.updateOne({_id: recordId}, object);
+        return faq.updateOne({_id: recordId}, object);
     }
 
     public async deleteFAQ(recordId) {
-        return await faq.deleteOne({_id: recordId});
+        return faq.deleteOne({_id: recordId});
     }
 }
 

@@ -16,6 +16,7 @@ export interface Question extends Document {
     difficulty: number;
     score: number;
     question: string;
+    graphs: [string];
     options: [string];
     fillIn: boolean;
     created: Date;
@@ -25,6 +26,7 @@ const QuestionSchema: Schema = new Schema({
     created: {type: Date, required: true},
     difficulty: {type: Number, required: true},
     fillIn: {type: Boolean, required: true},
+    graphs: {type: Array(String), required: false},
     options: {type: Array(String), required: true},
     question: {type: String, required: true},
     score: {type: Number, required: true},

@@ -4,6 +4,7 @@ import * as mongoose from "mongoose";
 const StepSchema = new Schema({
     answer: [[String]],
     fillIn: Boolean,
+    graphs: [String],
     index: String,
     instruction: String,
 
@@ -22,6 +23,7 @@ export interface Problem extends Document {
     steps: [
         {
             instruction: string,
+            graphs: [string],
             fillIn: boolean,
             options: [
                 {

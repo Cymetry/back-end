@@ -19,7 +19,7 @@ class QuestionController {
     }
 
     public static addQuestion = async (req: Request, res: Response) => {
-        const {skillsCovered, difficulty, score, question, fillIn, options} = req.body;
+        const {skillsCovered, difficulty, score, question, fillIn, options, graphs} = req.body;
 
         try {
             const skillRecords = await Skill.findAll({where: {id: skillsCovered}});
@@ -32,7 +32,7 @@ class QuestionController {
                 });
 
                 const resRecord = await dbHelpers.createQuestion(
-                    covered, difficulty, score, question, fillIn, options,
+                    covered, difficulty, score, question, fillIn, options, graphs,
                 );
                 res.status(200).send(resRecord);
 
