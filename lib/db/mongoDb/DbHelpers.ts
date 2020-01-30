@@ -175,10 +175,14 @@ export class DbHelpers {
         const record = complete.findOne({userId, topicId});
 
         if (record) {
+            console.log("valod1");
             return complete.updateOne({userId, topicId}, {$push: {skillsComplete: skill}});
         } else {
+            console.log("valod2");
+
             const skillsComplete: number[] = [];
             skillsComplete.push(skill);
+            console.log(skillsComplete);
             return complete.create({userId, topicId, skillsComplete});
         }
     }
