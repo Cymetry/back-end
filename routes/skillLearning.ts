@@ -194,9 +194,7 @@ skillLearning.get("/resume", [checkJwt], async (req, res, next) => {
 
                     const skillRecord = await Skill.findByPk(parseInt(skillId, 10));
                     if (skillRecord) {
-                        console.log("Debil");
-                        const status = await dbHelpers.completeSkill(userId, skillRecord.topicId, skillId);
-                        console.log("Debil", status);
+                        await dbHelpers.completeSkill(userId, skillRecord.topicId, skillId);
                     } else {
                         res.status(200).send(JSON.stringify(
                             {message: "Skill Complete, but progress has not been saved!"}));

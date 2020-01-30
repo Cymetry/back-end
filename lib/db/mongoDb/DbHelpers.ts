@@ -173,17 +173,11 @@ export class DbHelpers {
 
     public async completeSkill(userId: number, topicId: number, skill: number) {
         const record = complete.find({userId, topicId});
-        console.log("valod0", record);
-
         if (record.length > 0) {
-            console.log("valod1");
             return complete.updateOne({userId, topicId}, {$push: {skillsComplete: skill}});
         } else {
-            console.log("valod2");
-
             const skillsComplete: number[] = [];
             skillsComplete.push(skill);
-            console.log(skillsComplete);
             return complete.create({userId, topicId, skillsComplete});
         }
     }
