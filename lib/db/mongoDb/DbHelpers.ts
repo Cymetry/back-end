@@ -173,6 +173,7 @@ export class DbHelpers {
 
     public async completeSkill(userId: number, topicId: number, skill: number) {
         const record = complete.findOne({userId, topicId});
+        console.log("valod0", record);
 
         if (record) {
             console.log("valod1");
