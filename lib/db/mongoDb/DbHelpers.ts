@@ -172,10 +172,10 @@ export class DbHelpers {
     }
 
     public async completeSkill(userId: number, topicId: number, skill: number) {
-        const record = complete.findOne({userId, topicId});
+        const record = complete.find({userId, topicId});
         console.log("valod0", record);
 
-        if (record) {
+        if (record.length > 0) {
             console.log("valod1");
             return complete.updateOne({userId, topicId}, {$push: {skillsComplete: skill}});
         } else {
