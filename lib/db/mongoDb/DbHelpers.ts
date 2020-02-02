@@ -172,7 +172,7 @@ export class DbHelpers {
     }
 
     public async completeSkill(userId: number, topicId: number, skill: number) {
-        const record = complete.find({userId, topicId});
+        const record = await complete.find({userId, topicId});
         if (record.length > 0) {
             return complete.updateOne({userId, topicId}, {$push: {skillsComplete: skill}});
         } else {
@@ -192,14 +192,17 @@ export class DbHelpers {
                                       userId: string,
                                       isFinished: boolean,
                                       correctCount: number) {
-        return position.create({
+        return position.update({
+            skillId: id,
+            userId,
+        }, {
             correctCount,
             isFinished,
             lastPosition,
             mistakeCount,
             skillId: id,
             userId,
-        });
+        }, {upsert: true});
     }
 
     public async getPositionRecord(userId: string, skillId: string) {
