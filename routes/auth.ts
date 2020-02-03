@@ -11,3 +11,10 @@ authRouter.post("/change-password", [checkJwt], AuthController.changePassword);
 
 // verify email
 authRouter.post("/verify", [checkJwt], AuthController.checkSecret);
+
+// reset password email request
+authRouter.get("/reset", AuthController.getResetPasswordEmail);
+
+// reset password
+authRouter.post("/reset", AuthController.resetPassword);
+
