@@ -174,7 +174,9 @@ export class DbHelpers {
     public async completeSkill(userId: number, topicId: number, skill: number) {
         const record = await complete.find({userId, topicId});
         if (record.length > 0) {
-            return complete.updateOne({userId, topicId}, {$push: {skillsComplete: skill}});
+            if (!record[0].skillsComplete.includes(skill)) {
+                return complete.updateOne({userId, topicId}, {$push: {skillsComplete: skill}});
+            }
         } else {
             const skillsComplete: number[] = [];
             skillsComplete.push(skill);
