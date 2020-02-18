@@ -115,7 +115,7 @@ export class DbHelpers {
     public async createQuestion(skillsCovered: any[], difficulty: number, score: number, setting: string,
                                 fillIn: boolean, options: any[], graphs: string[]) {
         return question.create({
-            created: new Date(), difficulty, fillIn, graphs, options, question: setting,
+            answers, created: new Date(), difficulty, fillIn, graphs, options, question: setting,
             score, skillsCovered,
         });
     }

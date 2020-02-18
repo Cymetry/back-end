@@ -19,10 +19,12 @@ export interface Question extends Document {
     graphs: [string];
     options: [string];
     fillIn: boolean;
+    answers: [string];
     created: Date;
 }
 
 const QuestionSchema: Schema = new Schema({
+    answers: {type: Array(String), required: true},
     created: {type: Date, required: true},
     difficulty: {type: Number, required: true},
     fillIn: {type: Boolean, required: true},
