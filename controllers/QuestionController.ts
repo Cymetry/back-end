@@ -32,7 +32,7 @@ class QuestionController {
                 });
 
                 const resRecord = await dbHelpers.createQuestion(
-                    covered, difficulty, score, question, fillIn, options, graphs, answers
+                    covered, difficulty, score, question, fillIn, options, graphs, answers,
                 );
                 res.status(200).send(resRecord);
 
