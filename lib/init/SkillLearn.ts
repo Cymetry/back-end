@@ -18,6 +18,7 @@ export class SkillLearn {
         const source = new SkillNode("Guided Problem 1");
         this.graph[this.globalIndex++] = source;
         source.dbRef = problemRef1.toString();
+        gp2L1.maxMistakeCount = 2;
 
         // guided problem 2 tree-level 1
         const gp2L1 = new SkillNode("Guided Problem 2");
