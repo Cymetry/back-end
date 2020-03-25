@@ -21,7 +21,7 @@ flowRouter.patch("/curriculum", [checkJwt, checkRole(["ADMIN"])], FlowController
 
 flowRouter.delete("/curriculum", [checkJwt, checkRole(["ADMIN"])], FlowController.deleteCurriculum);
 
-flowRouter.get("/topic", [checkJwt], FlowController.loadTopicsByCurriculum);
+flowRouter.get("/topic",  FlowController.loadTopicsByCurriculum);
 
 flowRouter.post("/topic", [checkJwt, checkRole(["ADMIN"])], FlowController.createTopic);
 
