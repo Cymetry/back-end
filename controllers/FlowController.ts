@@ -40,12 +40,19 @@ class FlowController {
     }
 
     public static loadTopicsByCurriculum = async (req: Request, res: Response) => {
-        const userId = res.locals.jwtPayload.userId;
+        let userId;
+        if (res.locals.jwtPayload) {
+            userId = res.locals.jwtPayload.userId;
+        }
+
         const curriculumId: number = parseInt(req.query.curriculumId, 10);
         try {
             const topics = await Topic.findAll({where: {curriculumId}});
             const mappedPromises = Promise.all(topics.map(async (topic) => {
-                const progressRecord = await dbHelpers.getCompleteSkills(userId, topic.id);
+                let progressRecord;
+                if (userId) {
+                    progressRecord = await dbHelpers.getCompleteSkills(userId, topic.id);
+                }
                 if (progressRecord) {
                     return {
                         complete: progressRecord.skillsComplete.length,
