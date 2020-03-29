@@ -37,21 +37,33 @@ class FlowController {
 
             let result;
 
+            const latestPositions = await dbHelpers.getLatestPositionRecord(userId);
+
+            const recent = {} as any;
+
+            if (latestPositions.length > 0) {
+                recent.lastSkill = latestPositions[0].skillId;
+                recent.preLastSkill = latestPositions[1] ? latestPositions[1] : null;
+            }
+
             if (skillsTotal && topicsTotal && testsComplete) {
                 result = {
                     learning: skillsComplete / skillsTotal.count,
+                    recent,
                     revision: testsComplete.testsComplete / topicsTotal.count,
                     user,
                 };
             } else if (skillsTotal) {
                 result = {
                     learning: skillsComplete / skillsTotal.count,
+                    recent,
                     revision: 0,
                     user,
                 };
             } else {
                 result = {
                     learning: 0,
+                    recent,
                     revision: 0,
                     user,
                 };

@@ -214,6 +214,12 @@ export class DbHelpers {
         });
     }
 
+    public async getLatestPositionRecord(userId: string) {
+        return position.find({
+            userId,
+        }).sort({updated_At: 1}).limit(2);
+    }
+
     public async updatePositionRecord(userId: string, skillId: string, isFinished: boolean, mistakeCount: number,
                                       correctCount: number) {
         return position.update({userId, skillId}, {correctCount, isFinished, mistakeCount});
