@@ -42,8 +42,20 @@ class FlowController {
             const recent = {} as any;
 
             if (latestPositions.length > 0) {
-                recent.lastSkill = latestPositions[0].skillId;
-                recent.preLastSkill = latestPositions[1] ? latestPositions[1].skillId : null;
+                let skillRecord = await Skill.findByPk(latestPositions[0].skillId);
+                recent.lastSkill = {
+                    skillId: latestPositions[0].skillId,
+                    topicId: skillRecord ? skillRecord.topicId : null,
+
+                };
+                skillRecord = null;
+                if (latestPositions.length > 1) {
+                    skillRecord = await Skill.findByPk(latestPositions[1].skillId);
+                }
+                recent.preLastSkill = latestPositions.length > 1 ? {
+                    skillId: latestPositions[1].skillId,
+                    topicId: skillRecord ? skillRecord.topicId : null,
+                } : null;
             }
 
             if (skillsTotal && topicsTotal && testsComplete) {
