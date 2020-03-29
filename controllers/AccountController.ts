@@ -43,7 +43,7 @@ class FlowController {
 
             if (latestPositions.length > 0) {
                 recent.lastSkill = latestPositions[0].skillId;
-                recent.preLastSkill = latestPositions[1] ? latestPositions[1] : null;
+                recent.preLastSkill = latestPositions[1] ? latestPositions[1].skillId : null;
             }
 
             if (skillsTotal && topicsTotal && testsComplete) {

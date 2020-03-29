@@ -53,14 +53,16 @@ skillLearning.get("/start", [checkJwt], async (req, res, next) => {
     const skillId = req.query.skillId;
 
     try {
-        // init SkillLearning with 0 score
-        await dbHelpers.createPositionRecord(skillId, 0, 0, userId, false, 0);
+
 
         // retrieve record from db
         const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
 
         // sync with process wizard
         if (skillLearningRecord) {
+            // init SkillLearning with 0 score
+            await dbHelpers.createPositionRecord(skillId, 0, 0, userId, false, 0);
+
             const videoUrl = await dbHelpers.getVideoById(skillLearningRecord.video.toString());
 
             if (videoUrl) {
