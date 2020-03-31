@@ -1,6 +1,6 @@
 export default {
-    email: "something@gmail.com",
-    feedbackEmail: "smethingMore@gmail.com",
-    password: "12345",
-    username: "arman",
+    email: "team@umath.io",
+    feedbackEmail: "team@umath.io",
+    password: "Umath.Account.main1",
+    username: "team@umath.io",
 };

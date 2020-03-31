@@ -77,7 +77,7 @@ class UserController {
                 await Secret.create({userId: record.id, token});
 
                 const subject = "Umath email verification";
-                const text = "Please, type the secret: " + token + "in the application";
+                const text = "Please, type the secret: " + token + " in the application to verify your email";
                 await emailSender.sendEmail(emailConfig.email, user.email, subject, text);
             } catch (e) {
                 console.log(e.message);

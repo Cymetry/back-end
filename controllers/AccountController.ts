@@ -124,7 +124,7 @@ class FlowController {
         const {title, content} = req.body;
         try {
             await dbHelpers.addFAQ(title, content);
-            res.status(200).send({message: "Node successfully added"});
+            res.status(200).send({message: "Question has been successfully added"});
         } catch (e) {
             console.log(e);
             res.status(500).send({error: e.message});

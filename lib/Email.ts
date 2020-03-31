@@ -5,7 +5,13 @@ export class Email {
     public transporter: nodemailer.Transporter;
 
     constructor(username: string, password: string) {
-        this.transporter = nodemailer.createTransport(`smtps://${username}%40gmail.com:${password}@smtp.gmail.com`);
+        this.transporter = nodemailer.createTransport( {
+            auth: {
+                pass: password,
+                user: username,
+            },
+            service: "gmail",
+        });
     }
 
     public sendEmail(from: string, to: string, subject: string, body: string): Promise<void> {

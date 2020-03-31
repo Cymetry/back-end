@@ -64,10 +64,10 @@ class AuthController {
                     }
 
                     const subject = "Umath password reset";
-                    const text = "Please, type the secret: " + token + "in the application";
+                    const text = "Please, type the secret: " + token + " in the application";
                     console.log("email text", text);
                     await emailSender.sendEmail(emailConfig.email, user.email, subject, text);
-                    res.status(200).send("Email was successfully send");
+                    res.status(200).send("Email was successfully sent");
                 } catch (e) {
                     console.log(e.message);
                     res.status(500).send({body: "Failed to send email"});
@@ -155,7 +155,7 @@ class AuthController {
 
         const secretRecords = await Secret.findAll({limit: 1, where: {userId}});
         if (secretRecords) {
-            if (secretRecords[0].token === secret) {
+            if (Number(secretRecords[0].token) === Number(secret)) {
                 await User.update({isVerified: true}, {where: {id: userId}});
                 res.status(200).send({message: "email successfully verified"});
             } else {
