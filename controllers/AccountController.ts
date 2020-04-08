@@ -60,6 +60,10 @@ class FlowController {
 
             if (skillsTotal && topicsTotal && testsComplete) {
                 result = {
+                    chapters: {
+                        attempted: completes ? completes.length : 0,
+                        total: topicsTotal ? topicsTotal.count : 0,
+                    },
                     learning: skillsComplete / skillsTotal.count,
                     questions: {
                         completed: skillsComplete ? 3 * skillsComplete : 0,
@@ -74,6 +78,10 @@ class FlowController {
                 };
             } else if (skillsTotal) {
                 result = {
+                    chapters: {
+                        attempted: completes ? completes.length : 0,
+                        total: topicsTotal ? topicsTotal.count : 0,
+                    },
                     learning: skillsComplete / skillsTotal.count,
                     questions: {
                         completed: skillsComplete ? 3 * skillsComplete : 0,
@@ -89,6 +97,10 @@ class FlowController {
                 };
             } else {
                 result = {
+                    chapters: {
+                        attempted: completes ? completes.length : 0,
+                        total: topicsTotal ? topicsTotal.count : 0,
+                    },
                     learning: 0,
                     questions: {
                         completed: skillsComplete ? 3 * skillsComplete : 0,
