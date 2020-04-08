@@ -61,22 +61,45 @@ class FlowController {
             if (skillsTotal && topicsTotal && testsComplete) {
                 result = {
                     learning: skillsComplete / skillsTotal.count,
-                    recent,
+                    questions: {
+                        completed: skillsComplete ? 3 * skillsComplete : 0,
+                        total: skillsTotal ? 3 * skillsTotal.count : 0,
+                    },
                     revision: testsComplete.testsComplete / topicsTotal.count,
+                    tests: {
+                        completed: testsComplete ? testsComplete.testsComplete : 0,
+                        total: topicsTotal ? topicsTotal.count : 0,
+                    },
                     user,
                 };
             } else if (skillsTotal) {
                 result = {
                     learning: skillsComplete / skillsTotal.count,
+                    questions: {
+                        completed: skillsComplete ? 3 * skillsComplete : 0,
+                        total: skillsTotal ? 3 * skillsTotal.count : 0,
+                    },
                     recent,
                     revision: 0,
+                    tests: {
+                        completed: testsComplete ? testsComplete.testsComplete : 0,
+                        total: topicsTotal ? topicsTotal.count : 0,
+                    },
                     user,
                 };
             } else {
                 result = {
                     learning: 0,
+                    questions: {
+                        completed: skillsComplete ? 3 * skillsComplete : 0,
+                        total:  0,
+                    },
                     recent,
                     revision: 0,
+                    tests: {
+                        completed: testsComplete ? testsComplete.testsComplete : 0,
+                        total: topicsTotal ? topicsTotal.count : 0,
+                    },
                     user,
                 };
             }
