@@ -73,6 +73,8 @@ class AuthController {
                     res.status(500).send({body: "Failed to send email"});
                 }
 
+            } else {
+                res.status(401).send({body: "no user with such email"});
             }
         } catch (e) {
             console.log(e);
