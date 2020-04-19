@@ -57,6 +57,7 @@ class TestingController {
                             res.status(200).send(JSON.stringify({
                                 body: resQuestions.map((question) => {
                                     return {
+                                        answers: answers,
                                         difficulty: question.difficulty,
                                         fillIn: question.fillIn,
                                         options: question.options,
