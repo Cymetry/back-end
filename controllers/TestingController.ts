@@ -57,7 +57,7 @@ class TestingController {
                             res.status(200).send(JSON.stringify({
                                 body: resQuestions.map((question) => {
                                     return {
-                                        answers: answers,
+                                        answers: question.answers,
                                         difficulty: question.difficulty,
                                         fillIn: question.fillIn,
                                         options: question.options,
@@ -159,6 +159,7 @@ class TestingController {
                                                 answers: test.graph[currentRecord.lastPosition].next().node.solution,
                                                 body: resQuestions.map((question) => {
                                                     return {
+                                                        answers: question.answers,
                                                         difficulty: question.difficulty,
                                                         fillIn: question.fillIn,
                                                         options: question.options,
@@ -184,6 +185,7 @@ class TestingController {
                                                     answers: test.graph[currentRecord.lastPosition].solution,
                                                     body: resQuestions.map((question) => {
                                                         return {
+                                                            answers: question.answers,
                                                             difficulty: question.difficulty,
                                                             fillIn: question.fillIn,
                                                             options: question.options,
@@ -199,6 +201,7 @@ class TestingController {
                                                     answers: test.graph[currentRecord.lastPosition].solution,
                                                     body: resQuestions.map((question) => {
                                                         return {
+                                                            answers: question.answers,
                                                             difficulty: question.difficulty,
                                                             fillIn: question.fillIn,
                                                             options: question.options,
