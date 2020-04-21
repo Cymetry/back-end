@@ -148,6 +148,7 @@ class SkillLearning {
                 // retrieve record from db
                 const skillLearningRecord = await dbHelpers.getProcessRecordBySkillRef(skillId);
 
+                console.log("valod", currentPosition);
                 // sync with process wizard
                 if (skillLearningRecord) {
 

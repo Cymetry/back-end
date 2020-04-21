@@ -54,6 +54,7 @@ export class SkillLearn {
 
         // define deepening logic
         function sourceNext() {
+            console.log("valod1", this.mistakeCount, this.correctCount);
             if (this.mistakeCount === 0) {
                 return this.children.filter((elm) => elm.id === 4)[0];
             } else if (this.correctCount >= 0.5) {
