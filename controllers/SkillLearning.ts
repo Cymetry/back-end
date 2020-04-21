@@ -84,7 +84,7 @@ class SkillLearning {
                     const problemRecord = await dbHelpers.getProblemById(skillLearn.graph[0].dbRef);
 
                     if (problemRecord) {
-                        res.status(200).send(JSON.stringify({body: {content: problemRecord, maxMistakes: 2}}));
+                        res.status(200).send(JSON.stringify({body: {content: problemRecord, maxMistakes: 1}}));
                     } else {
                         res.status(500).send({message: "No content found"});
                     }
