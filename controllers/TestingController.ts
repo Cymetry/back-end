@@ -67,6 +67,7 @@ class TestingController {
                                         score: question.score,
                                     };
                                 }),
+                                round: test.graph[0].name,
                             }));
                         } else {
                             res.status(500).send({message: "Failed to find coverable skills for test"});
@@ -171,6 +172,7 @@ class TestingController {
                                                         score: question.score,
                                                     };
                                                 }),
+                                                round: test.graph[currentRecord.lastPosition].next().node.name,
                                                 weakSet: test.graph[currentRecord.lastPosition].next().node.weakSet,
                                             }));
                                         } else {
@@ -199,6 +201,7 @@ class TestingController {
                                                             score: question.score,
                                                         };
                                                     }),
+                                                    round: test.graph[currentRecord.lastPosition].node.name,
                                                     submission: submission.submissions,
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
                                                 }));
@@ -217,6 +220,7 @@ class TestingController {
                                                             score: question.score,
                                                         };
                                                     }),
+                                                    round: test.graph[currentRecord.lastPosition].node.name,
                                                     submission: [],
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
                                                 }));

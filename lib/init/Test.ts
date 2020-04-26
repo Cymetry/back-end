@@ -111,7 +111,7 @@ export class Test {
 
         for (const question of questions) {
 
-            if (coverageSet.size === 0 && result.length >= minBound) {
+            if ((coverageSet.size === 0 && result.length >= minBound) || result.length === 6) {
                 break;
             }
 
