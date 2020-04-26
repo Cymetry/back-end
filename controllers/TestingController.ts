@@ -201,7 +201,7 @@ class TestingController {
                                                             score: question.score,
                                                         };
                                                     }),
-                                                    round: test.graph[currentRecord.lastPosition].node.name,
+                                                    round: test.graph[currentRecord.lastPosition].name,
                                                     submission: submission.submissions,
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
                                                 }));
@@ -220,7 +220,7 @@ class TestingController {
                                                             score: question.score,
                                                         };
                                                     }),
-                                                    round: test.graph[currentRecord.lastPosition].node.name,
+                                                    round: test.graph[currentRecord.lastPosition].name,
                                                     submission: [],
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
                                                 }));
