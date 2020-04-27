@@ -157,6 +157,7 @@ class TestingController {
 
                                         const resQuestions = test.graph[currentRecord.lastPosition]
                                             .next().node.questions;
+                                        await dbHelpers.updateProgressStatus(topicId, userId, false);
                                         if (questions) {
                                             res.status(200).send(JSON.stringify({
                                                 answers: test.graph[currentRecord.lastPosition].next().node.solution,

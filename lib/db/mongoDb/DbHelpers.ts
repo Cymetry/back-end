@@ -112,6 +112,12 @@ export class DbHelpers {
         });
     }
 
+    public async updateProgressStatus(topicId: string, userId: string, isFinished: boolean) {
+        return testPosition.updateOne({topicId, userId}, {
+            isFinished,
+        });
+    }
+
     public async createQuestion(skillsCovered: any[], difficulty: number, score: number, setting: string,
                                 fillIn: boolean, options: any[], graphs: string[], answers: string[]) {
         return question.create({
