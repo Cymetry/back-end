@@ -115,12 +115,13 @@ export class SkillTest {
                 break;
             }
 
+            result.push(question);
+
             // to not enter into foreach if coverage is satisfied but minimum bound not
             if (coverageSet.size > 0) {
                 // filling skills covered
                 question.skillsCovered.forEach((skill) => {
                     if (coverageSet.has(skill.skillId)) {
-                        result.push(question);
                         coverageSet.delete(skill.skillId);
                     }
                 });
