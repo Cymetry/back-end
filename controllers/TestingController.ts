@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {DbHelpers} from "../lib/db/mongoDb/DbHelpers";
 import {Skill} from "../lib/db/postgresSQL/models/Skill";
 import {Topic} from "../lib/db/postgresSQL/models/Topic";
-import {Test} from "../lib/init/Test";
+import {SkillTest} from "../lib/init/SkillTest";
 
 const dbHelpers = new DbHelpers();
 
@@ -34,7 +34,7 @@ class TestingController {
             // initiate base position in db
             await dbHelpers.createTestPositionRecord(topicId, userId);
 
-            const test = new Test([], [], [], []);
+            const test = new SkillTest([], [], [], []);
 
             const topicRecord = await Topic.findByPk(topicId);
 
@@ -112,9 +112,9 @@ class TestingController {
                 const corrects = await dbHelpers.getQuestionsByIds(currentRecord.correctAnswers);
 
                 if (currentRecord.lastPosition >= 2 && currentRecord.isFinished) {
-                    test = new Test([], [], wrongs, corrects);
+                    test = new SkillTest([], [], wrongs, corrects);
                 } else {
-                    test = new Test(wrongs, corrects, [], []);
+                    test = new SkillTest(wrongs, corrects, [], []);
                 }
 
                 if (topicRecord && wrongs && corrects) {
@@ -134,19 +134,19 @@ class TestingController {
 
                                 test.init(questions, coverable.skills, minBound);
 
-                                if (test.graph[currentRecord.lastPosition].name === "Test complete") {
-                                    res.status(200).send(JSON.stringify({message: "Test has been completed"}));
+                                if (test.graph[currentRecord.lastPosition].name === "SkillTest complete") {
+                                    res.status(200).send(JSON.stringify({message: "SkillTest has been completed"}));
                                     return;
                                 }
 
                                 if (currentRecord.isFinished &&
-                                    test.graph[currentRecord.lastPosition].next().node.name === "Test complete") {
+                                    test.graph[currentRecord.lastPosition].next().node.name === "SkillTest complete") {
                                     await dbHelpers.updateProgress(
                                         topicId,
                                         userId,
                                         test.graph[currentRecord.lastPosition].next().index);
                                     await dbHelpers.completeTest(userId, topicId);
-                                    res.status(200).send(JSON.stringify({message: "Test Complete!"}));
+                                    res.status(200).send(JSON.stringify({message: "SkillTest Complete!"}));
                                     return;
                                 } else {
                                     if (currentRecord.isFinished) {

@@ -2,7 +2,7 @@ import {Question} from "../db/mongoDb/models/Question";
 import {TestNode} from "../structs/TestNode";
 import {TestPair} from "../structs/TestPair";
 
-export class Test {
+export class SkillTest {
 
     public globalIndex: number = 0;
 
@@ -86,7 +86,7 @@ export class Test {
 
         round3.next = round3Next.bind(round3);
 
-        const complete = new TestNode("Test complete");
+        const complete = new TestNode("SkillTest complete");
         complete.children = [];
 
         round4.children.push(new TestPair(0, this.globalIndex, complete));
