@@ -272,7 +272,7 @@ class TestingController {
             const currentRecord = await dbHelpers.getTestPositionRecord(userId, topicId);
             if (currentRecord) {
                 if (currentRecord.isFinished) {
-                    res.status(200).send({message: "Current Node is finished", task: "resume"});
+                    res.status(200).send({message: "Current Node is finished", task: "start"});
                 } else {
                     res.status(200).send({message: "Current Node is not finished", task: "resume"});
                 }
