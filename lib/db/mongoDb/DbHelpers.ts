@@ -80,14 +80,15 @@ export class DbHelpers {
     }
 
     public async createTestPositionRecord(topicId: string, userId: string) {
-        return testPosition.create({
+        return testPosition.update({
+            topicId,
+            userId,
+        }, {
             correctAnswers: [],
             isFinished: false,
             lastPosition: 0,
-            topicId,
-            userId,
             wrongAnswers: [],
-        });
+        }, {upsert: true});
     }
 
     public async getTestPositionRecord(userId: string, topicId: string) {
