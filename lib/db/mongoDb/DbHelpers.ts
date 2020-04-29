@@ -84,10 +84,12 @@ export class DbHelpers {
             topicId,
             userId,
         }, {
-            correctAnswers: [],
-            isFinished: false,
-            lastPosition: 0,
-            wrongAnswers: [],
+            $set: {
+                correctAnswers: [],
+                isFinished: false,
+                lastPosition: 0,
+                wrongAnswers: [],
+            },
         }, {upsert: true});
     }
 
