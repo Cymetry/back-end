@@ -94,7 +94,7 @@ class UserController {
 
     public static editUser = async (req: Request, res: Response) => {
         const id = req.params.id;
-        const {name, surname, dob, country, city, school} = req.body;
+        const {name, surname, dob, country, city, school, isPremium} = req.body;
 
         let user;
         try {
@@ -108,6 +108,7 @@ class UserController {
             city,
             country,
             dob,
+            isPremium,
             name,
             password: user.password,
             school,
