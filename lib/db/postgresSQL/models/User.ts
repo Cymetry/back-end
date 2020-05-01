@@ -2,7 +2,6 @@ import * as bcrypt from "bcryptjs";
 import {Length} from "class-validator";
 import {
     AllowNull,
-    AutoIncrement,
     Column,
     CreatedAt,
     Default,
