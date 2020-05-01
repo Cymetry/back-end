@@ -93,7 +93,7 @@ class UserController {
     }
 
     public static editUser = async (req: Request, res: Response) => {
-        const id = req.params.id;
+        const id = res.locals.jwtPayload.userId;
         const {name, surname, dob, country, city, school, isPremium} = req.body;
 
         let user;
