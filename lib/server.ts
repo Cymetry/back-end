@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 
 (async () => {
 
-    await sequelize.sync({force: false});
+    await sequelize().sync({force: false});
     await connect({db: process.env.MONGO_URL || "mongodb://localhost:27017/cymetry"});
 
 
