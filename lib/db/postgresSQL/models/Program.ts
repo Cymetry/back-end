@@ -11,7 +11,6 @@ import {
 export class Program extends Model<Program> {
 
     @PrimaryKey
-    @AutoIncrement
     @Column
     public id!: number;
 

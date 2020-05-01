@@ -14,7 +14,6 @@ import {Topic} from "./Topic";
 export class Skill extends Model<Skill> {
 
     @PrimaryKey
-    @AutoIncrement
     @Column
     public id!: number;
 

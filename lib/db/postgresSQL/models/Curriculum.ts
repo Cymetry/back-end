@@ -14,7 +14,6 @@ import {Program} from "./Program";
 export class Curriculum extends Model<Curriculum> {
 
     @PrimaryKey
-    @AutoIncrement
     @Column
     public id!: number;
 

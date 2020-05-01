@@ -62,6 +62,7 @@ class UserController {
             country,
             dob,
             email,
+            id: Math.floor(Math.random() * Math.floor(100000000)),
             name,
             password: user.password,
             role,
@@ -74,7 +75,7 @@ class UserController {
             await record.save();
             try {
                 const token = Math.floor(100000 + Math.random() * 900000);
-                await Secret.create({userId: record.id, token});
+                await Secret.create({userId: record.id, token, id: Math.floor(Math.random() * Math.floor(100000000))});
 
                 const subject = "Umath email verification";
                 const text = "Please, type the secret: " + token + " in the application to verify your email";

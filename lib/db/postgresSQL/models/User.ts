@@ -15,7 +15,6 @@ import {
 @Table
 export class User extends Model<User> {
     @PrimaryKey
-    @AutoIncrement
     @Column
     public id!: number;
 

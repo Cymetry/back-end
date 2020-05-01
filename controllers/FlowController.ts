@@ -113,7 +113,7 @@ class FlowController {
     public static createProgram = async (req: Request, res: Response) => {
         const {name, logo} = req.body;
         try {
-            const record = await Program.create({name, logo});
+            const record = await Program.create({name, logo, id: Math.floor(Math.random() * Math.floor(100000000))});
             await record.save();
             res.status(200).send({id: record.id});
         } catch (error) {
@@ -153,7 +153,8 @@ class FlowController {
     public static createCurriculum = async (req: Request, res: Response) => {
         const {name, programId, logo} = req.body;
         try {
-            const record = await Curriculum.create({name, programId, logo});
+            const record = await Curriculum.create({id: Math.floor(Math.random() * Math.floor(100000000)),
+                logo, name, programId});
             await record.save();
             res.status(200).send({id: record.id});
         } catch (error) {
@@ -192,7 +193,9 @@ class FlowController {
     public static createTopic = async (req: Request, res: Response) => {
         const {name, skillCount, logo, curriculumId, minTestNum, maxTestNum} = req.body;
         try {
-            const record = await Topic.create({name, skillCount, logo, curriculumId, minTestNum, maxTestNum});
+            const record = await Topic.create({curriculumId , id: Math.floor(Math.random() * Math.floor(100000000)),
+                // tslint:disable-next-line:object-literal-sort-keys
+                logo, name, skillCount,   minTestNum, maxTestNum});
             await record.save();
             res.status(200).send({id: record.id});
         } catch (error) {
@@ -231,7 +234,8 @@ class FlowController {
     public static createSkill = async (req: Request, res: Response) => {
         const {name, topicId, difficulty, logo} = req.body;
         try {
-            const record = await Skill.create({name, topicId, difficulty, logo});
+            // tslint:disable-next-line:max-line-length
+            const record = await Skill.create({id: Math.floor(Math.random() * Math.floor(100000000)), name, topicId, difficulty, logo});
             await record.save();
             res.status(200).send({id: record.id});
         } catch (error) {

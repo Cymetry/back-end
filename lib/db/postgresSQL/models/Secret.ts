@@ -11,7 +11,6 @@ import {
 export class Secret extends Model<Secret> {
 
     @PrimaryKey
-    @AutoIncrement
     @Column
     public id!: number;
 
