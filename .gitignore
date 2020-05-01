@@ -71,3 +71,4 @@ typings/
 !.elasticbeanstalk/*.global.yml
 /Archive.zip
 /prod.ts
+/prod.env
