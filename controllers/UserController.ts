@@ -5,9 +5,11 @@ import emailConfig from "../config/emailConfig";
 import {Secret} from "../lib/db/postgresSQL/models/Secret";
 import {User} from "../lib/db/postgresSQL/models/User";
 import {Email} from "../lib/Email";
+import {Helpers} from "../lib/Helpers";
 
 
 const emailSender = new Email(emailConfig.username, emailConfig.password);
+const helpers = new Helpers();
 
 class UserController {
 
@@ -62,7 +64,7 @@ class UserController {
             country,
             dob,
             email,
-            id: Math.floor(Math.random() * Math.floor(100000000)),
+            id: await helpers.generateId(User),
             name,
             password: user.password,
             role,
@@ -75,7 +77,7 @@ class UserController {
             await record.save();
             try {
                 const token = Math.floor(100000 + Math.random() * 900000);
-                await Secret.create({userId: record.id, token, id: Math.floor(Math.random() * Math.floor(100000000))});
+                await Secret.create({userId: record.id, token, id: await helpers.generateId(Secret)});
 
                 const subject = "Umath email verification";
                 const text = "Please, type the secret: " + token + " in the application to verify your email";

@@ -6,9 +6,11 @@ import {Program} from "../lib/db/postgresSQL/models/Program";
 import {Skill} from "../lib/db/postgresSQL/models/Skill";
 import {Topic} from "../lib/db/postgresSQL/models/Topic";
 
+import {Helpers} from "../lib/Helpers";
+
 
 const dbHelpers = new DbHelpers();
-
+const helpers = new Helpers();
 
 class FlowController {
 
@@ -113,7 +115,7 @@ class FlowController {
     public static createProgram = async (req: Request, res: Response) => {
         const {name, logo} = req.body;
         try {
-            const record = await Program.create({name, logo, id: Math.floor(Math.random() * Math.floor(100000000))});
+            const record = await Program.create({name, logo, id: await helpers.generateId(Program)});
             await record.save();
             res.status(200).send({id: record.id});
         } catch (error) {
@@ -153,8 +155,7 @@ class FlowController {
     public static createCurriculum = async (req: Request, res: Response) => {
         const {name, programId, logo} = req.body;
         try {
-            const record = await Curriculum.create({id: Math.floor(Math.random() * Math.floor(100000000)),
-                logo, name, programId});
+            const record = await Curriculum.create({id: await helpers.generateId(Curriculum), logo, name, programId});
             await record.save();
             res.status(200).send({id: record.id});
         } catch (error) {
@@ -193,7 +194,7 @@ class FlowController {
     public static createTopic = async (req: Request, res: Response) => {
         const {name, skillCount, logo, curriculumId, minTestNum, maxTestNum} = req.body;
         try {
-            const record = await Topic.create({curriculumId , id: Math.floor(Math.random() * Math.floor(100000000)),
+            const record = await Topic.create({curriculumId , id: await helpers.generateId(Topic),
                 // tslint:disable-next-line:object-literal-sort-keys
                 logo, name, skillCount,   minTestNum, maxTestNum});
             await record.save();
@@ -235,7 +236,7 @@ class FlowController {
         const {name, topicId, difficulty, logo} = req.body;
         try {
             // tslint:disable-next-line:max-line-length
-            const record = await Skill.create({id: Math.floor(Math.random() * Math.floor(100000000)), name, topicId, difficulty, logo});
+            const record = await Skill.create({id:  await helpers.generateId(Skill), name, topicId, difficulty, logo});
             await record.save();
             res.status(200).send({id: record.id});
         } catch (error) {
