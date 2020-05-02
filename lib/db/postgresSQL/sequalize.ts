@@ -2,6 +2,7 @@ import {Sequelize} from "sequelize-typescript";
 
 export const sequelize = (): Sequelize => {
     if (process.env.NODE_ENV === "production") {
+        // @ts-ignore
         return new Sequelize({
             database: process.env.DATABASE,
             dialect: process.env.DIALECT,
@@ -13,6 +14,7 @@ export const sequelize = (): Sequelize => {
             username: process.env.USERNAME,
         });
     } else {
+        // @ts-ignore
         return new Sequelize({
             database: process.env.DATABASE,
             dialect: process.env.DIALECT,
