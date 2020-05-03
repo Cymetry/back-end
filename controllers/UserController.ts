@@ -39,7 +39,7 @@ class UserController {
         user.surname = surname;
         user.email = email;
         user.password = password;
-        user.dob = dob;
+        user.dob = dob || new Date();
         if (country) {
             user.country = country;
         }
@@ -62,7 +62,7 @@ class UserController {
         const dbObject = JSON.parse(JSON.stringify({
             city,
             country,
-            dob,
+            dob: dob || new Date(),
             email,
             id: await helpers.generateId(User),
             name,
