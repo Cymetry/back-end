@@ -79,8 +79,8 @@ class UserController {
                 const token = Math.floor(100000 + Math.random() * 900000);
                 await Secret.create({userId: record.id, token, id: await helpers.generateId(Secret)});
 
-                const subject = "Umath email verification";
-                const text = `<br><img src="https://umathconfirmationemail.s3.amazonaws.com/umathlogo+copy+(1).png" width="200" height="200">
+                const subject = "Umath Welcome";
+                const text = `<br><img src="https://umathconfirmationemail.s3.amazonaws.com/umathlogo+copy+(1).png" width="50" height="50">
 <h1>Hi, ${name} ${surname}</h1>
 <p>Welcome to Umath education platform - we are glad you are here!&nbsp;<br />
 <br />
