@@ -33,7 +33,7 @@ class UserController {
     }
 
     public static newUser = async (req: Request, res: Response) => {
-        const {name, surname, email, password, dob, country, city, school, role} = req.body;
+        const {name, surname, email, password, dob, country, city, school} = req.body;
         const user = new User();
         user.name = name;
         user.surname = surname;
@@ -49,7 +49,7 @@ class UserController {
         if (school) {
             user.school = school;
         }
-        user.role = role;
+        user.role = "user";
 
         const errors = await validate(user);
         if (errors.length > 0) {
@@ -67,7 +67,7 @@ class UserController {
             id: await helpers.generateId(User),
             name,
             password: user.password,
-            role,
+            role: "user",
             school,
             surname,
         }));
@@ -80,7 +80,29 @@ class UserController {
                 await Secret.create({userId: record.id, token, id: await helpers.generateId(Secret)});
 
                 const subject = "Umath email verification";
-                const text = "Please, type the secret: " + token + " in the application to verify your email";
+                const text = `<br><img src="https://umathconfirmationemail.s3.amazonaws.com/umathlogo+copy+(1).png" width="200" height="200">
+<h1>Hi, ${name} ${surname}</h1>
+<p>Welcome to Umath education platform - we are glad you are here!&nbsp;<br />
+<br />
+Umath is a personalised high-school&nbsp;Mathematics education, launching on iOS &amp; Android. The application understands the areas that require improvement and tailors a learning, specifically for you</p>
+<br><img src="https://umathconfirmationemail.s3.amazonaws.com/marketing_2+(2).png" width="772" height="600">
+<br />
+ <br>Whether you are a student, teacher, professional, homeschooler, adult that wants to revisit mathematics studies - Umath is for you:<br />
+- skill by skill learning: we break down each chapter in very small skills, in order to ensure you understand every detail. You can tailor these to specific material that you want to learn<br />
+- personalisation: the application tracks areas that require improvement, and generates learning based on your results<br />
+- guidance: guided problems will assist you in obtaining the correct result, in the simplest way, ensuring you maximise your score<br />
+- videos: if you feel stuck, we provide video material to walk you through specifics covering the particular chapter. Videos will be tailored to the skill you want to solve
+Our topics will grow over time and welcome any suggestions or feedback as we roll out our Beta version at <strong>team@umath.io(opens in new tab)
+<br />
+<br><img src="https://umathconfirmationemail.s3.amazonaws.com/marketing_7+(1).png" width="772" height="600">
+<br></strong>.&nbsp;<br />
+<br />
+We hope you will enjoy your Mathematics adventure,<br />
+Team Umath
+<em>Copyright &copy; 2020 Umath Ltd, All rights reserved.</em><br />
+<br />
+<strong>Our mailing address is:</strong><br />
+team@umath.io`;
                 await emailSender.sendEmail(emailConfig.email, user.email, subject, text);
             } catch (e) {
                 console.log(e.message);

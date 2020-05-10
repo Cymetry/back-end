@@ -22,7 +22,7 @@ class FlowController {
             });
 
             const skillsTotal = await Skill.findAndCountAll();
-            const topicsTotal = await Topic.findAndCountAll();
+            const topicsTotal = await Topic.findAndCountAll({where: {curriculumId: 1}});
 
             const testsComplete = await dbHelpers.findCompleteTests(userId);
 

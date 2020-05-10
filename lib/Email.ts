@@ -18,8 +18,8 @@ export class Email {
         return new Promise<void>((resolve, reject) => {
             const mailOptions = {
                 from,
+                html: body,
                 subject,
-                text: body,
                 to,
             };
 
