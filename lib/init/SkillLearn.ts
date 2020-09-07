@@ -56,7 +56,7 @@ export class SkillLearn {
         function sourceNext() {
             if (this.mistakeCount === 0) {
                 return this.children.filter((elm) => elm.id === 4)[0];
-            } else if (this.correctCount >= 0.5) {
+            } else if (this.correctCount >= 0.5 && this.mistakeCount >= 2) {
                 return this.children.filter((elm) => elm.id === 1)[0];
             } else if (this.correctCount < 0.5 && this.mistakeCount >= 2) {
                 return this.children.filter((elm) => elm.id === 2)[0];
@@ -262,7 +262,7 @@ export class SkillLearn {
 
         // next node generation logic for problem1 given 2
         function problem1given2Next() {
-            if (this.mistakeCount && this.mistakeCount <= 1) {
+            if (this.mistakeCount <= 1) {
                 return this.children.filter((elm) => elm.id === 222)[0];
             } else {
                 return this.children.filter((elm) => elm.id === 111)[0];
@@ -281,7 +281,7 @@ export class SkillLearn {
         head.maxMistakeCount = 4;
 
         function headNext() {
-            if (this.mistakeCount && this.mistakeCount <= 4) {
+            if (this.mistakeCount <= 4) {
                 return this.children.filter((elm) => elm.id === 2)[0];
             } else {
                 return this.children.filter((elm) => elm.id === 1)[0];
@@ -318,7 +318,7 @@ export class SkillLearn {
         this.graph[this.globalIndex++] = complete;
 
         function tailNext() {
-            if (this.mistakeCount && this.mistakeCount <= 4) {
+            if (this.mistakeCount <= 4) {
                 return this.children.filter((elm) => elm.id === 2)[0];
             } else {
                 return this.children.filter((elm) => elm.id === 0)[0];
@@ -407,7 +407,7 @@ export class SkillLearn {
 
 
         function headNext() {
-            if (this.mistakeCount && this.mistakeCount <= 2) {
+            if (this.mistakeCount <= 2) {
                 return this.children.filter((elm) => elm.id === 2)[0];
             } else {
                 return this.children.filter((elm) => elm.id === 1)[0];
@@ -431,7 +431,7 @@ export class SkillLearn {
 
 
         function tailNext() {
-            if (this.mistakeCount && this.mistakeCount <= 1) {
+            if (this.mistakeCount <= 1) {
                 return this.children.filter((elm) => elm.id === 2)[0];
             } else {
                 return this.children.filter((elm) => elm.id === 0)[0];
@@ -479,7 +479,7 @@ export class SkillLearn {
 
 
         function headNext() {
-            if (this.mistakeCount && this.mistakeCount <= 4) {
+            if (this.mistakeCount <= 4) {
                 return this.children.filter((elm) => elm.id === 2)[0];
             } else {
                 return this.children.filter((elm) => elm.id === 1)[0];
@@ -502,7 +502,7 @@ export class SkillLearn {
         this.graph[this.globalIndex++] = complete;
 
         function tailNext() {
-            if (this.mistakeCount && this.mistakeCount <= 4) {
+            if (this.mistakeCount <= 4) {
                 return this.children.filter((elm) => elm.id === 2)[0];
             } else {
                 return this.children.filter((elm) => elm.id === 0)[0];
