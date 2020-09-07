@@ -64,7 +64,7 @@ typings/
 # next.js build output
 .next
 
-# Output of of zipping
+# Output of zipping
 .DS_Store
 
 
