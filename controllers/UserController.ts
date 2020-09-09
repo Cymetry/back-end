@@ -84,7 +84,7 @@ class UserController {
                 <div style="text-align: center">
                 <img src="https://umathconfirmationemail.s3.amazonaws.com/umathlogoround.png" width="80" height="80">
                 </div>
-                <h1>Hi, Name Surname</h1>
+                <h1>Hi, ${name} ${surname}</h1>
                 <p>Welcome to Umath education platform - we are glad you are here!&nbsp;<br />
                 <br />
                 Umath is a personalised high-school&nbsp;Mathematics education, launching on iOS &amp; Android. The application understands the areas that require improvement and tailors a learning, specifically for you.</p>
