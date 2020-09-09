@@ -17,12 +17,12 @@ export class User extends Model<User> {
     @Column
     public id!: number;
 
-    @Length(4, 20)
+    @Length(2, 20)
     @AllowNull(false)
     @Column
     public name!: string;
 
-    @Length(4, 20)
+    @Length(2, 20)
     @AllowNull(false)
     @Column
     public surname!: string;
