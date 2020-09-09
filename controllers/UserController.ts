@@ -98,7 +98,7 @@ class UserController {
                 - personalisation: the application tracks areas that require improvement, and generates learning based on your results<br />
                 - guidance: guided problems will assist you in obtaining the correct result, in the simplest way, ensuring you maximise your score<br />
                 - videos: if you feel stuck, we provide video material to walk you through specifics covering the particular chapter. Videos will be tailored to the skill you want to solve
-                Our topics will grow over time and welcome any suggestions or feedback as we roll out our Beta version at <strong>team@umath.io</strong>
+                Our topics will grow over time and welcome any suggestions or feedback as we roll out our Beta version at <strong style="text-decoration:none; color:black;">team@umath.io</strong>.
                 <br />
                 <br>
                 <div>
