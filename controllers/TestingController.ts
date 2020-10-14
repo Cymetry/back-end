@@ -7,6 +7,11 @@ import {SkillTest} from "../lib/init/SkillTest";
 
 const dbHelpers = new DbHelpers();
 
+let wrongs1;
+let corrects1;
+let wrongs3;
+let corrects3;
+
 class TestingController {
 
     public static defineSkills = async (req: Request, res: Response) => {
@@ -108,16 +113,30 @@ class TestingController {
             if (currentRecord) {
                 let test;
                 // if round 3 is finished
-                const wrongs = await dbHelpers.getQuestionsByIds(currentRecord.wrongAnswers);
-                const corrects = await dbHelpers.getQuestionsByIds(currentRecord.correctAnswers);
+                const roundWrongs = await dbHelpers.getQuestionsByIds(currentRecord.wrongAnswers);
+                const roundCorrects = await dbHelpers.getQuestionsByIds(currentRecord.correctAnswers);
 
-                if (currentRecord.lastPosition >= 2 && currentRecord.isFinished) {
-                    test = new SkillTest([], [], wrongs, corrects);
+                if(currentRecord.lastPosition === 0 && currentRecord.isFinished) {
+                    wrongs1 = roundWrongs;
+                    corrects1 = roundCorrects;
+                } else if (currentRecord.lastPosition === 2 && currentRecord.isFinished) {
+                    wrongs3 = roundWrongs;
+                    corrects3 = roundCorrects;
+                }
+                
+                if (currentRecord.lastPosition >= 1 && currentRecord.isFinished) {
+                    if(currentRecord.lastPosition === 2) {
+                        test = new SkillTest(wrongs1, corrects1, wrongs3, corrects3);
+                    } else if (currentRecord.lastPosition === 1) {
+                        test = new SkillTest(wrongs1, corrects1, [], []);
+                    } else {
+                        test = new SkillTest(wrongs1, corrects1, wrongs3, corrects3);
+                    }
                 } else {
-                    test = new SkillTest(wrongs, corrects, [], []);
+                    test = new SkillTest(wrongs1, corrects1, [], []);
                 }
 
-                if (topicRecord && wrongs && corrects) {
+                if (topicRecord && roundWrongs && roundCorrects) {
 
                     const minBound = topicRecord.minTestNum;
 
@@ -175,6 +194,7 @@ class TestingController {
                                                 }),
                                                 round: test.graph[currentRecord.lastPosition].next().node.name,
                                                 weakSet: test.graph[currentRecord.lastPosition].next().node.weakSet,
+                                                solution: test.graph[currentRecord.lastPosition].next().node.solution,
                                             }));
                                         } else {
                                             res.status(500).send({message: "No questions found!"});
@@ -205,6 +225,7 @@ class TestingController {
                                                     round: test.graph[currentRecord.lastPosition].name,
                                                     submission: submission.submissions,
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
+                                                    solution: test.graph[currentRecord.lastPosition].solution,
                                                 }));
                                             } else {
                                                 res.status(200).send(JSON.stringify({
@@ -224,6 +245,7 @@ class TestingController {
                                                     round: test.graph[currentRecord.lastPosition].name,
                                                     submission: [],
                                                     weakSet: test.graph[currentRecord.lastPosition].weakSet,
+                                                    solution: test.graph[currentRecord.lastPosition].solution,
                                                 }));
                                             }
                                         } else {

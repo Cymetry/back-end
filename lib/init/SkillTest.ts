@@ -33,13 +33,25 @@ export class SkillTest {
         start.questions = this.pickQuestions(bank, coverage, minBound);
         start.wrongAnswers = this.round1WrongCount;
         start.correctAnswers = this.round1CorrectCount;
+        start.newBank = [];
+        bank.filter(question => {
+            if(!start.questions.includes(question)) {
+                start.newBank.push(question);
+            }
+        });
 
         // round 2
         const round2 = new TestNode("round2");
         const weakSet = this.computeSkillWeaknessWeight(start.wrongAnswers, start.correctAnswers);
-        round2.questions = this.pickQuestions(bank, weakSet, minBound);
-        round2.solution = false;
+        round2.questions = this.pickQuestions(start.newBank, weakSet, minBound);
+        round2.solution = true;
         round2.weakSet = weakSet;
+        round2.newBank = []
+        bank.filter(question => {
+            if(!round2.questions.includes(question) && !start.questions.includes(question)) {
+                round2.newBank.push(question)
+            }
+        })
 
         // bind round 2 to start(round 1)
         start.children.push(new TestPair(0, this.globalIndex, round2));
@@ -55,7 +67,7 @@ export class SkillTest {
         // round 3
         const round3 = new TestNode("round3");
         round3.questions = start.wrongAnswers;
-        round3.solution = true;
+        round3.solution = false;
         round3.wrongAnswers = this.round3WrongCount;
         round3.correctAnswers = this.round3CorrectCount;
 
@@ -72,7 +84,7 @@ export class SkillTest {
         // round 4
         const round4 = new TestNode("round4");
         const lastWeakSet = this.computeSkillWeaknessWeight(round3.wrongAnswers, round3.correctAnswers);
-        round4.questions = this.pickQuestions(bank, lastWeakSet, minBound);
+        round4.questions = this.pickQuestions(round2.newBank, lastWeakSet, minBound);
         round4.solution = true;
 
         // bind round 4
