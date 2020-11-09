@@ -150,7 +150,6 @@ class TestingController {
                         if (questions) {
                             const coverable = await dbHelpers.findCoverableSkills(topicId);
                             if (coverable) {
-
                                 test.init(questions, coverable.skills, minBound);
 
                                 if (test.graph[currentRecord.lastPosition].name === "SkillTest complete") {
@@ -294,6 +293,8 @@ class TestingController {
             const currentRecord = await dbHelpers.getTestPositionRecord(userId, topicId);
             if (currentRecord) {
                 if (currentRecord.isFinished) {
+                    res.status(200).send({message: "Current Node is finished", task: "start"});
+                } else if (!currentRecord.isFinished && currentRecord.lastPosition === 0) {
                     res.status(200).send({message: "Current Node is finished", task: "start"});
                 } else {
                     res.status(200).send({message: "Current Node is not finished", task: "resume"});
