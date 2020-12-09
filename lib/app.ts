@@ -11,6 +11,7 @@ import {skillLearning} from "../routes/skillLearning";
 import {testingRouter} from "../routes/testing";
 import {userRouter} from "../routes/user";
 import {videoRouter} from "../routes/video";
+import {statisticsRouter} from "../routes/statistics";
 
 export const app = express();
 
@@ -41,6 +42,7 @@ app.use("/question", questionRouter);
 app.use("/", videoRouter);
 app.use("/account", accountRouter);
 app.use("/testing", testingRouter);
+app.use("/statistics", statisticsRouter);
 
 // app.use(
 //     errorhandler(

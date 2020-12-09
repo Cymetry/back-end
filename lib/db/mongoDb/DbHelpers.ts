@@ -10,6 +10,7 @@ import testPosition from "./models/TestPosition";
 import testSkills from "./models/TestSkills";
 import testSubmission from "./models/TestSubmission";
 import video, {Video} from "./models/Video";
+import statistics from "./models/Statistics"
 
 
 export class DbHelpers {
@@ -91,6 +92,16 @@ export class DbHelpers {
                 wrongAnswers: [],
             },
         }, {upsert: true});
+    }
+
+    public async createStatistics(userId: string, knowledge: number, accuracy: number, logics: number, speed: number) {
+        return statistics.create({
+            userId, knowledge, accuracy, logics, speed
+        });
+    }
+
+    public async getStatistics(userId: string) {
+        return statistics.findOne({userId});
     }
 
     public async getTestPositionRecord(userId: string, topicId: string) {
