@@ -9,6 +9,7 @@ import {
     PrimaryKey,
     Table,
     UpdatedAt,
+    Unique,
 } from "sequelize-typescript";
 
 @Table
@@ -29,6 +30,7 @@ export class User extends Model<User> {
 
     @Length(4, 40)
     @AllowNull(false)
+    @Unique(true)
     @Column
     public email!: string;
 

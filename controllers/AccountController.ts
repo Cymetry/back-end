@@ -18,7 +18,7 @@ class FlowController {
         const userId = res.locals.jwtPayload.userId;
         try {
             const user = await User.findByPk(userId, {
-                attributes: ["name", "surname"],
+                attributes: ["name", "surname", "id"],
             });
 
             const skillsTotal = await Skill.findAndCountAll();

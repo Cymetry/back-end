@@ -9,6 +9,8 @@ export class TestNode {
 
     public questions: Question[] = [];
 
+    public newBank: Question[] = [];
+
     public next: () => TestPair;
 
     public correctAnswers: Question[] = [];
